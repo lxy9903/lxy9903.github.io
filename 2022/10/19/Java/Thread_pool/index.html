@@ -16,25 +16,25 @@
   <meta name="author" content="刘笑笑">
   <meta name="keywords" content="java、go、操作系统、网络">
   
-    <meta name="description" content="Docker是什么基本含义Docker是一个轻量级的可以将应用及其依赖进行打包并发布到不同操作系统的Linux容器的一种封装。Docker本身并不是容器，它是创建容器的工具，是应用容器引擎。 Docker的核心概念• 镜像（Image）：一组应用及其依赖的打包，是一个只读的提供容器运行时所需的程序、库、资源、配置等文件以及一些为运行时准备的配置参数的环境打包。 • 容器（Container）：是从">
+    <meta name="description" content="一、基本参数1234567public ThreadPoolExecutor(int corePoolSize,                          int maximumPoolSize,                          long keepAliveTime,                          TimeUnit unit,">
 <meta property="og:type" content="article">
-<meta property="og:title" content="docker">
-<meta property="og:url" content="https://lxy9903.github.io/2022/10/08/Architecture/docker/index.html">
+<meta property="og:title" content="线程池">
+<meta property="og:url" content="https://lxy9903.github.io/2022/10/19/Java/Thread_pool/index.html">
 <meta property="og:site_name" content="Hello">
-<meta property="og:description" content="Docker是什么基本含义Docker是一个轻量级的可以将应用及其依赖进行打包并发布到不同操作系统的Linux容器的一种封装。Docker本身并不是容器，它是创建容器的工具，是应用容器引擎。 Docker的核心概念• 镜像（Image）：一组应用及其依赖的打包，是一个只读的提供容器运行时所需的程序、库、资源、配置等文件以及一些为运行时准备的配置参数的环境打包。 • 容器（Container）：是从">
+<meta property="og:description" content="一、基本参数1234567public ThreadPoolExecutor(int corePoolSize,                          int maximumPoolSize,                          long keepAliveTime,                          TimeUnit unit,">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://lxy9903.github.io/2022/10/08/Architecture/docker/v2-145c3cb904f8696ea68dbcb54b24938b_1440w.webp">
-<meta property="article:published_time" content="2022-10-08T08:30:12.000Z">
-<meta property="article:modified_time" content="2022-10-09T16:10:35.460Z">
+<meta property="og:image" content="https://lxy9903.github.io/2022/10/19/Java/Thread_pool/f228f23338ef4a0ebd615b965fd94894.png">
+<meta property="article:published_time" content="2022-10-19T07:46:30.000Z">
+<meta property="article:modified_time" content="2022-10-19T07:56:33.895Z">
 <meta property="article:author" content="刘笑笑">
-<meta property="article:tag" content="微服务">
-<meta property="article:tag" content="云计算">
+<meta property="article:tag" content="Java">
+<meta property="article:tag" content="源码">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://lxy9903.github.io/2022/10/08/Architecture/docker/v2-145c3cb904f8696ea68dbcb54b24938b_1440w.webp">
+<meta name="twitter:image" content="https://lxy9903.github.io/2022/10/19/Java/Thread_pool/f228f23338ef4a0ebd615b965fd94894.png">
   
   
   
-  <title>docker - Hello</title>
+  <title>线程池 - Hello</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -214,7 +214,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="docker"></span>
+            <span id="subtitle" data-typed-text="线程池"></span>
           
         </div>
 
@@ -225,8 +225,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2022-10-08 16:30" pubdate>
-          2022年10月8日 下午
+        <time datetime="2022-10-19 15:46" pubdate>
+          2022年10月19日 下午
         </time>
       </span>
     
@@ -237,7 +237,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          406 字
+          231 字
         
       </span>
     
@@ -248,7 +248,7 @@
         
         
         
-          4 分钟
+          2 分钟
         
       </span>
     
@@ -286,12 +286,12 @@
         <div id="board">
           <article class="post-content mx-auto">
             <!-- SEO header -->
-            <h1 style="display: none">docker</h1>
+            <h1 style="display: none">线程池</h1>
             
               <p class="note note-info">
                 
                   
-                    本文最后更新于：2022年10月10日 凌晨
+                    本文最后更新于：2022年10月19日 下午
                   
                 
               </p>
@@ -299,20 +299,14 @@
             
               <div class="markdown-body">
                 
-                <h1 id="Docker是什么"><a href="#Docker是什么" class="headerlink" title="Docker是什么"></a>Docker是什么</h1><h2 id="基本含义"><a href="#基本含义" class="headerlink" title="基本含义"></a>基本含义</h2><p>Docker是一个<strong>轻量级</strong>的可以将应用及其依赖进行打包并发布到不同操作系统的Linux<strong>容器</strong>的一种封装。Docker本身并不是容器，它是创建容器的工具，是应用容器引擎。</p>
-<h2 id="Docker的核心概念"><a href="#Docker的核心概念" class="headerlink" title="Docker的核心概念"></a>Docker的核心概念</h2><p>• 镜像（Image）：一组应用及其依赖的打包，是一个只读的提供容器运行时所需的程序、库、资源、配置等文件以及一些为运行时准备的配置参数的环境打包。</p>
-<p>• 容器（Container）：是从镜像创建的应用运行实例，可以将其启动、开始、停止、删除</p>
-<p>• 仓库（Repository）：是docker存放镜像的场所</p>
-<h2 id="操作系统、虚拟机、容器和进程有什么区别"><a href="#操作系统、虚拟机、容器和进程有什么区别" class="headerlink" title="操作系统、虚拟机、容器和进程有什么区别"></a>操作系统、虚拟机、容器和进程有什么区别</h2><p>操作系统</p>
-<p><img src="/2022/10/08/Architecture/docker/v2-145c3cb904f8696ea68dbcb54b24938b_1440w.webp" srcset="/img/loading.gif" lazyload alt="img"></p>
-<h2 id="关于k8s"><a href="#关于k8s" class="headerlink" title="关于k8s"></a>关于k8s</h2><h1 id="Docker怎么用"><a href="#Docker怎么用" class="headerlink" title="Docker怎么用"></a>Docker怎么用</h1><h2 id="参考文档"><a href="#参考文档" class="headerlink" title="参考文档"></a>参考文档</h2><p>本文的部分内容参考或者引用以下文章，在此表示感谢，如果有涉及知识产权的问题，请联系我及时修改。</p>
-<ul>
-<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/crazymakercircle/article/details/120747767">Docker原理（图解+秒懂+史上最全）</a></li>
-<li><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/144292368">云原生时代（四）：容器和Docker</a></li>
-<li><a target="_blank" rel="noopener" href="https://www.cnblogs.com/My-zhanglulu/p/16274319.html">什么是Docker容器?(全面了解使用)</a></li>
-</ul>
-<p>未完待续。。。</p>
+                <h2 id="一、基本参数"><a href="#一、基本参数" class="headerlink" title="一、基本参数"></a>一、基本参数</h2><figure class="highlight aspectj"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs aspectj"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">ThreadPoolExecutor</span><span class="hljs-params">(<span class="hljs-keyword">int</span> corePoolSize,</span></span><br><span class="hljs-params"><span class="hljs-function">                          <span class="hljs-keyword">int</span> maximumPoolSize,</span></span><br><span class="hljs-params"><span class="hljs-function">                          <span class="hljs-keyword">long</span> keepAliveTime,</span></span><br><span class="hljs-params"><span class="hljs-function">                          TimeUnit unit,</span></span><br><span class="hljs-params"><span class="hljs-function">                          BlockingQueue&lt;Runnable&gt; workQueue,</span></span><br><span class="hljs-params"><span class="hljs-function">                          ThreadFactory threadFactory,</span></span><br><span class="hljs-params"><span class="hljs-function">                          RejectedExecutionHandler <span class="hljs-keyword">handler</span>)</span></span>&#123;&#125;<br></code></pre></td></tr></table></figure>
 
+
+
+
+
+<h2 id="二、执行机制"><a href="#二、执行机制" class="headerlink" title="二、执行机制"></a>二、执行机制</h2><p><img src="/2022/10/19/Java/Thread_pool/f228f23338ef4a0ebd615b965fd94894.png" srcset="/img/loading.gif" lazyload alt="线程池执行机制"></p>
+<h2 id="线程池状态"><a href="#线程池状态" class="headerlink" title="线程池状态"></a>线程池状态</h2><h2 id="三、源码解读"><a href="#三、源码解读" class="headerlink" title="三、源码解读"></a>三、源码解读</h2>
                 
               </div>
             
@@ -324,9 +318,9 @@
     <div class="post-meta">
       <i class="iconfont icon-tags"></i>
       
-        <a href="/tags/%E5%BE%AE%E6%9C%8D%E5%8A%A1/">#微服务</a>
+        <a href="/tags/Java/">#Java</a>
       
-        <a href="/tags/%E4%BA%91%E8%AE%A1%E7%AE%97/">#云计算</a>
+        <a href="/tags/%E6%BA%90%E7%A0%81/">#源码</a>
       
     </div>
   
@@ -338,8 +332,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>docker</div>
-      <div>https://lxy9903.github.io/2022/10/08/Architecture/docker/</div>
+      <div>线程池</div>
+      <div>https://lxy9903.github.io/2022/10/19/Java/Thread_pool/</div>
     </div>
     <div class="license-meta">
       
@@ -351,7 +345,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>发布于</div>
-          <div>2022年10月8日</div>
+          <div>2022年10月19日</div>
         </div>
       
       
@@ -383,9 +377,9 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2022/10/11/Algorithm/KMP/" title="KMP">
+                      <a href="/2022/10/20/Mysql/locking/" title="数据库锁机制">
                         <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">KMP</span>
+                        <span class="hidden-mobile">数据库锁机制</span>
                         <span class="visible-mobile">上一篇</span>
                       </a>
                     
@@ -393,8 +387,8 @@
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2022/10/07/Algorithm/Knapsack%20problem/" title="背包问题">
-                        <span class="hidden-mobile">背包问题</span>
+                      <a href="/2022/10/14/Problems/selling-pieces-of-wood/" title="力扣2312. 卖木头块">
+                        <span class="hidden-mobile">力扣2312. 卖木头块</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
