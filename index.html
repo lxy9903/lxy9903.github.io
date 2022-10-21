@@ -241,6 +241,50 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h1 class="index-header">
         
+        <a href="/2022/10/21/Java/Block-queue/" target="_self">
+          阻塞队列
+        </a>
+      </h1>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2022/10/21/Java/Block-queue/" target="_self">
+        <div>
+          常用方法添加数据1234boolean add(E e);boolean offer(E e);void put(E e) throws InterruptedException;boolean offer(E e, long timeout, TimeUnit unit) throws InterruptedException;  以上四个方法都是将数据添加进队列  add和offer，如果成功
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2022-10-21 15:05" pubdate>
+              2022-10-21
+            </time>
+          </div>
+        
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/Java/">#Java</a>
+            
+              <a href="/tags/%E5%A4%9A%E7%BA%BF%E7%A8%8B/">#多线程</a>
+            
+              <a href="/tags/%E6%BA%90%E7%A0%81/">#源码</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
         <a href="/2022/10/20/Mysql/locking/" target="_self">
           数据库锁机制
         </a>
@@ -249,7 +293,7 @@
       
       <a class="index-excerpt index-excerpt__noimg" href="/2022/10/20/Mysql/locking/" target="_self">
         <div>
-          
+          锁的类型 行级锁 共享锁 排他锁   表级锁 意向锁  查看锁情况命令1SHOW FULL PROCESSLIST  InnoDB 1.0开始在INFORMATION_SCHEMA架构添加了三张表可以查看INNODB_TRX、INNODB_LOCKS、INNODB_LOCK_WAITS
         </div>
       </a>
 
@@ -288,14 +332,14 @@
       <h1 class="index-header">
         
         <a href="/2022/10/19/Java/Thread_pool/" target="_self">
-          线程池
+          Java线程池
         </a>
       </h1>
 
       
       <a class="index-excerpt index-excerpt__noimg" href="/2022/10/19/Java/Thread_pool/" target="_self">
         <div>
-          一、基本参数1234567public ThreadPoolExecutor(int corePoolSize,                          int maximumPoolSize,                          long keepAliveTime,                          TimeUnit unit,
+          一、基本参数新建一个线程池实例可调用Executors的newCachedThreadPool()、newFixedThreadPool()等方法，实际上这些方法的底层都是调用的ThreadPoolExecutor的构造方法。 1234567public ThreadPoolExecutor(int corePoolSize,                              int ma
         </div>
       </a>
 
@@ -315,7 +359,11 @@
             
               <a href="/tags/Java/">#Java</a>
             
+              <a href="/tags/%E5%A4%9A%E7%BA%BF%E7%A8%8B/">#多线程</a>
+            
               <a href="/tags/%E6%BA%90%E7%A0%81/">#源码</a>
+            
+              <a href="/tags/%E7%BA%BF%E7%A8%8B%E6%B1%A0/">#线程池</a>
             
           </div>
         

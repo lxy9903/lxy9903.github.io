@@ -16,25 +16,28 @@
   <meta name="author" content="刘笑笑">
   <meta name="keywords" content="java、go、操作系统、网络">
   
-    <meta name="description" content="一、基本参数1234567public ThreadPoolExecutor(int corePoolSize,                          int maximumPoolSize,                          long keepAliveTime,                          TimeUnit unit,">
+    <meta name="description" content="一、基本参数新建一个线程池实例可调用Executors的newCachedThreadPool()、newFixedThreadPool()等方法，实际上这些方法的底层都是调用的ThreadPoolExecutor的构造方法。 1234567public ThreadPoolExecutor(int corePoolSize,                              int ma">
 <meta property="og:type" content="article">
-<meta property="og:title" content="线程池">
+<meta property="og:title" content="Java线程池">
 <meta property="og:url" content="https://lxy9903.github.io/2022/10/19/Java/Thread_pool/index.html">
 <meta property="og:site_name" content="Hello">
-<meta property="og:description" content="一、基本参数1234567public ThreadPoolExecutor(int corePoolSize,                          int maximumPoolSize,                          long keepAliveTime,                          TimeUnit unit,">
+<meta property="og:description" content="一、基本参数新建一个线程池实例可调用Executors的newCachedThreadPool()、newFixedThreadPool()等方法，实际上这些方法的底层都是调用的ThreadPoolExecutor的构造方法。 1234567public ThreadPoolExecutor(int corePoolSize,                              int ma">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://lxy9903.github.io/2022/10/19/Java/Thread_pool/f228f23338ef4a0ebd615b965fd94894.png">
+<meta property="og:image" content="https://lxy9903.github.io/2022/10/19/Java/Thread_pool/image-20221021111242474.png">
 <meta property="article:published_time" content="2022-10-19T07:46:30.000Z">
-<meta property="article:modified_time" content="2022-10-19T07:56:33.895Z">
+<meta property="article:modified_time" content="2022-10-21T07:04:56.581Z">
 <meta property="article:author" content="刘笑笑">
 <meta property="article:tag" content="Java">
+<meta property="article:tag" content="多线程">
 <meta property="article:tag" content="源码">
+<meta property="article:tag" content="线程池">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://lxy9903.github.io/2022/10/19/Java/Thread_pool/f228f23338ef4a0ebd615b965fd94894.png">
   
   
   
-  <title>线程池 - Hello</title>
+  <title>Java线程池 - Hello</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -214,7 +217,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="线程池"></span>
+            <span id="subtitle" data-typed-text="Java线程池"></span>
           
         </div>
 
@@ -237,7 +240,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          231 字
+          1.8k 字
         
       </span>
     
@@ -248,7 +251,7 @@
         
         
         
-          2 分钟
+          15 分钟
         
       </span>
     
@@ -286,12 +289,12 @@
         <div id="board">
           <article class="post-content mx-auto">
             <!-- SEO header -->
-            <h1 style="display: none">线程池</h1>
+            <h1 style="display: none">Java线程池</h1>
             
               <p class="note note-info">
                 
                   
-                    本文最后更新于：2022年10月19日 下午
+                    本文最后更新于：2022年10月21日 下午
                   
                 
               </p>
@@ -299,14 +302,61 @@
             
               <div class="markdown-body">
                 
-                <h2 id="一、基本参数"><a href="#一、基本参数" class="headerlink" title="一、基本参数"></a>一、基本参数</h2><figure class="highlight aspectj"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs aspectj"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">ThreadPoolExecutor</span><span class="hljs-params">(<span class="hljs-keyword">int</span> corePoolSize,</span></span><br><span class="hljs-params"><span class="hljs-function">                          <span class="hljs-keyword">int</span> maximumPoolSize,</span></span><br><span class="hljs-params"><span class="hljs-function">                          <span class="hljs-keyword">long</span> keepAliveTime,</span></span><br><span class="hljs-params"><span class="hljs-function">                          TimeUnit unit,</span></span><br><span class="hljs-params"><span class="hljs-function">                          BlockingQueue&lt;Runnable&gt; workQueue,</span></span><br><span class="hljs-params"><span class="hljs-function">                          ThreadFactory threadFactory,</span></span><br><span class="hljs-params"><span class="hljs-function">                          RejectedExecutionHandler <span class="hljs-keyword">handler</span>)</span></span>&#123;&#125;<br></code></pre></td></tr></table></figure>
+                <h2 id="一、基本参数"><a href="#一、基本参数" class="headerlink" title="一、基本参数"></a>一、基本参数</h2><p>新建一个线程池实例可调用Executors的newCachedThreadPool()、newFixedThreadPool()等方法，实际上这些方法的底层都是调用的ThreadPoolExecutor的构造方法。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-title function_">ThreadPoolExecutor</span><span class="hljs-params">(<span class="hljs-type">int</span> corePoolSize,</span><br><span class="hljs-params">                              <span class="hljs-type">int</span> maximumPoolSize,</span><br><span class="hljs-params">                              <span class="hljs-type">long</span> keepAliveTime,</span><br><span class="hljs-params">                              TimeUnit unit,</span><br><span class="hljs-params">                              BlockingQueue&lt;Runnable&gt; workQueue,</span><br><span class="hljs-params">                              ThreadFactory threadFactory,</span><br><span class="hljs-params">                              RejectedExecutionHandler handler)</span> &#123;...&#125;<br></code></pre></td></tr></table></figure>
+
+<ul>
+<li><strong>corePoolSize</strong>：指定线程池的核心线程数，核心线程能够一直存活在线程池中。</li>
+<li><strong>maximumPoolSize</strong>：指定线程池能存活的最大线程数，要求maximumPoolSize &gt;&#x3D; corePoolSize，最大线程数与核心线程数的差值为线程池内临时线程的最大数目。</li>
+<li>keepAliveTime：临时线程存活时间，<strong>临时线程</strong>在<strong>空闲</strong>超过当前时间时会被销毁。</li>
+<li>unit：keepAliveTime的时间单位。</li>
+<li><strong>workQueue</strong>：任务队列，被提交到线程池的尚未被执行的任务。</li>
+<li>threadFactory：用于创建线程的线程工厂，一般使用默认工厂。 非必需传入。</li>
+<li><strong>handler</strong>：拒绝策略，任务太多情况下使用拒绝策略处理超出任务。非必需传入。</li>
+</ul>
+<p>具体信息见源码解读&gt;关键参数</p>
+<h2 id="二、线程池状态"><a href="#二、线程池状态" class="headerlink" title="二、线程池状态"></a>二、线程池状态</h2><p>线程池有五种状态</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> <span class="hljs-type">int</span> <span class="hljs-variable">RUNNING</span>    <span class="hljs-operator">=</span> -<span class="hljs-number">1</span> &lt;&lt; COUNT_BITS;<br><span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> <span class="hljs-type">int</span> <span class="hljs-variable">SHUTDOWN</span>   <span class="hljs-operator">=</span>  <span class="hljs-number">0</span> &lt;&lt; COUNT_BITS;<br><span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> <span class="hljs-type">int</span> <span class="hljs-variable">STOP</span>       <span class="hljs-operator">=</span>  <span class="hljs-number">1</span> &lt;&lt; COUNT_BITS;<br><span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> <span class="hljs-type">int</span> <span class="hljs-variable">TIDYING</span>    <span class="hljs-operator">=</span>  <span class="hljs-number">2</span> &lt;&lt; COUNT_BITS;<br><span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> <span class="hljs-type">int</span> <span class="hljs-variable">TERMINATED</span> <span class="hljs-operator">=</span>  <span class="hljs-number">3</span> &lt;&lt; COUNT_BITS;<br></code></pre></td></tr></table></figure>
 
 
 
+<h2 id="三、执行机制"><a href="#三、执行机制" class="headerlink" title="三、执行机制"></a>三、执行机制</h2><p><img src="/2022/10/19/Java/Thread_pool/f228f23338ef4a0ebd615b965fd94894.png" srcset="/img/loading.gif" lazyload alt="线程池执行机制"></p>
+<h2 id="四、源码解读"><a href="#四、源码解读" class="headerlink" title="四、源码解读"></a>四、源码解读</h2><h3 id="关键参数"><a href="#关键参数" class="headerlink" title="关键参数"></a>关键参数</h3><h4 id="1-corePoolSize"><a href="#1-corePoolSize" class="headerlink" title="1. corePoolSize"></a>1. corePoolSize</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">private</span> <span class="hljs-keyword">volatile</span> <span class="hljs-type">int</span> corePoolSize;<br></code></pre></td></tr></table></figure>
 
+<ul>
+<li>volatile修饰</li>
+<li>最小值为0</li>
+<li>不允许超时销毁，会一直存活在线程池内，除非设置了允许核心线程超时（allowCoreThreadTimeOut &#x3D; true）</li>
+</ul>
+<h4 id="2-maximumPoolSize"><a href="#2-maximumPoolSize" class="headerlink" title="2. maximumPoolSize"></a>2. maximumPoolSize</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">private</span> <span class="hljs-keyword">volatile</span> <span class="hljs-type">int</span> maximumPoolSize;<br></code></pre></td></tr></table></figure>
 
-<h2 id="二、执行机制"><a href="#二、执行机制" class="headerlink" title="二、执行机制"></a>二、执行机制</h2><p><img src="/2022/10/19/Java/Thread_pool/f228f23338ef4a0ebd615b965fd94894.png" srcset="/img/loading.gif" lazyload alt="线程池执行机制"></p>
-<h2 id="线程池状态"><a href="#线程池状态" class="headerlink" title="线程池状态"></a>线程池状态</h2><h2 id="三、源码解读"><a href="#三、源码解读" class="headerlink" title="三、源码解读"></a>三、源码解读</h2>
+<ul>
+<li>最大线程数目</li>
+<li>超时销毁</li>
+<li>值大于等于核心线程数目</li>
+</ul>
+<h4 id="3-workQueue"><a href="#3-workQueue" class="headerlink" title="3. workQueue"></a>3. workQueue</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> BlockingQueue&lt;Runnable&gt; workQueue;<br></code></pre></td></tr></table></figure>
+
+<p>The queue used for holding tasks and handing off to worker threads.  We do not require that workQueue.poll() returning null necessarily means that workQueue.isEmpty(), so rely solely on isEmpty to see if the queue is empty (which we must do for example when deciding whether to transition from SHUTDOWN to TIDYING).  This accommodates special-purpose queues such as DelayQueues for which poll() is allowed to return null even if it may later return non-null when delays expire.</p>
+<ul>
+<li>存放待工作线程处理的任务</li>
+</ul>
+<p><strong>BlockQueue的继承与实现</strong></p>
+<p><img src="/2022/10/19/Java/Thread_pool/image-20221021111242474.png" srcset="/img/loading.gif" lazyload alt="image-20221021111242474"></p>
+<p>​                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    </p>
+<h3 id="关键方法"><a href="#关键方法" class="headerlink" title="关键方法"></a>关键方法</h3><h3 id="继承体系"><a href="#继承体系" class="headerlink" title="继承体系"></a>继承体系</h3><h2 id="五、使用场景与优缺点"><a href="#五、使用场景与优缺点" class="headerlink" title="五、使用场景与优缺点"></a>五、使用场景与优缺点</h2><p>空间换时间</p>
+<h2 id="六、面试与思考"><a href="#六、面试与思考" class="headerlink" title="六、面试与思考"></a>六、面试与思考</h2><ol>
+<li><strong>线程池参数及含义。</strong></li>
+<li><strong>向线程池提交一个任务会直接运行吗？</strong></li>
+<li>线程池任务提交流程。</li>
+<li>线程池是如何保持池内线程存活的。</li>
+</ol>
+<h2 id="参考文档"><a href="#参考文档" class="headerlink" title="参考文档"></a>参考文档</h2><p>本文的部分内容参考或者引用以下文章，在此表示感谢，如果有涉及知识产权的问题，请联系我及时修改。</p>
+<ul>
+<li>《实战Java高并发程序设计》</li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_37602560/article/details/123845442">线程池的-任务执行机制</a></li>
+</ul>
+
                 
               </div>
             
@@ -320,7 +370,11 @@
       
         <a href="/tags/Java/">#Java</a>
       
+        <a href="/tags/%E5%A4%9A%E7%BA%BF%E7%A8%8B/">#多线程</a>
+      
         <a href="/tags/%E6%BA%90%E7%A0%81/">#源码</a>
+      
+        <a href="/tags/%E7%BA%BF%E7%A8%8B%E6%B1%A0/">#线程池</a>
       
     </div>
   
@@ -332,7 +386,7 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>线程池</div>
+      <div>Java线程池</div>
       <div>https://lxy9903.github.io/2022/10/19/Java/Thread_pool/</div>
     </div>
     <div class="license-meta">
