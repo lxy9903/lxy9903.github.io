@@ -16,23 +16,22 @@
   <meta name="author" content="刘笑笑">
   <meta name="keywords" content="java、go、操作系统、网络">
   
-    <meta name="description" content="01背包问题描述有N件物品和一个容量为V的背包。第i件物品的费用是c[i]，价值是w[i]。求解将哪些物品装入背包可使这些物品的费用总和不超过背包容量，且价值总和最大。 基本思路可转换为取或者不取第i个物品的问题，递推公式为：dp[i][v]&#x3D; Max(dp[i-1][v], dp[i-1][v-c[i]] + w[i])，其中dp[i][v]为对于前i个物品有一个容量为v的背包，此时能">
+    <meta name="description" content="项目相关RPC项目 简单介绍一下这个项目***  服务的发布与获取流程***  为什么要做这个项目***  什么是RPC  一个RPC框架需要一些什么内容  这个框架和其他的RPC框架有什么区别  是否进行过性能测试  在做项目的过程中遇到过什么问题***  项目中难点哪里  项目中同步与并发是如何实现的  RPC项目是怎么设计编码的  用的什么序列化框架  简单介绍一下netty  NIO和BI">
 <meta property="og:type" content="article">
-<meta property="og:title" content="背包问题">
-<meta property="og:url" content="https://lxy9903.github.io/2022/10/07/Algorithm/Knapsack%20problem/index.html">
+<meta property="og:title" content="面试问题">
+<meta property="og:url" content="https://lxy9903.github.io/2022/11/09/others/problems/index.html">
 <meta property="og:site_name" content="Hello">
-<meta property="og:description" content="01背包问题描述有N件物品和一个容量为V的背包。第i件物品的费用是c[i]，价值是w[i]。求解将哪些物品装入背包可使这些物品的费用总和不超过背包容量，且价值总和最大。 基本思路可转换为取或者不取第i个物品的问题，递推公式为：dp[i][v]&#x3D; Max(dp[i-1][v], dp[i-1][v-c[i]] + w[i])，其中dp[i][v]为对于前i个物品有一个容量为v的背包，此时能">
+<meta property="og:description" content="项目相关RPC项目 简单介绍一下这个项目***  服务的发布与获取流程***  为什么要做这个项目***  什么是RPC  一个RPC框架需要一些什么内容  这个框架和其他的RPC框架有什么区别  是否进行过性能测试  在做项目的过程中遇到过什么问题***  项目中难点哪里  项目中同步与并发是如何实现的  RPC项目是怎么设计编码的  用的什么序列化框架  简单介绍一下netty  NIO和BI">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2022-10-07T07:17:05.000Z">
-<meta property="article:modified_time" content="2022-10-24T03:14:36.561Z">
+<meta property="article:published_time" content="2022-11-09T11:27:43.000Z">
+<meta property="article:modified_time" content="2022-11-09T11:47:50.641Z">
 <meta property="article:author" content="刘笑笑">
-<meta property="article:tag" content="算法">
-<meta property="article:tag" content="dp">
+<meta property="article:tag" content="java、go、操作系统、网络">
 <meta name="twitter:card" content="summary_large_image">
   
   
   
-  <title>背包问题 - Hello</title>
+  <title>面试问题 - Hello</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -212,7 +211,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="背包问题"></span>
+            <span id="subtitle" data-typed-text="面试问题"></span>
           
         </div>
 
@@ -223,8 +222,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2022-10-07 15:17" pubdate>
-          2022年10月7日 下午
+        <time datetime="2022-11-09 19:27" pubdate>
+          2022年11月9日 晚上
         </time>
       </span>
     
@@ -235,7 +234,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          1.4k 字
+          522 字
         
       </span>
     
@@ -246,7 +245,7 @@
         
         
         
-          13 分钟
+          5 分钟
         
       </span>
     
@@ -284,12 +283,12 @@
         <div id="board">
           <article class="post-content mx-auto">
             <!-- SEO header -->
-            <h1 style="display: none">背包问题</h1>
+            <h1 style="display: none">面试问题</h1>
             
               <p class="note note-info">
                 
                   
-                    本文最后更新于：2022年10月24日 上午
+                    本文最后更新于：2022年11月9日 晚上
                   
                 
               </p>
@@ -297,53 +296,79 @@
             
               <div class="markdown-body">
                 
-                <h2 id="01背包问题"><a href="#01背包问题" class="headerlink" title="01背包问题"></a>01背包问题</h2><h3 id="描述"><a href="#描述" class="headerlink" title="描述"></a>描述</h3><p>有N件物品和一个容量为V的背包。第i件物品的费用是c[i]，价值是w[i]。求解将哪些物品装入背包可使这些物品的费用总和不超过背包容量，且价值总和最大。</p>
-<h3 id="基本思路"><a href="#基本思路" class="headerlink" title="基本思路"></a>基本思路</h3><p>可转换为取或者不取第i个物品的问题，递推公式为：dp[i][v]&#x3D; Max(dp[i-1][v], dp[i-1][v-c[i]] + w[i])，其中dp[i][v]为对于前i个物品有一个容量为v的背包，此时能装入的最大价值。</p>
-<h3 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">dp</span> &#123;<br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String[] args)</span> &#123;<br>        <span class="hljs-comment">// 注：0是补充对齐的</span><br>        <span class="hljs-type">int</span>[] c = <span class="hljs-keyword">new</span> <span class="hljs-title class_">int</span>[]&#123;<span class="hljs-number">0</span>,<span class="hljs-number">2</span>, <span class="hljs-number">4</span>, <span class="hljs-number">5</span>, <span class="hljs-number">3</span>&#125;;<br>        <span class="hljs-type">int</span>[] w = <span class="hljs-keyword">new</span> <span class="hljs-title class_">int</span>[]&#123;<span class="hljs-number">0</span>,<span class="hljs-number">2</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>, <span class="hljs-number">4</span>&#125;;<br>        <span class="hljs-type">int</span> <span class="hljs-variable">n</span> <span class="hljs-operator">=</span> <span class="hljs-number">4</span>, V = <span class="hljs-number">5</span>;<br>        <span class="hljs-type">int</span>[][] dp = <span class="hljs-keyword">new</span> <span class="hljs-title class_">int</span>[n + <span class="hljs-number">1</span>][V + <span class="hljs-number">1</span>];<br>        <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> <span class="hljs-variable">i</span> <span class="hljs-operator">=</span> <span class="hljs-number">1</span>; i &lt;= n; i++) &#123;<br>            <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> <span class="hljs-variable">v</span> <span class="hljs-operator">=</span> <span class="hljs-number">0</span>; v &lt;= V; v++) &#123;<br>                dp[i][v] = dp[i-<span class="hljs-number">1</span>][v];<br>                <span class="hljs-keyword">if</span>(v &gt;= c[i])&#123;<br>                    dp[i][v] = Math.max(dp[i][v], dp[i-<span class="hljs-number">1</span>][v-c[i]] + w[i]);<br>                &#125;<br>            &#125;<br>        &#125;<br>        <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> <span class="hljs-variable">i</span> <span class="hljs-operator">=</span> <span class="hljs-number">0</span>; i &lt;= n; i++) &#123;<br>            System.out.println(Arrays.toString(dp[i]));<br>        &#125;<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
-
-<figure class="highlight accesslog"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs accesslog">output：<br><span class="hljs-string">[0, 0, 0, 0, 0, 0]</span><br><span class="hljs-string">[0, 0, 2, 2, 2, 2]</span><br><span class="hljs-string">[0, 0, 2, 2, 2, 2]</span><br><span class="hljs-string">[0, 0, 2, 2, 2, 3]</span><br><span class="hljs-string">[0, 0, 2, 4, 4, 6]</span><br></code></pre></td></tr></table></figure>
-
-
-
-<h3 id="优化"><a href="#优化" class="headerlink" title="优化"></a>优化</h3><blockquote>
-<p>空间优化</p>
-</blockquote>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-type">int</span>[] c = <span class="hljs-keyword">new</span> <span class="hljs-title class_">int</span>[]&#123;<span class="hljs-number">0</span>,<span class="hljs-number">2</span>, <span class="hljs-number">4</span>, <span class="hljs-number">5</span>, <span class="hljs-number">3</span>&#125;;<br><span class="hljs-type">int</span>[] w = <span class="hljs-keyword">new</span> <span class="hljs-title class_">int</span>[]&#123;<span class="hljs-number">0</span>,<span class="hljs-number">2</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>, <span class="hljs-number">4</span>&#125;;<br><span class="hljs-type">int</span>[] dp2 = <span class="hljs-keyword">new</span> <span class="hljs-title class_">int</span>[V+<span class="hljs-number">1</span>];<br><span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> <span class="hljs-variable">i</span> <span class="hljs-operator">=</span> <span class="hljs-number">0</span>; i &lt;= n; i++) &#123;<br>  <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> <span class="hljs-variable">v</span> <span class="hljs-operator">=</span> V; v &gt;= c[i] ; v--) &#123;<br>    	dp2[v] = Math.max(dp2[v-c[i]]+w[i],dp2[v]);<br>  &#125;<br>  System.out.println(Arrays.toString(dp2));<br>&#125;<br></code></pre></td></tr></table></figure>
-
-<figure class="highlight accesslog"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs accesslog"><span class="hljs-string">[0, 0, 0, 0, 0, 0]</span><br><span class="hljs-string">[0, 0, 2, 2, 2, 2]</span><br><span class="hljs-string">[0, 0, 2, 2, 2, 2]</span><br><span class="hljs-string">[0, 0, 2, 2, 2, 3]</span><br><span class="hljs-string">[0, 0, 2, 4, 4, 6]</span><br></code></pre></td></tr></table></figure>
-
-
-
-<h3 id="练习"><a href="#练习" class="headerlink" title="练习"></a>练习</h3><ul>
-<li><a target="_blank" rel="noopener" href="https://leetcode-cn.com/problems/target-sum/">目标和</a>：转化问题以后为0-1背包方案数问题。</li>
-<li><a target="_blank" rel="noopener" href="https://leetcode-cn.com/problems/partition-equal-subset-sum/">分割等和子集</a>：转化后为0-1背包可行性问题。</li>
-<li><a target="_blank" rel="noopener" href="https://leetcode-cn.com/problems/last-stone-weight-ii/">最后一块石头的重量 II</a>：转化后为0-1背包最小值问题。</li>
-</ul>
-<h2 id="完全背包问题"><a href="#完全背包问题" class="headerlink" title="完全背包问题"></a>完全背包问题</h2><ul>
-<li><p><input checked disabled type="checkbox"> 
-<a target="_blank" rel="noopener" href="https://leetcode-cn.com/problems/coin-change/">零钱兑换</a>：完全背包最小值</p>
+                <h2 id="项目相关"><a href="#项目相关" class="headerlink" title="项目相关"></a>项目相关</h2><h3 id="RPC项目"><a href="#RPC项目" class="headerlink" title="RPC项目"></a>RPC项目</h3><ol>
+<li><p>简单介绍一下这个项目***</p>
 </li>
-<li><p><input checked disabled type="checkbox"> 
-<a target="_blank" rel="noopener" href="https://leetcode-cn.com/problems/perfect-squares/">完全平方数</a>：完全背包最小值</p>
+<li><p>服务的发布与获取流程***</p>
 </li>
-</ul>
-<h2 id="多重背包问题"><a href="#多重背包问题" class="headerlink" title="多重背包问题"></a>多重背包问题</h2><ul>
-<li><a target="_blank" rel="noopener" href="https://leetcode-cn.com/problems/ones-and-zeroes/">01 字符构成最多的字符串</a>：多维费用的 0-1 背包最大值，两个背包大小：0和1的数量</li>
-<li><a target="_blank" rel="noopener" href="https://leetcode-cn.com/problems/profitable-schemes/">盈利计划</a>：多维费用的 0-1 背包最大值</li>
-</ul>
-<h2 id="混合背包问题"><a href="#混合背包问题" class="headerlink" title="混合背包问题"></a>混合背包问题</h2><h2 id="分组背包问题"><a href="#分组背包问题" class="headerlink" title="分组背包问题"></a>分组背包问题</h2><ul>
-<li><a target="_blank" rel="noopener" href="https://leetcode-cn.com/problems/number-of-dice-rolls-with-target-sum/">掷骰子的N种方法</a>：每一组是一个骰子，每个骰子只能拿一个体积为1到6的物品</li>
-</ul>
-<h2 id="有依赖的背包问题"><a href="#有依赖的背包问题" class="headerlink" title="有依赖的背包问题"></a>有依赖的背包问题</h2><h2 id="背包问题求方案数"><a href="#背包问题求方案数" class="headerlink" title="背包问题求方案数"></a>背包问题求方案数</h2><ul>
-<li><input disabled type="checkbox"> <a target="_blank" rel="noopener" href="https://leetcode.cn/problems/coin-change-ii/">零钱兑换 II</a>：完全背包方案数</li>
-<li><input disabled type="checkbox"> <a target="_blank" rel="noopener" href="https://leetcode-cn.com/problems/combination-sum-iv/">组合总和 Ⅳ</a>：考虑物品顺序的完全背包方案数。每个物品可以重复拿，有几种装满背包的方案？</li>
-</ul>
-<h2 id="背包问题求具体方案"><a href="#背包问题求具体方案" class="headerlink" title="背包问题求具体方案"></a>背包问题求具体方案</h2><h2 id="相关文章"><a href="#相关文章" class="headerlink" title="相关文章"></a>相关文章</h2><ul>
-<li><a target="_blank" rel="noopener" href="https://github.com/tianyicui/pack">背包问题九讲 2.0 beta1.2 崔添翼 (Tianyi Cui)*</a></li>
-<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/e891377/article/details/117639203">LeetCode背包问题—题目列表</a></li>
-</ul>
-<p>未完待续。。。</p>
-
+<li><p>为什么要做这个项目***</p>
+</li>
+<li><p>什么是RPC</p>
+</li>
+<li><p>一个RPC框架需要一些什么内容</p>
+</li>
+<li><p>这个框架和其他的RPC框架有什么区别</p>
+</li>
+<li><p>是否进行过性能测试</p>
+</li>
+<li><p>在做项目的过程中遇到过什么问题***</p>
+</li>
+<li><p>项目中难点哪里</p>
+</li>
+<li><p>项目中同步与并发是如何实现的</p>
+</li>
+<li><p>RPC项目是怎么设计编码的</p>
+</li>
+<li><p>用的什么序列化框架</p>
+</li>
+<li><p>简单介绍一下netty</p>
+</li>
+<li><p>NIO和BIO有什么区别***</p>
+</li>
+<li><p>什么是IO多路复用*******</p>
+</li>
+<li><p>select、poll、epoll有什么区别****</p>
+</li>
+<li><p>NIO是水平触发还是边缘触发</p>
+</li>
+<li><p>注册中心是用的什么做的</p>
+</li>
+<li><p>如何用zookeeper实现注册中心***</p>
+</li>
+<li><p>如何保持客户端与服务端通信***</p>
+</li>
+<li><p>服务变更（上下线）如何通知客户端</p>
+</li>
+<li><p>负载均衡如何做的</p>
+</li>
+<li><p>你知道一些什么负载均衡算法</p>
+</li>
+<li><p>CAP理论知道吗</p>
+</li>
+<li><p>zookeeper是AP系统还是CP系统</p>
+</li>
+<li><p>这个框架是AP系统还是CP系统，为什么</p>
+</li>
+<li><p>如何保持通信</p>
+</li>
+<li><p>介绍一下Reactor模型</p>
+</li>
+<li><p>rpc与http的区别***</p>
+</li>
+<li><p>zookeeper的主从状态怎么传播</p>
+</li>
+<li><p>zookeeper主节点宕机如何处理</p>
+</li>
+<li><p>服务调用是同步还是异步的</p>
+</li>
+<li><p>项目中用到了线程池吗，怎么用的</p>
+</li>
+<li><p>有服务的自动化编码过程吗？（如thrift通过idl生成api）</p>
+</li>
+<li><p>如何发现服务宕机</p>
+</li>
+</ol>
+<h2 id="计算机网络"><a href="#计算机网络" class="headerlink" title="计算机网络"></a>计算机网络</h2><h2 id="操作系统"><a href="#操作系统" class="headerlink" title="操作系统"></a>操作系统</h2><h2 id="java"><a href="#java" class="headerlink" title="java"></a>java</h2><h2 id="数据库"><a href="#数据库" class="headerlink" title="数据库"></a>数据库</h2>
                 
               </div>
             
@@ -351,15 +376,6 @@
             <div>
               <div class="post-metas my-3">
   
-  
-    <div class="post-meta">
-      <i class="iconfont icon-tags"></i>
-      
-        <a href="/tags/%E7%AE%97%E6%B3%95/">#算法</a>
-      
-        <a href="/tags/dp/">#dp</a>
-      
-    </div>
   
 </div>
 
@@ -369,8 +385,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>背包问题</div>
-      <div>https://lxy9903.github.io/2022/10/07/Algorithm/Knapsack problem/</div>
+      <div>面试问题</div>
+      <div>https://lxy9903.github.io/2022/11/09/others/problems/</div>
     </div>
     <div class="license-meta">
       
@@ -382,7 +398,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>发布于</div>
-          <div>2022年10月7日</div>
+          <div>2022年11月9日</div>
         </div>
       
       
@@ -414,9 +430,9 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2022/10/08/Architecture/docker/" title="docker">
+                      <a href="/2022/11/11/Architecture/event-streaming/" title="event-streaming and event pipeline">
                         <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">docker</span>
+                        <span class="hidden-mobile">event-streaming and event pipeline</span>
                         <span class="visible-mobile">上一篇</span>
                       </a>
                     
@@ -424,8 +440,8 @@
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2022/10/07/OS/IO/" title="操作系统IO详解">
-                        <span class="hidden-mobile">操作系统IO详解</span>
+                      <a href="/2022/11/08/Docker/docker-develop/" title="docker代码开发调试 mpi环境">
+                        <span class="hidden-mobile">docker代码开发调试 mpi环境</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
