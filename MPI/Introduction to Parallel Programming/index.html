@@ -16,18 +16,29 @@
   <meta name="author" content="刘笑笑">
   <meta name="keywords" content="java、go、操作系统、网络">
   
-    <meta name="description" content="一、Introduction to Parallel ProgrammingOpenMP（Open specifications for Multi Processing）是一个用于共享内存并行计算的API。 OpenMP API由三个部分组成： Hello World!12345678910111213141516171819#include &lt;stdio.h&gt;#include &amp;l">
+    <meta name="description" content="第一周、Introduction to Parallel Programming第一节、Intro to parallel programming一、Hello World!12345678910111213141516171819#include &lt;stdio.h&gt;#include &lt;omp.h&gt;void sayHello()&amp;#123;    printf(&quot;">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Introduction to Parallel Programming课程笔记">
 <meta property="og:url" content="http://by.ecel.top/MPI/Introduction%20to%20Parallel%20Programming/index.html">
 <meta property="og:site_name" content="Hello">
-<meta property="og:description" content="一、Introduction to Parallel ProgrammingOpenMP（Open specifications for Multi Processing）是一个用于共享内存并行计算的API。 OpenMP API由三个部分组成： Hello World!12345678910111213141516171819#include &lt;stdio.h&gt;#include &amp;l">
+<meta property="og:description" content="第一周、Introduction to Parallel Programming第一节、Intro to parallel programming一、Hello World!12345678910111213141516171819#include &lt;stdio.h&gt;#include &lt;omp.h&gt;void sayHello()&amp;#123;    printf(&quot;">
 <meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://by.ecel.top/MPI/Introduction%20to%20Parallel%20Programming/image-20221125161210210.png">
+<meta property="og:image" content="http://by.ecel.top/MPI/Introduction%20to%20Parallel%20Programming/image-20221125162120271.png">
+<meta property="og:image" content="http://by.ecel.top/MPI/Introduction%20to%20Parallel%20Programming/image-20221125162442247.png">
+<meta property="og:image" content="http://by.ecel.top/MPI/Introduction%20to%20Parallel%20Programming/image-20221125162702891.png">
+<meta property="og:image" content="http://by.ecel.top/MPI/Introduction%20to%20Parallel%20Programming/image-20221125162753139.png">
+<meta property="og:image" content="http://by.ecel.top/MPI/Introduction%20to%20Parallel%20Programming/image-20221125163927595.png">
+<meta property="og:image" content="http://by.ecel.top/MPI/Introduction%20to%20Parallel%20Programming/image-20221125164418123.png">
+<meta property="og:image" content="http://by.ecel.top/MPI/Introduction%20to%20Parallel%20Programming/image-20221125164615916.png">
+<meta property="og:image" content="http://by.ecel.top/MPI/Introduction%20to%20Parallel%20Programming/image-20221125171557174.png">
+<meta property="og:image" content="http://by.ecel.top/MPI/Introduction%20to%20Parallel%20Programming/image-20221127193047421.png">
 <meta property="article:published_time" content="2022-11-23T12:01:51.000Z">
-<meta property="article:modified_time" content="2022-11-23T13:37:20.838Z">
+<meta property="article:modified_time" content="2022-11-28T13:41:42.497Z">
 <meta property="article:author" content="刘笑笑">
 <meta property="article:tag" content="并行编程">
 <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://by.ecel.top/MPI/Introduction%20to%20Parallel%20Programming/image-20221125161210210.png">
   
   
   
@@ -234,7 +245,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          505 字
+          8.1k 字
         
       </span>
     
@@ -245,7 +256,7 @@
         
         
         
-          5 分钟
+          68 分钟
         
       </span>
     
@@ -288,7 +299,7 @@
               <p class="note note-info">
                 
                   
-                    本文最后更新于：2022年11月23日 晚上
+                    本文最后更新于：2022年11月28日 晚上
                   
                 
               </p>
@@ -296,26 +307,421 @@
             
               <div class="markdown-body">
                 
-                <h1 id="一、Introduction-to-Parallel-Programming"><a href="#一、Introduction-to-Parallel-Programming" class="headerlink" title="一、Introduction to Parallel Programming"></a>一、<a target="_blank" rel="noopener" href="https://www.futurelearn.com/courses/interactive-hands-on-introduction-to-parallel-programming/1/todo/105942">Introduction to Parallel Programming</a></h1><p>OpenMP（Open specifications for Multi Processing）是一个用于共享内存并行计算的API。</p>
+                <h1 id="第一周、Introduction-to-Parallel-Programming"><a href="#第一周、Introduction-to-Parallel-Programming" class="headerlink" title="第一周、Introduction to Parallel Programming"></a>第一周、<a target="_blank" rel="noopener" href="https://www.futurelearn.com/courses/interactive-hands-on-introduction-to-parallel-programming/1/todo/105942">Introduction to Parallel Programming</a></h1><h2 id="第一节、Intro-to-parallel-programming"><a href="#第一节、Intro-to-parallel-programming" class="headerlink" title="第一节、Intro to parallel programming"></a>第一节、Intro to parallel programming</h2><h3 id="一、Hello-World"><a href="#一、Hello-World" class="headerlink" title="一、Hello World!"></a>一、Hello World!</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;stdio.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;omp.h&gt;</span></span><br><span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">sayHello</span><span class="hljs-params">()</span></span>&#123;<br>    <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;Hello World!xx\n&quot;</span>);<br>    <span class="hljs-keyword">return</span>;<br>&#125;<br><span class="hljs-function"><span class="hljs-type">int</span> <span class="hljs-title">main</span><span class="hljs-params">(<span class="hljs-type">int</span> argc, <span class="hljs-type">char</span>** argv)</span></span>&#123;<br><br>    <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;Hello World!\n&quot;</span>);<br>    <span class="hljs-meta">#<span class="hljs-keyword">pragma</span> omp parallel num_threads(3)</span><br>    <span class="hljs-built_in">sayHello</span>();    <br>    <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;<br>&#125;<br><br>output:<br>Hello World!<br>Hello World!xx<br>Hello World!xx<br>Hello World!xx<br></code></pre></td></tr></table></figure>
+
+
+
+
+
+
+
+<h2 id="第二节、OpenMP-overview"><a href="#第二节、OpenMP-overview" class="headerlink" title="第二节、OpenMP overview"></a>第二节、OpenMP overview</h2><h3 id="一、Brief-intro-to-OpenMP"><a href="#一、Brief-intro-to-OpenMP" class="headerlink" title="一、Brief intro to OpenMP"></a>一、Brief intro to OpenMP</h3><p>OpenMP（Open specifications for Multi Processing）是一个用于共享内存并行计算的API。</p>
 <p>OpenMP API由三个部分组成：</p>
-<h2 id="Hello-World"><a href="#Hello-World" class="headerlink" title="Hello World!"></a>Hello World!</h2><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;stdio.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;omp.h&gt;</span></span><br><span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">sayHello</span><span class="hljs-params">()</span></span>&#123;<br>    <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;Hello World!xx\n&quot;</span>);<br>    <span class="hljs-keyword">return</span>;<br>&#125;<br><span class="hljs-function"><span class="hljs-type">int</span> <span class="hljs-title">main</span><span class="hljs-params">(<span class="hljs-type">int</span> argc, <span class="hljs-type">char</span>** argv)</span></span>&#123;<br><br>    <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;Hello World!\n&quot;</span>);<br>    <span class="hljs-meta">#<span class="hljs-keyword">pragma</span> omp parallel num_threads(3)</span><br>    <span class="hljs-built_in">sayHello</span>();    <br>    <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;<br>&#125;<br><br>output:<br>Hello World!<br>Hello World!xx<br>Hello World!xx<br>Hello World!xx<br></code></pre></td></tr></table></figure>
-
-
-
-
-
-
-
-
-
-
-
-
-
-<p>X、参考文献&#x2F;课程</p>
 <ul>
-<li><a target="_blank" rel="noopener" href="https://www.futurelearn.com/courses/interactive-hands-on-introduction-to-parallel-programming/1/todo/105942">Introduction to Parallel Programming</a></li>
-<li><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/488116143">NUMA 的平衡和调度</a></li>
+<li>Compiler Directives（编译器指令）</li>
+<li>Runtime Library Routines（运行时库程序）</li>
+<li>Environment Variables（环境变量）</li>
+</ul>
+<h4 id="编译器指令"><a href="#编译器指令" class="headerlink" title="编译器指令"></a>编译器指令</h4><p>编译器指令是以源代码中的注释形式出现的，只有在指定了适当的编译器标志时，才会在编译时被考虑进去。我们在以下方面使用OpenMP编译器：</p>
+<ul>
+<li>spawning a parallel region（催生一个并行区域）</li>
+<li>dividing blocks of code among threads（在线程之间划分代码块）</li>
+<li>distributing loop iterations between threads（在线程之间分配循环迭代）</li>
+<li>serializing sections of code（串行化代码段）</li>
+<li>synchronization of work among threads（线程之间的工作同步化）</li>
+</ul>
+<p>语法：</p>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">sentinel</span> directive-name<span class="hljs-meta"> [clause, ...]</span><br></code></pre></td></tr></table></figure>
+
+
+
+<h4 id="运行时库程序"><a href="#运行时库程序" class="headerlink" title="运行时库程序"></a>运行时库程序</h4><p>These routines can be used for:</p>
+<ul>
+<li>setting and querying:<ul>
+<li>number of threads</li>
+<li>dynamic threads feature</li>
+<li>nested parallelism</li>
+</ul>
+</li>
+<li>querying:<ul>
+<li>thread ID</li>
+<li>thread ancestor’s identifier</li>
+<li>thread team size</li>
+<li>wall clock time and resolution</li>
+<li>a parallel region and its level</li>
+</ul>
+</li>
+<li>setting, initializing and terminating:<ul>
+<li>locks</li>
+<li>nested locks</li>
+</ul>
+</li>
+</ul>
+<p>C&#x2F;C++中所有的运行库例程都是子程序，例如，C中查询线程数的运行库例程是一个子程序。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-type">int</span> <span class="hljs-title function_">omp_get_num_threads</span><span class="hljs-params">(<span class="hljs-keyword">void</span>)</span><br></code></pre></td></tr></table></figure>
+
+
+
+<h4 id="环境变量"><a href="#环境变量" class="headerlink" title="环境变量"></a>环境变量</h4><p>OpenMP环境变量可以通过以下方式在运行时控制并行代码的执行：</p>
+<ul>
+<li>setting:<ul>
+<li>number of threads</li>
+<li>thread stack size</li>
+<li>thread wait policy</li>
+<li>maximum levels of nested parallelism</li>
+</ul>
+</li>
+<li>specifying how loop interations are divided</li>
+<li>binding threads to processors</li>
+<li>enabling&#x2F;disabling:<ul>
+<li>nested parallelism</li>
+<li>dynamic threads</li>
+</ul>
+</li>
+</ul>
+<p>OpenMP环境变量的设置与其他环境变量一样，取决于所使用的shell，例如，你可以在bash中设置OpenMP线程的数量。</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs routeros"><span class="hljs-built_in">export</span> <span class="hljs-attribute">OMP_NUM_THREADS</span>=2<br></code></pre></td></tr></table></figure>
+
+<p>在csh中则用：</p>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">setenv</span> OMP_NUM_THREADS <span class="hljs-number">2</span><br></code></pre></td></tr></table></figure>
+
+
+
+<h4 id="用OpenMP指令编译代码"><a href="#用OpenMP指令编译代码" class="headerlink" title="用OpenMP指令编译代码"></a>用OpenMP指令编译代码</h4><figure class="highlight crystal"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs crystal"><span class="hljs-variable">$ </span>gcc hello_world.c -o hello_world -fopenmp<br></code></pre></td></tr></table></figure>
+
+<p>编译器与对应的编译器标志</p>
+<table>
+<thead>
+<tr>
+<th align="left">Vendor&#x2F;Provider</th>
+<th align="left">Compiler</th>
+<th align="left">Flag</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">GNU</td>
+<td align="left"><code>gcc</code></td>
+<td align="left"><code>-fopenmp</code></td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left"><code>g++</code></td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left"><code>g77</code></td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left"><code>gfortran</code></td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left">Intel</td>
+<td align="left"><code>icc</code></td>
+<td align="left"><code>-openmp</code></td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left"><code>icpc</code></td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left"><code>ifort</code></td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left">PGI</td>
+<td align="left"><code>pgcc</code></td>
+<td align="left"><code>-mp</code></td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left"><code>pgCC</code></td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left"><code>pgf77</code></td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left"><code>pgf90</code></td>
+<td align="left"></td>
+</tr>
+</tbody></table>
+<h3 id="二、OpenMP-memory-programming-and-execution-model"><a href="#二、OpenMP-memory-programming-and-execution-model" class="headerlink" title="二、OpenMP memory, programming and execution model"></a>二、OpenMP memory, programming and execution model</h3><p>OpenMP是基于<strong>多处理器或多核机器的共享内存模型</strong>。共享内存类型可以是统一内存访问（UMA）或非统一内存访问（NUMA）。<strong>在OpenMP中，程序完全通过使用线程来完成并行化</strong>，即所谓的基于线程的并行化。</p>
+<p>OpenMP是一种进行 “自动 “并行化的简单方法。实际上，OpenMP是一个显式编程模型，它为用户提供了对并行化的完全控制。尽管从严格意义上讲不是自动的，但并行化只是通过在一个串行程序中插入编译器指令来实现，从而 “自动 “将其转化为一个并行程序</p>
+<p>OpenMP的执行模型的基础是并行执行的<strong>fork-join模型</strong>。</p>
+<p>![OpenMP fork-join](Introduction to Parallel Programming&#x2F;hero_f5b1f9fd-0077-43e0-88b-aef0edbf468f.png)</p>
+<p>OpenMP 术语表:</p>
+<table>
+<thead>
+<tr>
+<th align="left">Term</th>
+<th align="left">Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">OpenMP thread</td>
+<td align="left">一个由OpenMP指定的运行中的进程</td>
+</tr>
+<tr>
+<td align="left">thread team</td>
+<td align="left">一组合作完成任务的线程</td>
+</tr>
+<tr>
+<td align="left">master thread</td>
+<td align="left">协调各线程的主线程</td>
+</tr>
+<tr>
+<td align="left">thread safety</td>
+<td align="left">指的是多线程的正确执行</td>
+</tr>
+<tr>
+<td align="left">OpenMP directive</td>
+<td align="left">OpenMP编译器的代码行，用于OpenMP的编译器</td>
+</tr>
+<tr>
+<td align="left">construct</td>
+<td align="left">一个OpenMP可执行指令</td>
+</tr>
+<tr>
+<td align="left">clause</td>
+<td align="left">控制执行过程中变量的范围</td>
+</tr>
+</tbody></table>
+<h3 id="三、For-loop"><a href="#三、For-loop" class="headerlink" title="三、For loop"></a>三、For loop</h3><p>在这个例子中，你将学习如何在C语言中使用OpenMP construct（指令名）进行向量加法。</p>
+<p>数组求和示例：&#x2F;&#x2F; 注：parallel和for取名随意，可删？</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">pragma</span> omp parallel shared(a,b,c,chunk) private(i)</span><br>  &#123;<br><br>  <span class="hljs-meta">#<span class="hljs-keyword">pragma</span> omp for schedule(dynamic,chunk) nowait</span><br>  <span class="hljs-keyword">for</span> (i=<span class="hljs-number">1</span>; i &lt;= N; i++)<br>    c[i] = a[i] + b[i];<br><br>  &#125;  <span class="hljs-comment">/* end of parallel section */</span><br></code></pre></td></tr></table></figure>
+
+<p>让我们详细解释一下这段代码。</p>
+<ul>
+<li>在parallel construct中<ul>
+<li>shared(a,b,c,chunk)子句表示数组a、b、c和变量chunk将被所有线程共享。</li>
+<li>private(i)子句表示变量i对每个线程都是私有的，每个线程都有自己的唯一副本。</li>
+</ul>
+</li>
+<li>在for construct中<ul>
+<li>子句schedule(dynamic,chunk)表示for循环的迭代将按chunk大小动态分布。</li>
+<li>子句nowait表示线程在完成各自的工作后将不进行同步。</li>
+</ul>
+</li>
+</ul>
+<p>完整示例</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br></pre></td><td class="code"><pre><code class="hljs c">%%file vector_add.c<br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;stdio.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;stdlib.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;omp.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> CHUNKSIZE 202</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> N     2021</span><br><br><span class="hljs-type">int</span> <span class="hljs-title function_">main</span><span class="hljs-params">(<span class="hljs-type">int</span> argc, <span class="hljs-type">char</span>** argv)</span>&#123;<br><br><span class="hljs-type">int</span> i, chunk;<br><span class="hljs-type">int</span> a[N], b[N], c[N];<br><br><span class="hljs-comment">/* Some initializations */</span><br><span class="hljs-keyword">for</span> (i=<span class="hljs-number">1</span>; i &lt;= N; i++)&#123;<br>  a[i] = i ;<br>  b[i] = <span class="hljs-number">2020</span> - a[i];<br>&#125;<br>chunk = CHUNKSIZE;<br><br><span class="hljs-meta">#<span class="hljs-keyword">pragma</span> omp parallel shared(a,b,c,chunk) private(i)</span><br>  &#123;<br><br>  <span class="hljs-meta">#<span class="hljs-keyword">pragma</span> omp for schedule(dynamic,chunk) nowait</span><br>  <span class="hljs-keyword">for</span> (i=<span class="hljs-number">1</span>; i &lt;= N; i++)<br>    c[i] = a[i] + b[i];<br><br>  &#125;  <span class="hljs-comment">/* end of parallel section */</span><br><br>  <span class="hljs-keyword">for</span>(i = <span class="hljs-number">1</span>; i &lt;= N; i++)&#123;<br>        <span class="hljs-keyword">if</span> (i % <span class="hljs-number">101</span> == <span class="hljs-number">0</span>)<br>          <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;%d + %d = %d\n&quot;</span>, a[i], b[i], c[i]);<br>    &#125;<br><br>  <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;<br>&#125;<br><br>output:<br><span class="hljs-number">101</span> + <span class="hljs-number">1919</span> = <span class="hljs-number">2020</span><br><span class="hljs-number">202</span> + <span class="hljs-number">1818</span> = <span class="hljs-number">2020</span><br><span class="hljs-number">303</span> + <span class="hljs-number">1717</span> = <span class="hljs-number">2020</span><br><span class="hljs-number">404</span> + <span class="hljs-number">1616</span> = <span class="hljs-number">2020</span><br><span class="hljs-number">505</span> + <span class="hljs-number">1515</span> = <span class="hljs-number">2020</span><br><span class="hljs-number">606</span> + <span class="hljs-number">1414</span> = <span class="hljs-number">2020</span><br><span class="hljs-number">707</span> + <span class="hljs-number">1313</span> = <span class="hljs-number">2020</span><br><span class="hljs-number">808</span> + <span class="hljs-number">1212</span> = <span class="hljs-number">2020</span><br><span class="hljs-number">909</span> + <span class="hljs-number">1111</span> = <span class="hljs-number">2020</span><br><span class="hljs-number">1010</span> + <span class="hljs-number">1010</span> = <span class="hljs-number">2020</span><br><span class="hljs-number">1111</span> + <span class="hljs-number">909</span> = <span class="hljs-number">2020</span><br><span class="hljs-number">1212</span> + <span class="hljs-number">808</span> = <span class="hljs-number">2020</span><br><span class="hljs-number">1313</span> + <span class="hljs-number">707</span> = <span class="hljs-number">2020</span><br><span class="hljs-number">1414</span> + <span class="hljs-number">606</span> = <span class="hljs-number">2020</span><br><span class="hljs-number">1515</span> + <span class="hljs-number">505</span> = <span class="hljs-number">2020</span><br><span class="hljs-number">1616</span> + <span class="hljs-number">404</span> = <span class="hljs-number">2020</span><br><span class="hljs-number">1717</span> + <span class="hljs-number">303</span> = <span class="hljs-number">2020</span><br><span class="hljs-number">1818</span> + <span class="hljs-number">202</span> = <span class="hljs-number">2020</span><br><span class="hljs-number">1919</span> + <span class="hljs-number">101</span> = <span class="hljs-number">2020</span><br><span class="hljs-number">2020</span> + <span class="hljs-number">0</span> = <span class="hljs-number">2020</span><br></code></pre></td></tr></table></figure>
+
+
+
+<h3 id="四、Quiz-Intro-to-OpenMP"><a href="#四、Quiz-Intro-to-OpenMP" class="headerlink" title="四、Quiz: Intro to OpenMP"></a>四、Quiz: Intro to OpenMP</h3><p><strong>关于OpenMP执行模型的哪些说法是正确的？</strong><br>线程只能存在于单个进程的资源中。❌<br>线程可以存在于多个进程的资源中。✅<br>线程的最大数量等于处理器核的数量乘以每核可用的线程。✅<br>要使用的线程数不能由用户定义。❌<br>一个主线程是平行执行的，直到遇到第一个顺序区域构造。❌<br>一个主线程是按顺序执行的，直到遇到第一个并行区域结构。✅</p>
+<p><strong>将OpenMP程序的可用线程数设置为4，哪个是正确的方法？</strong><br>在一个OpenMP程序中，使用库函数mp_get_num_threads(4)，在主函数的开始部分将线程数设置为4。❌<br>在一个OpenMP程序中，使用库函数num_threads(4)在主函数的开头将线程数设置为4。❌<br>在bash中，export OMP_NUM_THREADS&#x3D;4。✅<br>在一个OpenMP程序中，使用库函数omp_max_threads(4)在主函数的开始部分将线程数设置为4。❌</p>
+<h2 id="第三节、MPI-overview"><a href="#第三节、MPI-overview" class="headerlink" title="第三节、MPI overview"></a>第三节、MPI overview</h2><h3 id="一、Brief-intro-to-MPI"><a href="#一、Brief-intro-to-MPI" class="headerlink" title="一、Brief intro to MPI"></a>一、Brief intro to MPI</h3><p>消息传递接口（MPI）是一个为开发者和用户提供的消息传递库的规范。<strong>MPI主要解决并行消息传递编程模型</strong>。存在许多开源的MPI实现，它们被用于开发可移植和可扩展的大规模并行应用。</p>
+<p>两个最常用的MPI库实现以及Linux系统的相应编译器：</p>
+<table>
+<thead>
+<tr>
+<th align="left">MPI library</th>
+<th align="left">Language</th>
+<th align="left">Compiler</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">MVAPICH2</td>
+<td align="left">C</td>
+<td align="left"><code>mpicc</code></td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left">C++</td>
+<td align="left"><code>mpicxx</code></td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"><code>mpic++</code></td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left">Fortran</td>
+<td align="left"><code>mpif77</code></td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"><code>mpif90</code></td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"><code>mpifort</code></td>
+</tr>
+<tr>
+<td align="left">Open MPI</td>
+<td align="left">C</td>
+<td align="left"><code>mpicc</code></td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left">C++</td>
+<td align="left"><code>mpiCC</code></td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"><code>mpic++</code></td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"><code>mpicxx</code></td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left">Fortran</td>
+<td align="left"><code>mpif77</code></td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"><code>mpif90</code></td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"><code>mpifort</code></td>
+</tr>
+</tbody></table>
+<p>消息传递编程范式可以用以下几点来描述。</p>
+<ul>
+<li>数据分布在处理器（核）之间</li>
+<li>每个处理器（核）同时对不同的数据进行操作</li>
+<li>处理器（核）可能需要彼此互动</li>
+</ul>
+<img src="/MPI/Introduction%20to%20Parallel%20Programming/image-20221125161210210.png" srcset="/img/loading.gif" lazyload alt="image-20221125161210210" style="zoom:50%;">
+
+<p>MPI程序中的每个处理器（核）都运行一个子程序，这个子程序在每个处理器（核）上通常是相同的。每个子程序的变量都有相同的名称，但位置和数据不同（分布式内存），即所有变量都是私有的。处理器（核）通过特殊的发送和接收程序（消息传递）进行通信。MPI提供点对点以及集体通信。</p>
+<p><strong>在MPI中，点对点操作通常涉及在两个且仅有两个不同的MPI任务之间进行切换。</strong></p>
+<p>一个任务执行发送操作，而另一个任务执行匹配的接收操作。<br>有不同的发送和接收功能，用于不同的目的，如：</p>
+<ul>
+<li>阻塞式发送&#x2F;阻塞式接收</li>
+<li>非阻塞式发送&#x2F;非阻塞式接收</li>
+<li>缓冲式发送</li>
+<li>联合发送&#x2F;接收</li>
+<li>准备发送</li>
+</ul>
+<h3 id="二、Messages-and-communication"><a href="#二、Messages-and-communication" class="headerlink" title="二、Messages and communication"></a>二、Messages and communication</h3><p>MPI中的通信类型一般与涉及的进程数量有关。最简单的消息传递形式是点对点通信，即一个进程向另一个进程发送消息。在集体通信中，一次有几个进程参与。这种通信有3类：<strong>同步、数据移动和集体计算</strong>。关于操作的完成，存在两种类型：<strong>阻塞和非阻塞操作</strong>。</p>
+<p>信息是在子程序之间移动的数据包。<br><img src="/MPI/Introduction%20to%20Parallel%20Programming/image-20221125162120271.png" srcset="/img/loading.gif" lazyload alt="image-20221125162120271" style="zoom:50%;"></p>
+<p>一个消息传递系统的必要信息如下。</p>
+<ul>
+<li>数据大小和类型</li>
+<li>发送或接收数据的指针</li>
+<li>发送过程和接收过程，即等级</li>
+<li>消息的标签</li>
+<li>通信器，即MPI_COMM_WORLD</li>
+</ul>
+<h4 id="点对点通信"><a href="#点对点通信" class="headerlink" title="点对点通信"></a>点对点通信</h4><p>这种类型与两个进程之间的通信有关。源进程向目的进程发送一个消息。进程由它们在通信器中的等级来识别。</p>
+<img src="/MPI/Introduction%20to%20Parallel%20Programming/image-20221125162442247.png" srcset="/img/loading.gif" lazyload alt="image-20221125162442247" style="zoom:50%;">
+
+<p><strong>发送和接收信息的阻塞例程（仅在操作完成后返回）。</strong><br>MPI_Send(…)<br>MPI_Recv(…)</p>
+<p><strong>用于发送和接收消息的非阻塞例程（立即返回并允许子程序执行其他工作）。</strong><br>MPI_Isend(…)<br>MPI_Irecv(…)</p>
+<h4 id="集体通信"><a href="#集体通信" class="headerlink" title="集体通信"></a>集体通信</h4><p>集体操作有以下类型：</p>
+<p><strong>同步</strong>：进程等待，直到该组的所有成员都达到同步点<br><strong>数据移动</strong>：广播、分散&#x2F;收集、所有对所有<br><strong>集体计算（还原）</strong>：组中的一个成员从其他成员那里收集数据，并对这些数据进行操作（最小、最大、加、乘……）。</p>
+<p>几个集体通信例子：</p>
+<ol>
+<li><em>Broadcast</em>（广播）<br>广播可以通过使用MPI_Bcast(…)来完成。一个进程向一个通信器中的所有进程发送相同的数据。它可以用来向所有进程发送用户输入或参数。广播的通信模式在下图中描述。</li>
+</ol>
+<img src="/MPI/Introduction%20to%20Parallel%20Programming/image-20221125162702891.png" srcset="/img/loading.gif" lazyload alt="image-20221125162702891" style="zoom:50%;">
+
+
+
+<ol start="2">
+<li><em>Scatter</em>（散射）<br>散射可以通过使用MPI_Scatter(…)来完成。这个操作涉及到一个根进程向通信器中的所有进程发送数据。MPI_Bcast和MPI_Scatter的区别如下。<br>MPI_Bcast向所有进程发送同一条数据<br>MPI_Scatter向不同的进程发送大块的数据：在调用之后，发送方将不同部分发送给所有的进程。</li>
+</ol>
+<img src="/MPI/Introduction%20to%20Parallel%20Programming/image-20221125162753139.png" srcset="/img/loading.gif" lazyload alt="image-20221125162753139" style="zoom:50%;">
+
+<ol start="3">
+<li><em>Gather</em>（聚集）<br>  Gather可以通过使用MPI_Gather(…)来完成。这个操作是Scatter的逆向操作：它从许多进程中获取元素，并将它们聚集到一个单一的进程中。</li>
+</ol>
+  <img src="/MPI/Introduction%20to%20Parallel%20Programming/image-20221125163927595.png" srcset="/img/loading.gif" lazyload alt="image-20221125163927595" style="zoom:50%;">
+
+<ol start="4">
+<li><em>Reduce</em><br>  减少可以通过使用MPI_Reduce(…)来完成。这个操作在每个进程上接收一个输入元素的数组，并向根进程返回一个输出元素的数组。输出元素包含还原的结果。下面的图片描述了总和还原，即一个有四个整数类型元素的数组被还原成一个有一个元素的数组，包含源数组的元素之和。</li>
+</ol>
+  <img src="/MPI/Introduction%20to%20Parallel%20Programming/image-20221125164418123.png" srcset="/img/loading.gif" lazyload alt="image-20221125164418123" style="zoom:50%;">
+
+
+
+
+
+<h3 id="三、Programming-point-of-view"><a href="#三、Programming-point-of-view" class="headerlink" title="三、Programming point of view"></a>三、Programming point of view</h3><p>在这一节，我们将介绍MPI程序的结构，如何编译它们，最后是如何运行它们。</p>
+<h4 id="MPI程序结构"><a href="#MPI程序结构" class="headerlink" title="MPI程序结构"></a>MPI程序结构</h4><p>一个典型的C&#x2F;C++中的MPI程序有如下结构（见下图）：</p>
+<ul>
+<li>包含一个MPI头</li>
+<li>变量和函数的声明，定义原型等。</li>
+<li>带有的主程序。<ul>
+<li>串行代码</li>
+<li>并行代码：MPI环境的初始化，MPI代码（工作、调用等），MPI环境的终止</li>
+</ul>
+</li>
+</ul>
+<img src="/MPI/Introduction%20to%20Parallel%20Programming/image-20221125164615916.png" srcset="/img/loading.gif" lazyload alt="image-20221125164615916" style="zoom:50%;">
+
+<p>An MPI program in C is something like:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;mpi.h&gt;</span></span><br><br><span class="hljs-type">int</span> <span class="hljs-title function_">main</span><span class="hljs-params">()</span> &#123;<br><br>  MPI_Init(<span class="hljs-literal">NULL</span>,<span class="hljs-literal">NULL</span>);<br><br>  MPI_Xxxxxx(parameter, ...);<br><br>  MPI_Finalize();<br><br>  <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>在这个通用的例子中，头文件&lt;mpi.h&gt;被包括在内。MPI是用MPI_Init()初始化的，这个例程必须在任何其他MPI例程之前调用。所有的MPI函数或例程的格式都是MPI_Xxxxxx(参数，…)。MPI是通过MPI_Finalize()来最终确定的。这个例程必须由所有进程最后调用。在它之后，不得再调用任何MPI调用。</p>
+<h4 id="MPI程序的编译"><a href="#MPI程序的编译" class="headerlink" title="MPI程序的编译"></a>MPI程序的编译</h4><p>必须使用支持MPI的合适的编译器或特殊的MPI编译器进行编译，例如，可以使用：</p>
+<figure class="highlight crystal"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs crystal"><span class="hljs-variable">$ </span>mpicc hello_world.c -o hello_world<br></code></pre></td></tr></table></figure>
+
+<p>来编译mpi程序</p>
+<h4 id="运行MPI程序"><a href="#运行MPI程序" class="headerlink" title="运行MPI程序"></a>运行MPI程序</h4><p>要在num个进程（处理器）中运行一个MPI程序prg，应该使用以下命令。</p>
+<figure class="highlight maxima"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs maxima">$ mpirun -<span class="hljs-built_in">np</span> <span class="hljs-built_in">num</span> ./prg<br></code></pre></td></tr></table></figure>
+
+<p>例如，如上节所示产生的可执行文件可以用4个进程（处理器）来运行。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta prompt_">$ </span><span class="language-bash">mpirun -np 4 ./hello_world</span><br></code></pre></td></tr></table></figure>
+
+
+
+<h3 id="四、MPI-Hello-World"><a href="#四、MPI-Hello-World" class="headerlink" title="四、MPI Hello World!"></a>四、MPI Hello World!</h3><img src="/MPI/Introduction%20to%20Parallel%20Programming/image-20221125171557174.png" srcset="/img/loading.gif" lazyload alt="image-20221125171557174" style="zoom:50%;">
+
+
+
+<h3 id="五、Quiz-Intro-to-MPI"><a href="#五、Quiz-Intro-to-MPI" class="headerlink" title="五、Quiz: Intro to MPI"></a>五、Quiz: Intro to MPI</h3><p><strong>关于MPI中的点对点通信和集体通信，哪些说法是正确的？</strong><br>在点对点通信中，只有两个处理器参与。✅<br>在点对点通信中，许多处理器可以参与。❌<br>集体通信可以是一对一，一对多，多对一，或多对多的处理器。❌<br>集体通信可以从一个到多个，许多到一个，或许多到许多处理器。✅</p>
+<h2 id="第四节、Accelerators-overview"><a href="#第四节、Accelerators-overview" class="headerlink" title="第四节、Accelerators overview"></a>第四节、Accelerators overview</h2><h3 id="一、Graphics-accelerators"><a href="#一、Graphics-accelerators" class="headerlink" title="一、Graphics accelerators"></a>一、Graphics accelerators</h3><p>图形加速器或图形处理单元（GPU）是具有许多高度并行处理单元（也称为流式多处理器）和非常高带宽内存的设备。有了这两个特点，它们与传统的处理器（CPU）不同。除了它们最初的用途，即用于密集型3D图形渲染（图形应用）外，另一个用途是用于GPGPU（通用图形处理器）计算（科学和工程应用）。</p>
+<p>GPU在高性能计算（HPC）领域的应用越来越多，因为与传统的处理器相比，它们的功率效率要高得多（在超级计算机Top500名单中，Top10中有7个集群使用GPU）。例如，最快的最有效的集群是Perlmutter，它目前在世界超级计算机Top500名单上排名第5（基于Flops的性能指标，即每秒浮点运算），但也在Green500名单上排名第7（基于Flops&#x2F;watt的功率效率指标，即每瓦特每秒浮点运算）。</p>
+<p>在通用计算方面，GPU被称为密集计算任务的加速器。与CPU相比，GPU的主要优势是更大的计算能力和高带宽内存，但另一方面，GPU也以延迟问题而闻名。因此，高效计算算法利用了 “两全其美 “的方法。GPU用于并行任务并实现吞吐性能，而CPU则用于串行任务和低延迟访问。因此，GPU可以被看作是CPU的协处理器，如下图所示。</p>
+<img src="/MPI/Introduction%20to%20Parallel%20Programming/image-20221127193047421.png" srcset="/img/loading.gif" lazyload alt="image-20221127193047421" style="zoom:50%;">
+
+
+
+<p>计算加速可以通过以下方式实现。</p>
+<ul>
+<li>现有的GPU应用程序</li>
+<li>GPU库</li>
+<li>基于指令的方法（如OpenMP和OpenACC）</li>
+<li>特殊编程语言或扩展（如CUDA和OpenCL）。</li>
+</ul>
+<h3 id="二、GPU-Hello-World"><a href="#二、GPU-Hello-World" class="headerlink" title="二、GPU Hello World"></a>二、GPU Hello World</h3><p>被放到GPU上的并行代码是在所谓的内核中运行的。在CUDA C中，我们用__global__前缀来定义一个内核，例如，对于 “Hello World!”的例子，我们可以定义以下内核hello()。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-function">__global__ <span class="hljs-type">void</span> <span class="hljs-title">hello</span><span class="hljs-params">()</span></span><br><span class="hljs-function"></span>&#123;<br>    <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;Hello World!\n&quot;</span>);<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>我们可以从CPU端调用这个内核，作为一个普通的函数，使用三叉戟语法&lt;&lt;&lt;…&gt;&gt;，例如：。</p>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">hello</span>&lt;&lt;&lt;<span class="hljs-number">1</span>, <span class="hljs-number">4</span>&gt;&gt;&gt;();<br></code></pre></td></tr></table></figure>
+
+<p>在这个语法中，第一个数字表示块的数量，第二个数字表示块中线程的数量，也就是说，在上面的例子中，我们定义了1个有4个线程的块，在一个GPU上并行运行。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><code class="hljs c">%%file hello_world.cu<br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;stdio.h&gt;</span></span><br> <br>__global__ <span class="hljs-type">void</span> <span class="hljs-title function_">hello</span><span class="hljs-params">()</span><br>&#123;<br>    <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;Hello World!\n&quot;</span>);<br>&#125;<br><br><span class="hljs-type">int</span> <span class="hljs-title function_">main</span><span class="hljs-params">(<span class="hljs-type">int</span> argc,<span class="hljs-type">char</span> **argv)</span><br>&#123;<br>    <span class="hljs-comment">// launch the kernel</span><br>    hello&lt;&lt;&lt;<span class="hljs-number">1</span>, <span class="hljs-number">4</span>&gt;&gt;&gt;();<br> <br>    <span class="hljs-comment">// force the printf()s to flush</span><br>    cudaDeviceSynchronize();<br> <br>    <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs awk">$ PATH=<span class="hljs-regexp">/usr/</span>local<span class="hljs-regexp">/cuda-10.1/</span>bin:<span class="hljs-variable">$&#123;PATH&#125;</span> nvcc -o hello_cuda_C hello_world.cu &amp;&amp; ./hello_cuda_C<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight erlang-repl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs erlang-repl">output:<br>Hello World!<br>Hello World!<br>Hello World!<br>Hello World!<br></code></pre></td></tr></table></figure>
+
+
+
+<ul>
+<li><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/488116143">https://zhuanlan.zhihu.com/p/488116143</a>)</li>
 </ul>
 
                 
@@ -385,6 +791,12 @@
                 <div class="post-prevnext my-3">
                   <article class="post-prev col-6">
                     
+                    
+                      <a href="/MPI/OpenMP/" title="">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile"></span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
                     
                   </article>
                   <article class="post-next col-6">

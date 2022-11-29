@@ -16,15 +16,15 @@
   <meta name="author" content="刘笑笑">
   <meta name="keywords" content="java、go、操作系统、网络">
   
-    <meta name="description" content="项目相关RPC项目 简单介绍一下这个项目***  服务的发布与获取流程***  为什么要做这个项目***  什么是RPC  一个RPC框架需要一些什么内容  这个框架和其他的RPC框架有什么区别  是否进行过性能测试  在做项目的过程中遇到过什么问题***  项目中难点哪里  项目中同步与并发是如何实现的  RPC项目是怎么设计编码的  用的什么序列化框架  简单介绍一下netty  NIO和BI">
+    <meta name="description" content="每个问题请展开五到十分钟的回答 项目相关RPC项目 简单介绍一下这个项目***  服务的发布与获取流程***  为什么要做这个项目***  什么是RPC  一个RPC框架需要一些什么内容  这个框架和其他的RPC框架有什么区别  是否进行过性能测试  在做项目的过程中遇到过什么问题***  项目中难点哪里  项目中同步与并发是如何实现的  RPC项目是怎么设计编码的  用的什么序列化框架  简单介">
 <meta property="og:type" content="article">
 <meta property="og:title" content="面试问题">
 <meta property="og:url" content="http://by.ecel.top/others/problems/index.html">
 <meta property="og:site_name" content="Hello">
-<meta property="og:description" content="项目相关RPC项目 简单介绍一下这个项目***  服务的发布与获取流程***  为什么要做这个项目***  什么是RPC  一个RPC框架需要一些什么内容  这个框架和其他的RPC框架有什么区别  是否进行过性能测试  在做项目的过程中遇到过什么问题***  项目中难点哪里  项目中同步与并发是如何实现的  RPC项目是怎么设计编码的  用的什么序列化框架  简单介绍一下netty  NIO和BI">
+<meta property="og:description" content="每个问题请展开五到十分钟的回答 项目相关RPC项目 简单介绍一下这个项目***  服务的发布与获取流程***  为什么要做这个项目***  什么是RPC  一个RPC框架需要一些什么内容  这个框架和其他的RPC框架有什么区别  是否进行过性能测试  在做项目的过程中遇到过什么问题***  项目中难点哪里  项目中同步与并发是如何实现的  RPC项目是怎么设计编码的  用的什么序列化框架  简单介">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2022-11-09T11:27:43.000Z">
-<meta property="article:modified_time" content="2022-11-09T11:47:50.641Z">
+<meta property="article:modified_time" content="2022-11-25T13:49:16.814Z">
 <meta property="article:author" content="刘笑笑">
 <meta property="article:tag" content="java、go、操作系统、网络">
 <meta name="twitter:card" content="summary_large_image">
@@ -234,7 +234,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          522 字
+          3.6k 字
         
       </span>
     
@@ -245,7 +245,7 @@
         
         
         
-          5 分钟
+          31 分钟
         
       </span>
     
@@ -288,7 +288,7 @@
               <p class="note note-info">
                 
                   
-                    本文最后更新于：2022年11月9日 晚上
+                    本文最后更新于：2022年11月25日 晚上
                   
                 
               </p>
@@ -296,7 +296,8 @@
             
               <div class="markdown-body">
                 
-                <h2 id="项目相关"><a href="#项目相关" class="headerlink" title="项目相关"></a>项目相关</h2><h3 id="RPC项目"><a href="#RPC项目" class="headerlink" title="RPC项目"></a>RPC项目</h3><ol>
+                <p><strong>每个问题请展开五到十分钟的回答</strong></p>
+<h2 id="项目相关"><a href="#项目相关" class="headerlink" title="项目相关"></a>项目相关</h2><h3 id="RPC项目"><a href="#RPC项目" class="headerlink" title="RPC项目"></a>RPC项目</h3><ol>
 <li><p>简单介绍一下这个项目***</p>
 </li>
 <li><p>服务的发布与获取流程***</p>
@@ -368,7 +369,355 @@
 <li><p>如何发现服务宕机</p>
 </li>
 </ol>
-<h2 id="计算机网络"><a href="#计算机网络" class="headerlink" title="计算机网络"></a>计算机网络</h2><h2 id="操作系统"><a href="#操作系统" class="headerlink" title="操作系统"></a>操作系统</h2><h2 id="java"><a href="#java" class="headerlink" title="java"></a>java</h2><h2 id="数据库"><a href="#数据库" class="headerlink" title="数据库"></a>数据库</h2>
+<h2 id="操作系统"><a href="#操作系统" class="headerlink" title="操作系统"></a>操作系统</h2><ol>
+<li><p>进程和线程区别</p>
+</li>
+<li><p>什么是协程，与进程和线程有什么区别</p>
+</li>
+<li><p>操作系统层面怎么判断是否发生了死锁</p>
+<p>资源分配图and gdb</p>
+</li>
+<li><p>进程调度策略</p>
+</li>
+<li><p>死锁概念：什么是死锁，产生原因，必要条件，死锁检测等</p>
+</li>
+<li><p>操作系统5种IO模型 and java3种IO模型</p>
+</li>
+<li><p>操作系统的虚拟内存机制（从虚拟地址空间到物理地址空间怎么做到的？底层？地址翻译？）</p>
+</li>
+<li><p>引用空指针会导致segment fault，此时操作系统背后做了什么？</p>
+</li>
+<li><p>知道mmap嘛？</p>
+<p>1）调用mmap是将文件的内容拷贝到进程的地址空间去了嘛？</p>
+<p>2）mmap涉及磁盘的IO么？</p>
+<p>3）mmap映射动作，会去读映射的文件嘛？</p>
+<p>4）mmap操作会返回一个指针，访问指针会发生什么？</p>
+</li>
+<li><p>什么是缺页异常</p>
+</li>
+<li><p>遍历数组和链表性能为什么差那么多（缓存行相关概念）</p>
+</li>
+<li><p>使用fprintf时操作系统做了什么？（c++）</p>
+</li>
+<li><p>什么是线程安全？</p>
+</li>
+<li><p>什么情况会导致线程不安全</p>
+</li>
+<li><p>可执行文件加载到内存中，描述地址分配情况（可执行程序的空间分布）</p>
+</li>
+<li><p>动态库和静态库的区别（动态库优点）（c++）</p>
+</li>
+<li><p>进程间通信方式</p>
+</li>
+<li><p>缓存溢出概念</p>
+</li>
+<li><p>linux命令，网络端口占用</p>
+</li>
+<li><p>进程的组成</p>
+</li>
+<li><p>进程切换哪些资源需要保存</p>
+</li>
+<li><p>线程和协程的切换需要内核态的参与吗？具体描述</p>
+</li>
+<li><p>什么是叶表？为什么要有页表？</p>
+</li>
+<li><p>虚拟内存</p>
+</li>
+<li><p>进程间通信、线程间通信的方式</p>
+</li>
+<li><p>cache line大小</p>
+</li>
+<li><p>进程&#x2F;线程&#x2F;协程上下文切换，数据有哪些，是一样的嘛？</p>
+</li>
+<li><p>如何malloc申请1G，那这1G是立即可以使用的嘛？（c++）</p>
+</li>
+<li><p>哪些情况下，会从用户态切换到内核态</p>
+</li>
+<li><p>如果在协程上做了阻塞IO，会有什么问题？</p>
+</li>
+<li><p>计算机怎么存储浮点数</p>
+</li>
+<li><p>计算机怎么存储负数</p>
+</li>
+<li><p>原码、反码、补码</p>
+</li>
+<li><p>a &#x3D; b + c</p>
+<p>1）变量怎么获取数据，操作系统寻址过程</p>
+<p>2）怎么由操作系统提交到CPU执行</p>
+</li>
+<li><p>虚拟地址</p>
+<p>1）概念</p>
+<p>2）如何转换</p>
+</li>
+<li><p>段式管理和页式管理</p>
+</li>
+<li><p>MMU如何进行翻译-&gt;页表结构&#x2F;多级页表</p>
+</li>
+<li><p>源代码到可执行文件的过程</p>
+</li>
+<li><p>进程间同步手段（提到了互斥锁，问不同进程怎么访问同一个互斥锁）</p>
+</li>
+<li><p>静态库与动态库优缺点</p>
+</li>
+<li><p>堆栈写爆了</p>
+</li>
+<li><p>socket和管道区别</p>
+</li>
+<li><p>局部性原理会在计算机的哪些机制下生效</p>
+</li>
+<li><p>Linux文件系统的权限模型设计</p>
+</li>
+<li><p>对于目录来说，执行权限有哪些</p>
+</li>
+<li><p>多线程开发注意点</p>
+</li>
+<li><p>epoll使用限制&#x2F;缺点</p>
+</li>
+<li><p>Linux下有epoll，Windows下有么？</p>
+</li>
+<li><p>协程最终是附着在进程还是线程？</p>
+</li>
+<li><p>协程为什么比线程快？为什么支持高并发</p>
+</li>
+<li><p>线程上下文切换的开销体现在哪？</p>
+</li>
+<li><p>进程&#x2F;线程上下文切换，哪些数据需要切换？切换之后数据保存在哪里？</p>
+</li>
+<li><p>两个线程交替打印1至100</p>
+</li>
+<li><p>线程有几种状态</p>
+</li>
+<li><p>怎么让一个线程销毁？</p>
+</li>
+<li><p>如何主动关闭一个线程？</p>
+</li>
+<li><p>什么是零拷贝？</p>
+</li>
+<li><p>mmap和sendfile有什么区别？</p>
+</li>
+<li><p>变量分配在堆和栈有什么区别么？</p>
+</li>
+<li><p>分页的页面大小，可以改么？怎么改？</p>
+</li>
+<li><p>页面置换算法</p>
+</li>
+<li><p>CPU密集和IO密集</p>
+</li>
+<li><p>提高服务器并发能力的方法论</p>
+</li>
+<li><p>Linux使用哪种方法进行进程调度</p>
+</li>
+<li><p>阻塞IO和非阻塞IO</p>
+</li>
+<li><p>同步和异步</p>
+</li>
+<li><p>中断、陷阱</p>
+</li>
+</ol>
+<h2 id="计算机网络"><a href="#计算机网络" class="headerlink" title="计算机网络"></a>计算机网络</h2><ol>
+<li><p>TCP三次握手过程</p>
+</li>
+<li><p>HTTP中GET和POST区别</p>
+</li>
+<li><p>TCP与UDP区别</p>
+</li>
+<li><p>IO多路复用</p>
+</li>
+<li><p>介绍一下select，优缺点</p>
+</li>
+<li><p>epoll种LT与ET区别</p>
+</li>
+<li><p>epoll基本原理</p>
+</li>
+<li><p>epoll中红黑树和链表怎么协作？</p>
+<p>1）如何从红黑树到双向链表？</p>
+<p>2）节点会同时存在红黑树和链表里面嘛？</p>
+</li>
+<li><p>浏览器输入baidu.com发生了什么</p>
+<p>1）IP头部中，源IP和目的IP怎么填？（内容）</p>
+<p>2）MAC头部中，源MAC地址和目的MAC怎么填？（主机怎么判断，同局域网和不同局域网）</p>
+<p>3）路由器如何转发，会对包进行何种改变？</p>
+<p>4）交换机会做什么改动？</p>
+</li>
+<li><p>http和https区别</p>
+</li>
+<li><p>http https双重加密</p>
+</li>
+<li><p>TCP四次挥手</p>
+</li>
+<li><p>TCP协议如何保证可靠传输</p>
+</li>
+<li><p>TCP网络拥塞算法</p>
+</li>
+<li><p>Linux有多少个端口可用？是否可能被占满？</p>
+</li>
+<li><p>cookie和session区别，使用场景</p>
+<p>（17～29阿里云二面）</p>
+</li>
+<li><p>HTTP协议里面内容（比如什么字段决定传输的内容，文本&#x2F;图片？）</p>
+</li>
+<li><p>OSI的七层和五层协议的区别，为什么实际用的是五层协议</p>
+</li>
+<li><p>wireshark和tcpdump抓包</p>
+</li>
+<li><p>如何判断包是否是乱序的？</p>
+</li>
+<li><p>随机序列号对应于头部哪个字段</p>
+</li>
+<li><p>如何传输大报文？（5000数据，但MTU只有1500）</p>
+</li>
+<li><p>第一个报文和第二个报文头的字段说一下</p>
+</li>
+<li><p>会有IP分片嘛？IP头部</p>
+</li>
+<li><p>应用层传输UDP报文，过程说一下，和TCP有什么区别嘛？怎么进行分割的？</p>
+</li>
+<li><p>IP哪个字段确定是否分片？</p>
+</li>
+<li><p>多个报文如何进行合并（组成发送的数据）</p>
+</li>
+<li><p>IP层路由默认路由没有了，会影响上网或访问同一局域网的机器嘛？</p>
+</li>
+<li><p>同一个子网下，但是没有MAC地址，会出现什么情况</p>
+</li>
+<li><p>http状态码</p>
+</li>
+<li><p>cookie不同网站是否可以共享，为什么</p>
+</li>
+<li><p>广播地址是什么意思</p>
+</li>
+<li><p>子网掩码</p>
+</li>
+<li><p>mac地址特点</p>
+</li>
+<li><p>socket情况下，tcp三次握手如何连接</p>
+</li>
+<li><p>tcp报文格式</p>
+</li>
+<li><p>socket函数bind，listen，connect</p>
+</li>
+<li><p>四元组为什么服务器端只需要建立一个端口</p>
+</li>
+<li><p>socket的文件描述符</p>
+</li>
+<li><p>socket缓冲区</p>
+</li>
+<li><p>socket缓冲区什么时候建立：每个socket被创建后，无论使用的是TCP协议还是UDP协议，都会创建自己的接收缓冲区和发送缓冲区。</p>
+</li>
+<li><p>客户端和服务器通过HTTP进行通信服务器任何人都可以访问，需要甄别出我认可的客户端</p>
+</li>
+<li><p>滑动窗口&#x2F;拥塞窗口为了解决什么问题（滑动窗口和拥塞窗口都是为了解决发送量的问题，那最终又谁决定？）</p>
+</li>
+<li><p>HTTP能用UDP传输嘛？</p>
+</li>
+<li><p>http1.0，http1.1，http2.0，http3.0，https分别有什么</p>
+</li>
+<li><p>select和epoll区别</p>
+</li>
+<li><p>全连接队列中的socket怎么消费</p>
+</li>
+<li><p>ICMP协议</p>
+<p>1）设计是为了做哪些事情</p>
+<p>2）除了ping还知道哪些？</p>
+</li>
+<li><p>IP头部中flag字段</p>
+</li>
+<li><p>IP分片的作用，哪个常见的命令是通过分片实现？</p>
+</li>
+<li><p>CLOSE_WAIT状态</p>
+<p>1）发生在什么时候？</p>
+<p>2）什么时候结束</p>
+<p>3）出现了很多这个状态，原因</p>
+</li>
+<li><p>TIME_WAIT状态</p>
+<p>1）发生在什么时候？</p>
+<p>2）什么时候结束</p>
+<p>3）为什么需要这个状态</p>
+<p>4）出现了很多这个状态</p>
+</li>
+<li><p>怎么设置socket保持长连接</p>
+</li>
+<li><p>keepalive作用</p>
+<p>1）不主动CLOSE也不会断开，为什么还需要这个状态</p>
+<p>2）什么情况下需要主动断开连接（内部通讯）</p>
+</li>
+<li><p>OSI七层模型</p>
+</li>
+<li><p>netty的io多路复用是怎么实现</p>
+</li>
+<li><p>连接和IO事件是如何流转的（reactor模型）</p>
+</li>
+<li><p>日常生活中tcp和udp</p>
+</li>
+<li><p>TCP编程的注意点</p>
+<p>1）发送1000个字节，如何区分这1000个字节？（哪里是1000个字节结束）</p>
+<p>2）TCP客户端通信，如何识别报文，怎么定义报文长度，怎么发送及接收？</p>
+<p>3）两者通信，想要一次性收到1000字节，但每次只收到了1字节，怎么处理？</p>
+</li>
+<li><p>HTTP和socket</p>
+</li>
+<li><p>HTTPS通信过程（SSL握手过程）</p>
+</li>
+<li><p>如何判断是否是一个子网？</p>
+</li>
+<li><p>子网掩码怎么获取</p>
+</li>
+<li><p>HTTP报文格式（常见的Header）</p>
+</li>
+<li><p>TCP头部信息</p>
+</li>
+<li><p>IP头部包含信息</p>
+</li>
+<li><p>HTTP头部</p>
+<p>1）返回文件和返回图片的差异-&gt;想问content-type</p>
+<p>2）显示图片而非下载-&gt;想问content-type</p>
+</li>
+<li><p>TCP建立连接的步骤</p>
+</li>
+<li><p>同步和异步的模型有哪些？</p>
+</li>
+<li><p>滑动窗口的调节算法</p>
+</li>
+<li><p>TCP和UDP调用connect区别</p>
+</li>
+<li><p>TCP&#x2F;UDP调用connet后，会真正的发送网络包嘛？</p>
+</li>
+<li><p>判断路由是否畅通的机制，使用TCP&#x2F;UDP</p>
+</li>
+<li><p>HTTP队头阻塞</p>
+</li>
+<li><p>TCP和UDP哪种速度更快，延时更低</p>
+</li>
+<li><p>Reactor和Proacte模式</p>
+<p>1）为什么用这个？</p>
+<p>2）并发性能</p>
+</li>
+<li><p>select监听文件描述符上限可以修改么？怎么修改</p>
+</li>
+<li><p>空轮训问题，NIO的空轮询bug是什么？netty是如何解决NIO空轮询bug的？</p>
+</li>
+<li><p>套接字通信的大致步骤</p>
+</li>
+<li><p>数据链路层有哪些协议</p>
+</li>
+<li><p>IPV4，IPV5和IPV6</p>
+<p>1）含义</p>
+<p>2）多少位</p>
+</li>
+<li><p>为什么绝大部分还在用IPV4而不是IPV6</p>
+</li>
+<li><p>网络攻击：SYN攻击</p>
+</li>
+<li><p>如何检测和解决SYN攻击</p>
+</li>
+<li><p>TCP超时重传时间如何计算？</p>
+</li>
+<li><p>复位报文（RST）</p>
+</li>
+<li><p>TCP定时器</p>
+</li>
+</ol>
+<h2 id="java"><a href="#java" class="headerlink" title="java"></a>java</h2><h2 id="数据库"><a href="#数据库" class="headerlink" title="数据库"></a>数据库</h2>
                 
               </div>
             
