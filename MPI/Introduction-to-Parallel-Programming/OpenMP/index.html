@@ -18,27 +18,27 @@
   
     <meta name="description" content="第二周、OpenMP第一节、Getting started with OpenMP一、Welcome to Week 2OpenMP是一个共享内存的线程编程模型，可以用来逐步升级现有的代码以实现并行执行。升级后的代码仍然可以进行串行编译。这是OpenMP的一个很大的特点，它让你有机会检查并行执行是否提供了与串行版本相同的结果。为了更好地理解自动并行化，我们首先要看一下运行时函数。在简单的OpenM">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Hello">
-<meta property="og:url" content="http://by.ecel.top/MPI/OpenMP/index.html">
+<meta property="og:title" content="post">
+<meta property="og:url" content="http://by.ecel.top/MPI/Introduction-to-Parallel-Programming/OpenMP/index.html">
 <meta property="og:site_name" content="Hello">
 <meta property="og:description" content="第二周、OpenMP第一节、Getting started with OpenMP一、Welcome to Week 2OpenMP是一个共享内存的线程编程模型，可以用来逐步升级现有的代码以实现并行执行。升级后的代码仍然可以进行串行编译。这是OpenMP的一个很大的特点，它让你有机会检查并行执行是否提供了与串行版本相同的结果。为了更好地理解自动并行化，我们首先要看一下运行时函数。在简单的OpenM">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="http://by.ecel.top/MPI/OpenMP/image-20221127203248794.png">
-<meta property="og:image" content="http://by.ecel.top/MPI/OpenMP/image-20221128153335944.png">
-<meta property="og:image" content="http://by.ecel.top/MPI/OpenMP/image-20221128155745412.png">
-<meta property="og:image" content="http://by.ecel.top/MPI/OpenMP/image-20221128210815541.png">
-<meta property="og:image" content="http://by.ecel.top/MPI/OpenMP/image-20221128212103284.png">
-<meta property="og:image" content="http://by.ecel.top/MPI/OpenMP/image-20221128212831945.png">
-<meta property="article:published_time" content="2022-11-28T13:40:38.982Z">
-<meta property="article:modified_time" content="2022-11-28T13:58:31.341Z">
+<meta property="og:image" content="http://by.ecel.top/MPI/Introduction-to-Parallel-Programming/OpenMP/image-20221127203248794.png">
+<meta property="og:image" content="http://by.ecel.top/MPI/Introduction-to-Parallel-Programming/OpenMP/image-20221128153335944.png">
+<meta property="og:image" content="http://by.ecel.top/MPI/Introduction-to-Parallel-Programming/OpenMP/image-20221128155745412.png">
+<meta property="og:image" content="http://by.ecel.top/MPI/Introduction-to-Parallel-Programming/OpenMP/image-20221128210815541.png">
+<meta property="og:image" content="http://by.ecel.top/MPI/Introduction-to-Parallel-Programming/OpenMP/image-20221128212103284.png">
+<meta property="og:image" content="http://by.ecel.top/MPI/Introduction-to-Parallel-Programming/OpenMP/image-20221128212831945.png">
+<meta property="article:published_time" content="2022-11-29T08:32:47.000Z">
+<meta property="article:modified_time" content="2022-11-29T08:37:01.210Z">
 <meta property="article:author" content="刘笑笑">
-<meta property="article:tag" content="java、go、操作系统、网络">
+<meta property="article:tag" content="OpenMP">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="http://by.ecel.top/MPI/OpenMP/image-20221127203248794.png">
+<meta name="twitter:image" content="http://by.ecel.top/MPI/Introduction-to-Parallel-Programming/OpenMP/image-20221127203248794.png">
   
   
   
-  <title>Hello</title>
+  <title>post - Hello</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -218,7 +218,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text=""></span>
+            <span id="subtitle" data-typed-text="post"></span>
           
         </div>
 
@@ -229,8 +229,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2022-11-28 21:40" pubdate>
-          2022年11月28日 晚上
+        <time datetime="2022-11-29 16:32" pubdate>
+          2022年11月29日 下午
         </time>
       </span>
     
@@ -290,12 +290,12 @@
         <div id="board">
           <article class="post-content mx-auto">
             <!-- SEO header -->
-            <h1 style="display: none"></h1>
+            <h1 style="display: none">post</h1>
             
               <p class="note note-info">
                 
                   
-                    本文最后更新于：2022年11月28日 晚上
+                    本文最后更新于：2022年11月29日 下午
                   
                 
               </p>
@@ -350,7 +350,7 @@
 </li>
 <li><p>如果我们把线程的数量改为12，会发生什么？</p>
 <p>会打印十二次</p>
-<p><img src="/MPI/OpenMP/image-20221127203248794.png" srcset="/img/loading.gif" lazyload alt="image-20221127203248794"></p>
+<p><img src="/MPI/Introduction-to-Parallel-Programming/OpenMP/image-20221127203248794.png" srcset="/img/loading.gif" lazyload alt="image-20221127203248794"></p>
 </li>
 </ul>
 <h4 id="补充"><a href="#补充" class="headerlink" title="补充"></a>补充</h4><p>使用私有变量设置线程数</p>
@@ -366,7 +366,7 @@
 <figure class="highlight ebnf"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs ebnf"><span class="hljs-attribute">OMP_DISPLAY_ENV</span>  <br></code></pre></td></tr></table></figure>
 
 <h4 id="Parallel-constructs"><a href="#Parallel-constructs" class="headerlink" title="Parallel constructs"></a>Parallel constructs</h4><p>并行结构是使用OpenMP时的基本结构。所以，每个线程基本上都同时执行平行区域内的相同语句，正如你在这张图片上看到的。</p>
-<p><img src="/MPI/OpenMP/image-20221128153335944.png" srcset="/img/loading.gif" lazyload alt="image-20221128153335944"></p>
+<p><img src="/MPI/Introduction-to-Parallel-Programming/OpenMP/image-20221128153335944.png" srcset="/img/loading.gif" lazyload alt="image-20221128153335944"></p>
 <p>所以，首先我们有一个主线程，执行代码的串行部分。然后我们来到了一个pragma omp语句。我们在这里可以看到，主线程首先遇到了这个omp结构，并创建了多个线程，也就是我们所说的并行运行的从线程。随后，主线程和从线程在彼此之间划分了任务。最后，我们指定了一个隐含的障碍，所以当达到这个障碍时，线程结束，我们等待所有线程完成执行。在这之后，当所有的线程都完成了执行，我们回到主线程，最终恢复代码的执行。当然，在这一步骤中，从属线程已经消失了，因为它们已经完成了自己的任务。</p>
 <p>在C语言中，这个隐含的屏障被指定为</p>
 <figure class="highlight arduino"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs arduino"><span class="hljs-meta">#<span class="hljs-keyword">pragma</span> omp parallel</span><br>&#123;<br>...<br> &#125;<br></code></pre></td></tr></table></figure>
@@ -394,7 +394,7 @@
 
 <p>是OpenMP的一个重要的关键字，我们把它放在代码的开头，放在我们想让并行区域开始的那一行，然后我们提到指令名称和子句。在本小节中，我们将学习条款。</p>
 <p>基本上有两种条款，即：私有或共享。一个私有变量将是一个对每个线程都是私有的变量。</p>
-<p><img src="/MPI/OpenMP/image-20221128155745412.png" srcset="/img/loading.gif" lazyload alt="image-20221128155745412"></p>
+<p><img src="/MPI/Introduction-to-Parallel-Programming/OpenMP/image-20221128155745412.png" srcset="/img/loading.gif" lazyload alt="image-20221128155745412"></p>
 <p>So, we execute, e.g.</p>
 <figure class="highlight arduino"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs arduino"><span class="hljs-type">int</span> A;<br><span class="hljs-meta">#<span class="hljs-keyword">pragma</span> omp parallel private(A)</span><br>&#123;<br>    A=<span class="hljs-built_in">omp_get_thread_num</span>();<br>    ...<br>&#125;<br></code></pre></td></tr></table></figure>
 
@@ -439,7 +439,7 @@
 <p>在你运行这个程序之前，你认为会发生什么？ 现在，运行该程序并观察输出。你可以将线程数改为12个或其他，观察输出。</p>
 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><code class="hljs cpp">%%file exercise.c<br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;stdio.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;unistd.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;omp.h&gt;</span></span><br><span class="hljs-function"><span class="hljs-type">int</span> <span class="hljs-title">main</span><span class="hljs-params">()</span></span><br><span class="hljs-function"></span>&#123;<br>    <span class="hljs-type">int</span> i;<br><br>    i = <span class="hljs-number">-1</span>;<br>    <span class="hljs-type">int</span> num_threads = <span class="hljs-number">12</span>;<br>    <span class="hljs-meta">#<span class="hljs-keyword">ifdef</span> _OPENMP</span><br>    <span class="hljs-built_in">omp_set_num_threads</span>(num_threads);<br><br>    <span class="hljs-meta">#<span class="hljs-keyword">pragma</span> omp parallel </span><br>    &#123;<br>        i = <span class="hljs-built_in">omp_get_thread_num</span>();<br><br>        <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;hello world openmp %d\n&quot;</span>, i );<br>    &#125;<br>    <span class="hljs-meta">#<span class="hljs-keyword">else</span></span><br>    &#123;<br>        <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;hello world gcc %d\n&quot;</span>, i );<br>    &#125;<br>    <span class="hljs-meta">#<span class="hljs-keyword">endif</span></span><br>&#125;<br></code></pre></td></tr></table></figure>
 
-<p><img src="/MPI/OpenMP/image-20221128210815541.png" srcset="/img/loading.gif" lazyload alt="image-20221128210815541"></p>
+<p><img src="/MPI/Introduction-to-Parallel-Programming/OpenMP/image-20221128210815541.png" srcset="/img/loading.gif" lazyload alt="image-20221128210815541"></p>
 <ol>
 <li>为变量i的并行区域添加一个私有子句。</li>
 </ol>
@@ -467,7 +467,7 @@
 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-meta">#<span class="hljs-keyword">pragma</span> omp parallel</span><br>&#123;<br>    <span class="hljs-meta">#<span class="hljs-keyword">pragma</span> omp sections</span><br>    &#123;<br>      <span class="hljs-meta">#<span class="hljs-keyword">pragma</span> omp section</span><br>      &#123;<br>        <span class="hljs-built_in">function_1</span>();<span class="hljs-comment">// a=... b=...</span><br>      &#125;<br>      <span class="hljs-meta">#<span class="hljs-keyword">pragma</span> omp section</span><br>      &#123; <br>        <span class="hljs-built_in">function_2</span>();<span class="hljs-comment">// c=... d=...</span><br>      &#125;<br>    &#125;<br>&#125;<span class="hljs-comment">// end of parallel</span><br></code></pre></td></tr></table></figure>
 
 <p>当我们使用section结构时，多个代码块被并行执行。当我们指定章节并将一个任务放入其中时，这个特定的任务将在一个线程中执行。然后，当我们进入另一个部分时，它将在不同的线程中执行其任务。这样，我们就可以在pragma omp并行代码中添加这些部分，为每个线程指定一个部分，这些部分将在每个单独的线程中执行。</p>
-<p><img src="/MPI/OpenMP/image-20221128212103284.png" srcset="/img/loading.gif" lazyload alt="image-20221128212103284"></p>
+<p><img src="/MPI/Introduction-to-Parallel-Programming/OpenMP/image-20221128212103284.png" srcset="/img/loading.gif" lazyload alt="image-20221128212103284"></p>
 <p>在上面的示例代码中，我们可以看到，在这一节中，我们指定了变量a和b。当这段代码被执行时，一个新的线程会带着这些变量产生，同样的，变量c和d也被指定在不同的一节中，因此也在不同的线程中。</p>
 <p>Eg:</p>
 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><code class="hljs cpp">%%file sections.c<br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;stdio.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;omp.h&gt;</span></span><br><br><span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">function_1</span><span class="hljs-params">()</span></span><br><span class="hljs-function"></span>&#123;<br>    <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i = <span class="hljs-number">0</span>; i != <span class="hljs-number">1</span>; i++)<br>    &#123;<br>        <span class="hljs-built_in">printf</span> (<span class="hljs-string">&quot;Function 1 done by thread %d \n&quot;</span> , <span class="hljs-built_in">omp_get_thread_num</span>());<br>    &#125;<br>&#125;<br><br><span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">function_2</span><span class="hljs-params">()</span></span><br><span class="hljs-function"></span>&#123;<br>    <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> j = <span class="hljs-number">0</span>; j != <span class="hljs-number">2</span>; j++)<br>    &#123;<br>        <span class="hljs-built_in">printf</span> (<span class="hljs-string">&quot;Function 2 done by thread %d \n&quot;</span> , <span class="hljs-built_in">omp_get_thread_num</span>());<br>    &#125;<br>&#125;<br><br><span class="hljs-function"><span class="hljs-type">int</span> <span class="hljs-title">main</span><span class="hljs-params">()</span></span><br><span class="hljs-function"></span>&#123;<br>    <span class="hljs-type">int</span> n = <span class="hljs-number">4</span>; <span class="hljs-comment">//number of threads</span><br>    <span class="hljs-built_in">omp_set_num_threads</span>(n);<br>    <br>    <span class="hljs-meta">#<span class="hljs-keyword">pragma</span> omp parallel</span><br>    &#123;<br>        <span class="hljs-meta">#<span class="hljs-keyword">pragma</span> omp sections</span><br>        &#123;<br>            <span class="hljs-meta">#<span class="hljs-keyword">pragma</span> omp section</span><br>            &#123;<br>                <span class="hljs-built_in">function_1</span>();<br>            &#125;<br><br>            <span class="hljs-meta">#<span class="hljs-keyword">pragma</span> omp section</span><br>            &#123; <br>                <span class="hljs-built_in">function_2</span>();<br>            &#125;<br><br>        &#125;<br><br>    &#125;<br>&#125;<br><br>output:<br>Function <span class="hljs-number">2</span> done by thread <span class="hljs-number">0</span> <br>Function <span class="hljs-number">2</span> done by thread <span class="hljs-number">0</span> <br>Function <span class="hljs-number">1</span> done by thread <span class="hljs-number">1</span><br></code></pre></td></tr></table></figure>
@@ -490,7 +490,7 @@
 <figure class="highlight arduino"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs arduino"><span class="hljs-meta">#<span class="hljs-keyword">pragma</span> omp parallel private(f)</span><br>&#123;<br>    f=<span class="hljs-number">10</span>;<br>    <span class="hljs-meta">#<span class="hljs-keyword">pragma</span> omp for</span><br>    <span class="hljs-keyword">for</span> (i=<span class="hljs-number">0</span>; i&lt;<span class="hljs-number">10</span>; i++) &#123;<br>        a[i] = b[i]*f;<br>    &#125; <span class="hljs-comment">// end of for</span><br>&#125; <span class="hljs-comment">// end of parallel</span><br></code></pre></td></tr></table></figure>
 
 <p>我们用pragma omp parallel开始，然后是名为f的私有变量。然后我们用pragma omp for构造，接着是一个从0到10的for循环（10次不同的迭代）。然后，私有变量f在每个线程中都是固定的，列表a被并行更新。这是因为每个数组需要的索引都是不同的。所以，每个线程只能访问数组的一个地方，允许我们并行更新这个列表。</p>
-<p><img src="/MPI/OpenMP/image-20221128212831945.png" srcset="/img/loading.gif" lazyload alt="image-20221128212831945"></p>
+<p><img src="/MPI/Introduction-to-Parallel-Programming/OpenMP/image-20221128212831945.png" srcset="/img/loading.gif" lazyload alt="image-20221128212831945"></p>
 <p>在这里我们可以看到，如果我们在两个线程上工作，有10个迭代，那么这些迭代将被分成两个线程，分别从0到4和5到9。列表a上的每个地方都将被自己更新，由于迭代器是相互独立的，它们只修改一个地方，所以我们可以很容易地更新列表a的每个地方。</p>
 <p>Eg:</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><code class="hljs c">%%file forloop.c<br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;stdio.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;stdlib.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;omp.h&gt;</span></span><br><br><span class="hljs-type">int</span> <span class="hljs-title function_">main</span><span class="hljs-params">()</span><br>&#123;<br>    <span class="hljs-type">int</span> n = <span class="hljs-number">4</span>; <span class="hljs-comment">//number of threads</span><br>    omp_set_num_threads(n);<br><span class="hljs-type">int</span>* iterations; <span class="hljs-comment">//count iterations for each thread</span><br>iterations = (<span class="hljs-type">int</span> *) <span class="hljs-built_in">malloc</span> (n*<span class="hljs-keyword">sizeof</span>(<span class="hljs-type">int</span>));<br><br><span class="hljs-type">int</span> f = <span class="hljs-number">100</span>;<br><br><span class="hljs-comment">//set array values to 0</span><br><span class="hljs-keyword">for</span>(<span class="hljs-type">int</span> loop = <span class="hljs-number">0</span>; loop &lt; n; loop++)<br>&#123;<br>    iterations[loop] = <span class="hljs-number">0</span>;<br>&#125;<br><br><span class="hljs-meta">#<span class="hljs-keyword">pragma</span> omp parallel shared(iterations, f)</span><br>&#123;    <br>    <span class="hljs-meta">#<span class="hljs-keyword">pragma</span> omp for </span><br>    <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i = <span class="hljs-number">0</span>; i &lt; f; i++)<br>    &#123;<br>        iterations[omp_get_thread_num()]++;<br>    &#125;<br>&#125;<br><br><span class="hljs-keyword">for</span>(<span class="hljs-type">int</span> loop = <span class="hljs-number">0</span>; loop &lt; n; loop++)<br>&#123;<br>    <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;%d &quot;</span>, iterations[loop]);<br>&#125;<br><br><span class="hljs-built_in">free</span>(iterations);  <br>&#125;<br><br>output:<br><span class="hljs-number">25</span> <span class="hljs-number">25</span> <span class="hljs-number">25</span> <span class="hljs-number">25</span><br></code></pre></td></tr></table></figure>
@@ -498,6 +498,7 @@
 
 
 <h4 id="pragma-omp-single"><a href="#pragma-omp-single" class="headerlink" title="#pragma omp single"></a>#pragma omp single</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br></pre></td><td class="code"><pre><code class="hljs c">%%file single.c<br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;stdio.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;omp.h&gt;</span></span><br><br><span class="hljs-type">int</span> <span class="hljs-title function_">main</span><span class="hljs-params">()</span><br>&#123;<br>    <span class="hljs-type">int</span> n = <span class="hljs-number">4</span>; <span class="hljs-comment">//number of threads</span><br>    omp_set_num_threads(n);<br>    <span class="hljs-type">int</span> sum1 = <span class="hljs-number">0</span>;<br>    <span class="hljs-type">int</span> sum2 = <span class="hljs-number">0</span>;<br>    <span class="hljs-type">int</span> f = <span class="hljs-number">10</span>;<br><br>    <span class="hljs-meta">#<span class="hljs-keyword">pragma</span> omp parallel shared(sum1, sum2)</span><br>    &#123;<br><br>        <span class="hljs-meta">#<span class="hljs-keyword">pragma</span> omp for</span><br>        <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i = <span class="hljs-number">0</span>; i &lt; f; i++)<br>        &#123;<br>            sum1 += <span class="hljs-number">1</span>;<br>            <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;thread_id = %d sum1 = %d\n&quot;</span>, omp_get_thread_num(),sum1);<br><br>        &#125;<br>        <span class="hljs-meta">#<span class="hljs-keyword">pragma</span> omp single</span><br>        &#123;<br>            <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;The first sum is %d\n&quot;</span>, sum1);<br>        &#125;<br>        <span class="hljs-meta">#<span class="hljs-keyword">pragma</span> omp for</span><br>        <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i = <span class="hljs-number">0</span>; i &lt; f; i++)<br>        &#123;<br>            sum2 += <span class="hljs-number">2</span>;<br>            <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;thread_id = %d sum2 = %d\n&quot;</span>, omp_get_thread_num(),sum2);<br><br>        &#125;<br><br>        <span class="hljs-meta">#<span class="hljs-keyword">pragma</span> omp single</span><br>        &#123;<br>            <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;The second sum is %d\n&quot;</span>, sum2);<br>        &#125;<br><br>    &#125;<br>&#125;<br><br>output:<span class="hljs-comment">// sum2的最终值每次会发生变化，应该是都发生了并发问题</span><br>thread_id = <span class="hljs-number">0</span> sum1 = <span class="hljs-number">1</span><br>thread_id = <span class="hljs-number">0</span> sum1 = <span class="hljs-number">5</span><br>thread_id = <span class="hljs-number">0</span> sum1 = <span class="hljs-number">6</span><br>thread_id = <span class="hljs-number">1</span> sum1 = <span class="hljs-number">3</span><br>thread_id = <span class="hljs-number">1</span> sum1 = <span class="hljs-number">7</span><br>thread_id = <span class="hljs-number">1</span> sum1 = <span class="hljs-number">8</span><br>thread_id = <span class="hljs-number">2</span> sum1 = <span class="hljs-number">4</span><br>thread_id = <span class="hljs-number">2</span> sum1 = <span class="hljs-number">9</span><br>thread_id = <span class="hljs-number">3</span> sum1 = <span class="hljs-number">2</span><br>thread_id = <span class="hljs-number">3</span> sum1 = <span class="hljs-number">10</span><br>The first sum is <span class="hljs-number">10</span><br>thread_id = <span class="hljs-number">3</span> sum2 = <span class="hljs-number">2</span><br>thread_id = <span class="hljs-number">0</span> sum2 = <span class="hljs-number">4</span><br>thread_id = <span class="hljs-number">1</span> sum2 = <span class="hljs-number">2</span><br>thread_id = <span class="hljs-number">3</span> sum2 = <span class="hljs-number">6</span><br>thread_id = <span class="hljs-number">1</span> sum2 = <span class="hljs-number">8</span><br>thread_id = <span class="hljs-number">1</span> sum2 = <span class="hljs-number">10</span><br>thread_id = <span class="hljs-number">0</span> sum2 = <span class="hljs-number">12</span><br>thread_id = <span class="hljs-number">0</span> sum2 = <span class="hljs-number">14</span><br>thread_id = <span class="hljs-number">2</span> sum2 = <span class="hljs-number">2</span><br>thread_id = <span class="hljs-number">2</span> sum2 = <span class="hljs-number">16</span><br>The second sum is <span class="hljs-number">16</span><br>  <br><br></code></pre></td></tr></table></figure>
+
 
 
 <h4 id="pragma-omp-task（todo"><a href="#pragma-omp-task（todo" class="headerlink" title="#pragma omp task（todo"></a>#pragma omp task（todo</h4><p>Task 用于指定某一段程序，并放置在任务池中，由进程池中的空闲的进程执行该任务。</p>
@@ -516,6 +517,41 @@
             <div>
               <div class="post-metas my-3">
   
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/MPI/" class="category-chain-item">MPI</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/MPI/Introduction-to-Parallel-Programming/" class="category-chain-item">Introduction-to-Parallel-Programming</a>
+  
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/OpenMP/">#OpenMP</a>
+      
+    </div>
   
 </div>
 
@@ -525,8 +561,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div></div>
-      <div>http://by.ecel.top/MPI/OpenMP/</div>
+      <div>post</div>
+      <div>http://by.ecel.top/MPI/Introduction-to-Parallel-Programming/OpenMP/</div>
     </div>
     <div class="license-meta">
       
@@ -538,7 +574,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>发布于</div>
-          <div>2022年11月28日</div>
+          <div>2022年11月29日</div>
         </div>
       
       
@@ -574,7 +610,7 @@
                   <article class="post-next col-6">
                     
                     
-                      <a href="/MPI/Introduction%20to%20Parallel%20Programming/" title="Introduction to Parallel Programming课程笔记">
+                      <a href="/MPI/Introduction-to-Parallel-Programming/Introduction/" title="Introduction to Parallel Programming课程笔记">
                         <span class="hidden-mobile">Introduction to Parallel Programming课程笔记</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
