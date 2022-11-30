@@ -18,7 +18,7 @@
   
     <meta name="description" content="第二周、OpenMP第一节、Getting started with OpenMP一、Welcome to Week 2OpenMP是一个共享内存的线程编程模型，可以用来逐步升级现有的代码以实现并行执行。升级后的代码仍然可以进行串行编译。这是OpenMP的一个很大的特点，它让你有机会检查并行执行是否提供了与串行版本相同的结果。为了更好地理解自动并行化，我们首先要看一下运行时函数。在简单的OpenM">
 <meta property="og:type" content="article">
-<meta property="og:title" content="post">
+<meta property="og:title" content="OpenMP">
 <meta property="og:url" content="http://by.ecel.top/MPI/Introduction-to-Parallel-Programming/OpenMP/index.html">
 <meta property="og:site_name" content="Hello">
 <meta property="og:description" content="第二周、OpenMP第一节、Getting started with OpenMP一、Welcome to Week 2OpenMP是一个共享内存的线程编程模型，可以用来逐步升级现有的代码以实现并行执行。升级后的代码仍然可以进行串行编译。这是OpenMP的一个很大的特点，它让你有机会检查并行执行是否提供了与串行版本相同的结果。为了更好地理解自动并行化，我们首先要看一下运行时函数。在简单的OpenM">
@@ -29,8 +29,11 @@
 <meta property="og:image" content="http://by.ecel.top/MPI/Introduction-to-Parallel-Programming/OpenMP/image-20221128210815541.png">
 <meta property="og:image" content="http://by.ecel.top/MPI/Introduction-to-Parallel-Programming/OpenMP/image-20221128212103284.png">
 <meta property="og:image" content="http://by.ecel.top/MPI/Introduction-to-Parallel-Programming/OpenMP/image-20221128212831945.png">
+<meta property="og:image" content="http://by.ecel.top/MPI/Introduction-to-Parallel-Programming/OpenMP/image-20221129165944073.png">
+<meta property="og:image" content="http://by.ecel.top/MPI/Introduction-to-Parallel-Programming/OpenMP/image-20221129172157867.png">
+<meta property="og:image" content="http://by.ecel.top/MPI/Introduction-to-Parallel-Programming/OpenMP/image-20221129172323455.png">
 <meta property="article:published_time" content="2022-11-29T08:32:47.000Z">
-<meta property="article:modified_time" content="2022-11-29T08:37:01.210Z">
+<meta property="article:modified_time" content="2022-11-29T13:39:29.648Z">
 <meta property="article:author" content="刘笑笑">
 <meta property="article:tag" content="OpenMP">
 <meta name="twitter:card" content="summary_large_image">
@@ -38,7 +41,7 @@
   
   
   
-  <title>post - Hello</title>
+  <title>OpenMP - Hello</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -218,7 +221,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="post"></span>
+            <span id="subtitle" data-typed-text="OpenMP"></span>
           
         </div>
 
@@ -241,7 +244,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          12k 字
+          23k 字
         
       </span>
     
@@ -252,7 +255,7 @@
         
         
         
-          104 分钟
+          192 分钟
         
       </span>
     
@@ -290,12 +293,12 @@
         <div id="board">
           <article class="post-content mx-auto">
             <!-- SEO header -->
-            <h1 style="display: none">post</h1>
+            <h1 style="display: none">OpenMP</h1>
             
               <p class="note note-info">
                 
                   
-                    本文最后更新于：2022年11月29日 下午
+                    本文最后更新于：2022年11月29日 晚上
                   
                 
               </p>
@@ -501,10 +504,253 @@
 
 
 
-<h4 id="pragma-omp-task（todo"><a href="#pragma-omp-task（todo" class="headerlink" title="#pragma omp task（todo"></a>#pragma omp task（todo</h4><p>Task 用于指定某一段程序，并放置在任务池中，由进程池中的空闲的进程执行该任务。</p>
+<h4 id="pragma-omp-task（todo"><a href="#pragma-omp-task（todo" class="headerlink" title="#pragma omp task（todo)"></a>#pragma omp task（todo)</h4><p>Task 用于指定某一段程序，并放置在任务池中，由进程池中的空闲的进程执行该任务。</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><code class="hljs c">%%file task.c<br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;stdio.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;omp.h&gt;</span></span><br><br><span class="hljs-type">int</span> <span class="hljs-title function_">main</span><span class="hljs-params">()</span> &#123;<br>    <span class="hljs-type">int</span> n = <span class="hljs-number">2</span>; <span class="hljs-comment">//number of threads</span><br>    omp_set_num_threads(n);<br><br>    <span class="hljs-meta">#<span class="hljs-keyword">pragma</span> omp parallel</span><br>    &#123;<br><br>        <span class="hljs-meta">#<span class="hljs-keyword">pragma</span> omp single</span><br>        &#123;<br>            <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;A &quot;</span>);<br>            <span class="hljs-meta">#<span class="hljs-keyword">pragma</span> omp task</span><br>            &#123;<span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;race &quot;</span>);&#125;<br>            <span class="hljs-meta">#<span class="hljs-keyword">pragma</span> omp task</span><br>            &#123;<span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;car &quot;</span>);&#125;<br>        &#125;<br><br>    &#125;<br>&#125;<br><br>output：<br>A race car <br></code></pre></td></tr></table></figure>
 
-<h2 id="第三节、Synchronization"><a href="#第三节、Synchronization" class="headerlink" title="第三节、Synchronization"></a>第三节、Synchronization</h2><p>在并行编程中，有时在处理并行运行的多个线程时，我们希望暂停线程的执行，而一次只运行一个线程。这是用所谓的障碍物实现的。同步可以通过两种方式实现，即通过隐式屏障或显式屏障。</p>
+<h3 id="三、Synchronization"><a href="#三、Synchronization" class="headerlink" title="三、Synchronization"></a>三、Synchronization</h3><p>在并行编程中，有时在处理并行运行的多个线程时，我们希望暂停线程的执行，而一次只运行一个线程。这是用所谓的障碍物实现的。同步可以通过两种方式实现，即通过隐式屏障或显式屏障。</p>
+<ul>
+<li>Implicit barrier(隐性障碍)</li>
+</ul>
+<p>我们已经在前面两个例子中看到了隐式屏障的使用。它是并行构造的开始和结束的屏障，也是所有其他控制构造的屏障。在C++中，这是用大括号实现的。正如我们在前面的例子中所看到的，{是隐式屏障，在这里我们指定进入并行区域，而最后的}基本上是隐式屏障，它指定了并行构造的结束，并表示转入代码的串行执行。隐式同步可以通过nowait子句来移除，但我们不会在本节中讨论它。</p>
+<ul>
+<li>Explicit barrier(显式屏障)</li>
+</ul>
+<p>为了应用显式屏障，我们使用了一个临界子句，基本上指定了屏障的存在。在使用显式屏障时，包含在临界子句中的代码会被所有线程执行，但每次只限制在一个线程中。C&#x2F;C++中的临界子句的定义是</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">pragma</span> omp critical [(name)]</span><br></code></pre></td></tr></table></figure>
+
+<p>让我们快速浏览一下这段代码。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs c">cnt = <span class="hljs-number">0</span>;<br>f=<span class="hljs-number">10</span>;<br><span class="hljs-meta">#<span class="hljs-keyword">pragma</span> omp parallel</span><br>&#123;<br>  <span class="hljs-meta">#<span class="hljs-keyword">pragma</span> omp for</span><br>     <span class="hljs-keyword">for</span> (i=<span class="hljs-number">0</span>; i&lt;<span class="hljs-number">10</span>; i++) &#123;<br>       <span class="hljs-keyword">if</span> (b[i] == <span class="hljs-number">0</span>) &#123;<br>          <span class="hljs-meta">#<span class="hljs-keyword">pragma</span> omp critical</span><br>          cnt ++;<br>       &#125; <span class="hljs-comment">/* endif */</span><br>       a[i] = b[i]*f;<br>  &#125; <span class="hljs-comment">/* end for */</span><br>&#125; <span class="hljs-comment">/*omp end parallel */</span><br></code></pre></td></tr></table></figure>
+
+<p>我们看到，我们已经指定了变量cnt和f，在并行区域我们指定了for结构，所以我们可以进行迭代。在if语句中，我们为下一行指定了pragma omp critical，即cnt ++。我们可以在下面的图片中观察到线程执行中发生的情况。</p>
+<img src="/MPI/Introduction-to-Parallel-Programming/OpenMP/image-20221129165944073.png" srcset="/img/loading.gif" lazyload alt="image-20221129165944073" style="zoom:50%;">
+
+<p>在我们进入pragma omp并行区域之前，我们是在串行执行中，所以那部分是串行执行的。然后我们进入了我们的并行区域。在第一个线程遇到cnt++语句之前，一切都以并行方式执行。这时，cnt++语句由遇到它的第一个线程执行。在这段时间内，第二个线程无法访问它，因为cnt已经被第一个线程修改。因此，在第一个线程完成关键操作后，下一个线程将获得对cnt变量的访问权并修改它。在所有的线程都执行了cnt++语句之后，代码也继续并行地执行。它一直持续到达到我们在最后指定的隐式屏障，之后我们返回到串行执行。</p>
+<p><strong>我们归功于临界子句，对于这个cnt变量，每次只有一个线程被执行。</strong>因此，当我们在一个并行程序中使用临界子句时，只有一个线程能够执行你在临界子句中指定的那部分代码。</p>
+<h3 id="四、Nesting-and-binding（嵌套和绑定）"><a href="#四、Nesting-and-binding（嵌套和绑定）" class="headerlink" title="四、Nesting and binding（嵌套和绑定）"></a>四、Nesting and binding（嵌套和绑定）</h3><h4 id="Directive-Scoping"><a href="#Directive-Scoping" class="headerlink" title="Directive Scoping"></a>Directive Scoping</h4><p>OpenMP规定了一些关于指令如何关联（绑定）和相互嵌套的范围规则。这就是为什么如果忽略了OpenMP的绑定和嵌套规则，可能会导致不正确的程序。这些术语被用来解释OpenMP指令的影响。</p>
+<p><strong>Static (Lexical) Extent:（静态范围）</strong></p>
+<ul>
+<li>在指令之后的结构化块的开头和结尾之间的文本所包含的代码。</li>
+<li>一个指令的静态范围不跨越多个例程或代码文件。</li>
+</ul>
+<p><strong>Dynamic Extent：</strong></p>
+<ul>
+<li>指令的动态范围还包括从构造中调用的例程。</li>
+<li>它包括其静态（词法）范围和其孤儿指令的范围。</li>
+</ul>
+<p><strong>Orphaned Directive:（被遗弃的指令）</strong></p>
+<ul>
+<li>一个独立于另一个封闭指令出现的OpenMP指令被称为 “孤儿 “指令。它们是动态范围内的指令，但不在静态范围内。</li>
+<li>会跨越例程，也可能跨越代码文件。</li>
+</ul>
+<p>让我们用这个示例程序来解释。我们有2个子程序调用，而且都是并行的。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs c">...<br><span class="hljs-meta">#<span class="hljs-keyword">pragma</span> omp parallel</span><br>&#123;<br>     ...<br>     <span class="hljs-meta">#<span class="hljs-keyword">pragma</span> omp for</span><br>     &#123;<br>          <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i = <span class="hljs-number">0</span>; i &lt; N; i++) &#123;<br>               ...<br>               sub1();<br>               ...<br>          &#125;<br>     &#125;<br>     ...<br>     sub2();<br>     ...<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>这就是两个子程序sub1和sub2。</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs csharp"><span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">sub1</span>()</span> &#123;<br>     ...<br>     <span class="hljs-meta">#<span class="hljs-keyword">pragma</span> omp critical</span><br>     &#123;<br>          ...<br>     &#125;<br>     ...<br>     <span class="hljs-keyword">return</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs csharp"><span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">sub2</span>()</span> &#123;<br>     ...<br>     <span class="hljs-meta">#<span class="hljs-keyword">pragma</span> omp sections</span><br>     &#123;<br>          ...<br>     &#125;<br>     ...<br>     <span class="hljs-keyword">return</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>在这个例子中。</p>
+<ul>
+<li>我们平行区域的静态范围正是这样，平行区域内的调用。FOR指令发生在一个封闭的并行区域内。</li>
+<li>我们并行区域的动态范围是静态范围加上在并行区域内调用的两个子程序。CRITICAL和SECTIONS指令发生在FOR和PARALLEL指令的动态范围内。</li>
+<li>在动态范围内，而不是在静态范围内，我们有无主的CRITICAL和SECTIONS指令。</li>
+</ul>
+<h3 id="五、Exercise-Calculate-Pi"><a href="#五、Exercise-Calculate-Pi" class="headerlink" title="五、Exercise: Calculate Pi"></a>五、Exercise: Calculate Pi</h3><p>Pi的计算方式之一：</p>
+<p><img src="/MPI/Introduction-to-Parallel-Programming/OpenMP/image-20221129172157867.png" srcset="/img/loading.gif" lazyload alt="image-20221129172157867"></p>
+<p>该积分可以用以下数字逼近：</p>
+<p><img src="/MPI/Introduction-to-Parallel-Programming/OpenMP/image-20221129172323455.png" srcset="/img/loading.gif" lazyload alt="image-20221129172323455"></p>
+<p>这里，n是区间的数量，h&#x3D;1&#x2F;n。</p>
+<h4 id="串行代码"><a href="#串行代码" class="headerlink" title="串行代码"></a>串行代码</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br></pre></td><td class="code"><pre><code class="hljs c">%%file exercise.c<br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;stdio.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;time.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;sys/time.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;omp.h&gt;</span></span><br><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> f(A) (4.0/(1.0+A*A))</span><br><br><span class="hljs-type">int</span> <span class="hljs-title function_">main</span><span class="hljs-params">()</span><br>&#123;<br>    <span class="hljs-type">int</span> num_threads = <span class="hljs-number">4</span>;<br>    omp_set_num_threads(num_threads);<br><br>    <span class="hljs-comment">//declarations</span><br>    <span class="hljs-type">const</span> <span class="hljs-type">int</span> n = <span class="hljs-number">10000000</span>;<br>    <span class="hljs-type">int</span> i;<br>    <span class="hljs-type">double</span> w, x, sum, pi;<br>    <span class="hljs-type">clock_t</span> t1, t2;<br>    <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">timeval</span> <span class="hljs-title">tv1</span>, <span class="hljs-title">tv2</span>;</span><br>    <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">timezone</span> <span class="hljs-title">tz</span>;</span><br>    <span class="hljs-type">double</span> wt1, wt2;<br><br>    <span class="hljs-meta">#   <span class="hljs-keyword">pragma</span> omp parallel</span><br>    &#123; <br>    <span class="hljs-meta">#     <span class="hljs-keyword">pragma</span> omp single </span><br>      <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;OpenMP-parallel with %1d threads\n&quot;</span>, omp_get_num_threads());<br>    &#125; <span class="hljs-comment">/* end omp parallel */</span><br>    <span class="hljs-meta"># <span class="hljs-keyword">pragma</span> omp barrier</span><br><br>    gettimeofday(&amp;tv1, &amp;tz);<br>    wt1 = omp_get_wtime();<br>    t1 = clock();<br><br>    <span class="hljs-comment">/* calculate pi = integral [0..1] 4/(1+x**2) dx */</span><br>    w = <span class="hljs-number">1.0</span>/n;<br>    sum = <span class="hljs-number">0.0</span>;<br>    <span class="hljs-keyword">for</span> (i = <span class="hljs-number">1</span>; i &lt;= n; i++)<br>    &#123;<br>        x = w*((<span class="hljs-type">double</span>)i<span class="hljs-number">-0.5</span>);<br>        sum = sum+f(x);<br>    &#125;<br>    pi = w*sum;<br><br>    t2 = clock();<br>    wt2 = omp_get_wtime();<br>    gettimeofday(&amp;tv2, &amp;tz);<br>    <span class="hljs-built_in">printf</span>( <span class="hljs-string">&quot;computed pi = %24.16g\n&quot;</span>, pi );<br>    <span class="hljs-built_in">printf</span>( <span class="hljs-string">&quot;CPU time (clock)                = %12.4g sec\n&quot;</span>, (t2-t1)/<span class="hljs-number">1000000.0</span> );<br>    <span class="hljs-built_in">printf</span>( <span class="hljs-string">&quot;wall clock time (omp_get_wtime) = %12.4g sec\n&quot;</span>, wt2-wt1 );<br>    <span class="hljs-built_in">printf</span>( <span class="hljs-string">&quot;wall clock time (gettimeofday)  = %12.4g sec\n&quot;</span>, (tv2.tv_sec-tv1.tv_sec) + (tv2.tv_usec-tv1.tv_usec)*<span class="hljs-number">1e-6</span> );<br>&#125;<br><br>output:<br>OpenMP-parallel with <span class="hljs-number">4</span> threads<br>computed pi =        <span class="hljs-number">3.141592653589731</span><br>CPU time (clock)                =       <span class="hljs-number">0.1159</span> sec<br>wall clock time (omp_get_wtime) =       <span class="hljs-number">0.1113</span> sec<br>wall clock time (gettimeofday)  =       <span class="hljs-number">0.1113</span> sec<br></code></pre></td></tr></table></figure>
+
+<h4 id="一些函数"><a href="#一些函数" class="headerlink" title="一些函数"></a>一些函数</h4><ul>
+<li><p>gettimeofday(&amp;tv1, &amp;tz)</p>
+<p>int gettimeofday(struct timeval*tv,struct timezone *tz )</p>
+<p>这个函数会把时间包装为一个结构体返回。包括秒，微妙，时区等信息.通过这个函数即可 准确获取多线程序运行时间。</p>
+</li>
+<li><p>omp_get_wtime()</p>
+<p>返回的是一个观察点的时间值，这个时间将一直在程序运行时持续，也就是说，在程序运行前使用和程序运行结束使用，这个时间差是整个程序运行的时间，而不是clock得到的cpu运行的时间</p>
+</li>
+<li><p>clock()</p>
+<p>返回的是处理器执行的时间，也就是说，只要内核中有程序在cpu中运行，时间就会增加，使用多核并行化技术并不能并行地计算使用的时间，仍然是进行<strong>叠加</strong></p>
+</li>
+</ul>
+<h4 id="并行化"><a href="#并行化" class="headerlink" title="并行化"></a>并行化</h4><ol>
+<li>进入练习，在计算Pi的部分添加一个并行区域和for指令。Pi的计算是否正确？多次测试一下，把线程数改为2或12，并尝试找到竞赛条件。</li>
+</ol>
+<figure class="highlight excel"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><code class="hljs excel"> /* calculate <span class="hljs-built_in">pi</span> = integral [<span class="hljs-number">0</span>..<span class="hljs-number">1</span>] <span class="hljs-number">4</span>/(<span class="hljs-number">1</span>+x**<span class="hljs-number">2</span>) dx */<br>    w = <span class="hljs-number">1.0</span>/<span class="hljs-built_in">n</span>;<br>    <span class="hljs-built_in">sum</span> = <span class="hljs-number">0.0</span>;<br>    #   pragma omp parallel<br>    &#123;<br>    	# pragma omp for<br>      for (i = <span class="hljs-number">1</span>; i &lt;= <span class="hljs-built_in">n</span>; i++)<br>      &#123;<br>          x = w*((double)i-<span class="hljs-number">0.5</span>);<br>          <span class="hljs-built_in">sum</span> = <span class="hljs-built_in">sum</span>+f(x);<br>      &#125;<br>    &#125;<br>    <span class="hljs-built_in">pi</span> = w*<span class="hljs-built_in">sum</span>;<br>outo<span class="hljs-symbol">ut:</span><br>OpenMP-parallel with <span class="hljs-number">4</span> threads<br>computed <span class="hljs-built_in">pi</span> =        <span class="hljs-number">1.297274379815414</span><br>CPU <span class="hljs-built_in">time</span> (clock)                =       <span class="hljs-number">0.2108</span> <span class="hljs-built_in">sec</span><br>wall clock <span class="hljs-built_in">time</span> (omp_get_wtime) =      <span class="hljs-number">0.07117</span> <span class="hljs-built_in">sec</span><br>wall clock <span class="hljs-built_in">time</span> (gettimeofday)  =      <span class="hljs-number">0.07117</span> <span class="hljs-built_in">sec</span><br></code></pre></td></tr></table></figure>
+
+<p><strong>结论：pi错误，cpu时间与总耗时不再相等，发生了竞赛条件</strong></p>
+<ol start="2">
+<li>添加private(x)子句。还是不正确吗？</li>
+</ol>
+<figure class="highlight excel"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><code class="hljs excel"> /* calculate <span class="hljs-built_in">pi</span> = integral [<span class="hljs-number">0</span>..<span class="hljs-number">1</span>] <span class="hljs-number">4</span>/(<span class="hljs-number">1</span>+x**<span class="hljs-number">2</span>) dx */<br>    w = <span class="hljs-number">1.0</span>/<span class="hljs-built_in">n</span>;<br>    <span class="hljs-built_in">sum</span> = <span class="hljs-number">0.0</span>;<br>    #   pragma omp parallel private(x)<br>    &#123;<br>        # pragma omp for<br>        for (i = <span class="hljs-number">1</span>; i &lt;= <span class="hljs-built_in">n</span>; i++)<br>        &#123;<br>            x = w*((double)i-<span class="hljs-number">0.5</span>);<br>            # <br>            <span class="hljs-built_in">sum</span> = <span class="hljs-built_in">sum</span>+f(x);<br>        &#125;<br>    &#125;<br>    <span class="hljs-built_in">pi</span> = w*<span class="hljs-built_in">sum</span>;<br>    <br>outp<span class="hljs-symbol">ut:</span><br>OpenMP-parallel with <span class="hljs-number">4</span> threads<br>computed <span class="hljs-built_in">pi</span> =        <span class="hljs-number">1.527720616497807</span><br>CPU <span class="hljs-built_in">time</span> (clock)                =       <span class="hljs-number">0.2061</span> <span class="hljs-built_in">sec</span><br>wall clock <span class="hljs-built_in">time</span> (omp_get_wtime) =      <span class="hljs-number">0.06862</span> <span class="hljs-built_in">sec</span><br>wall clock <span class="hljs-built_in">time</span> (gettimeofday)  =      <span class="hljs-number">0.06862</span> <span class="hljs-built_in">sec</span><br></code></pre></td></tr></table></figure>
+
+<p><strong>结论：还是不正确，时间所差无几</strong></p>
+<ol start="3">
+<li>在sum语句周围添加一个临界指令，然后进行编译。Pi的值是否正确？CPU的时间是多少？你可以如何优化你的代码？</li>
+</ol>
+<figure class="highlight excel"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br></pre></td><td class="code"><pre><code class="hljs excel"> /* calculate <span class="hljs-built_in">pi</span> = integral [<span class="hljs-number">0</span>..<span class="hljs-number">1</span>] <span class="hljs-number">4</span>/(<span class="hljs-number">1</span>+x**<span class="hljs-number">2</span>) dx */<br>    w = <span class="hljs-number">1.0</span>/<span class="hljs-built_in">n</span>;<br>    <span class="hljs-built_in">sum</span> = <span class="hljs-number">0.0</span>;<br>    #   pragma omp parallel private(x),shared(w,<span class="hljs-built_in">sum</span>)<br>    &#123;<br>        # pragma omp for<br>        for (i = <span class="hljs-number">1</span>; i &lt;= <span class="hljs-built_in">n</span>; i++)<br>        &#123;<br>            x = w*((double)i-<span class="hljs-number">0.5</span>);<br>            <br>            # pragma omp critical<br>            &#123;<br>                <span class="hljs-built_in">sum</span> = <span class="hljs-built_in">sum</span>+f(x);<br>            &#125;<br>            <br>        &#125;<br>    &#125;<br>    <span class="hljs-built_in">pi</span> = w*<span class="hljs-built_in">sum</span>;<br><br>outp<span class="hljs-symbol">ut:</span><br>OpenMP-parallel with <span class="hljs-number">4</span> threads<br>computed <span class="hljs-built_in">pi</span> =        <span class="hljs-number">3.141592653589849</span><br>CPU <span class="hljs-built_in">time</span> (clock)                =        <span class="hljs-number">4.173</span> <span class="hljs-built_in">sec</span><br>wall clock <span class="hljs-built_in">time</span> (omp_get_wtime) =        <span class="hljs-number">1.086</span> <span class="hljs-built_in">sec</span><br>wall clock <span class="hljs-built_in">time</span> (gettimeofday)  =        <span class="hljs-number">1.086</span> <span class="hljs-built_in">sec</span><br><br>优化：<br> /* calculate <span class="hljs-built_in">pi</span> = integral [<span class="hljs-number">0</span>..<span class="hljs-number">1</span>] <span class="hljs-number">4</span>/(<span class="hljs-number">1</span>+x**<span class="hljs-number">2</span>) dx */<br>    w = <span class="hljs-number">1.0</span>/<span class="hljs-built_in">n</span>;<br>    <span class="hljs-built_in">sum</span> = <span class="hljs-number">0.0</span>;<br>    double tmp;<br>    #   pragma omp parallel private(x,tmp),shared(w,<span class="hljs-built_in">sum</span>)<br>    &#123;<br>        # pragma omp for<br>        for (i = <span class="hljs-number">1</span>; i &lt;= <span class="hljs-built_in">n</span>; i++)<br>        &#123;<br>            double x = w*((double)i-<span class="hljs-number">0.5</span>);<br>            double tmp = f(x);<br>            # pragma omp critical<br>            &#123;<br>                <span class="hljs-built_in">sum</span> = <span class="hljs-built_in">sum</span>+tmp;<br>            &#125;<br>            <br>        &#125;<br>    &#125;<br>    <span class="hljs-built_in">pi</span> = w*<span class="hljs-built_in">sum</span>;<br><br>outp<span class="hljs-symbol">ut2:</span><br>OpenMP-parallel with <span class="hljs-number">4</span> threads<br>computed <span class="hljs-built_in">pi</span> =        <span class="hljs-number">3.141592653589924</span><br>CPU <span class="hljs-built_in">time</span> (clock)                =        <span class="hljs-number">3.694</span> <span class="hljs-built_in">sec</span><br>wall clock <span class="hljs-built_in">time</span> (omp_get_wtime) =       <span class="hljs-number">0.9747</span> <span class="hljs-built_in">sec</span><br>wall clock <span class="hljs-built_in">time</span> (gettimeofday)  =       <span class="hljs-number">0.9747</span> <span class="hljs-built_in">sec</span><br></code></pre></td></tr></table></figure>
+
+<p><strong>结论：将f(x)计算放外面，速度优化了0.1s，但是由于上锁过多，反而比串行运行慢得多</strong></p>
+<ol start="4">
+<li>将临界指令移到for循环之外以减少计算时间。</li>
+</ol>
+<p><strong>nowait 子句用于消除隐式的 barrier（*implicit barrier*）</strong></p>
+<pre><code class="hljs"> /* calculate pi = integral [0..1] 4/(1+x**2) dx */
+    w = 1.0/n;
+    sum = 0.0;
+    double tmp, sum0;
+    #   pragma omp parallel private(x,tmp,sum0),shared(w,sum)
+    &#123;
+        sum0 = 0;
+        # pragma omp for nowait
+        for (i = 1; i &lt;= n; i++)
+        &#123;
+            x = w*((double)i-0.5);
+            tmp = f(x);
+            sum0 += tmp;
+        &#125;
+        # pragma omp critical
+        &#123;
+            sum += sum0;
+        &#125;
+        
+     &#125;
+        pi = w*sum;
+        
+output:
+OpenMP-parallel with 4 threads
+computed pi =         3.14159265358967
+CPU time (clock)                =       0.1304 sec
+wall clock time (omp_get_wtime) =      0.03479 sec
+wall clock time (gettimeofday)  =      0.03479 sec
+</code></pre>
+<p><strong>结论：总cpu处理时间和串行多一点点，但是执行比串行快很多，大概在之前1&#x2F;3～1&#x2F;4样子</strong></p>
+<h3 id="六、Do-you-understand-worksharing-directives"><a href="#六、Do-you-understand-worksharing-directives" class="headerlink" title="六、Do you understand worksharing directives?"></a>六、Do you understand worksharing directives?</h3><p>  <strong>The purpose of <code>#pragma omp for</code> is？</strong></p>
+<p>Loop work is to be divided into user defined sections❌</p>
+<p>Work to be done in a loop when done, don’t wait❌ （+nowait）</p>
+<p>Work to be done in a loop✅</p>
+<p><strong>The following code forces threads to wait till all are done:</strong></p>
+<p>#pragma omp parallel❌</p>
+<p>#pragma omp barrier✅</p>
+<p>#pragma omp critical❌（临界锁）</p>
+<p>#pragma omp sections❌</p>
+<h2 id="第三节、Data-environment-and-combined-constructs"><a href="#第三节、Data-environment-and-combined-constructs" class="headerlink" title="第三节、Data environment and combined constructs"></a>第三节、Data environment and combined constructs</h2><h3 id="一、Private-and-shared-variables"><a href="#一、Private-and-shared-variables" class="headerlink" title="一、Private and shared variables"></a>一、Private and shared variables</h3><p>我们已经了解了private子句，在这里我们可以指定每个线程应该有自己的变量实例。我们还学习了共享子句，我们可以指定一个或多个变量在所有线程之间共享。这通常是不需要的，<strong>因为默认范围是共享的。</strong></p>
+<p>有几个例外情况。</p>
+<ul>
+<li>被调用的子程序中的堆栈（局部）变量是自动私有的</li>
+<li>一个区块内的自动变量是私有的</li>
+<li>并行FOR循环的循环控制变量是私有的</li>
+</ul>
+<h4 id="私有子句"><a href="#私有子句" class="headerlink" title="私有子句"></a>私有子句</h4><ul>
+<li>私有子句总是创建一个变量的本地实例。对于每一个线程来说，都会创建一个新的变量，并带有一个未初始化的值<strong>。这意味着这些私有变量除了具有相同的名称和类型外，与原始变量没有任何关系。</strong></li>
+<li>firstprivate(var)指定每个线程应该有自己的变量实例，并且该变量应该用并行构造之前存在的共享变量的值进行初始化。</li>
+<li>lastprivate(var)指定变量在并行结构后的值被设置为等于执行最后迭代（for-loop结构）或最后一段（#pragma sections）的哪个线程的私有版本。</li>
+<li>具有相同变量名称的嵌套private(var)再次分配新的私有存储。</li>
+</ul>
+<p>Let’s explain by observing the following code：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;stdio.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;omp.h&gt;</span></span><br><br><span class="hljs-type">int</span> <span class="hljs-title function_">main</span><span class="hljs-params">()</span><br>&#123;<br>    <span class="hljs-type">int</span> num_threads = <span class="hljs-number">4</span>;<br>    omp_set_num_threads(num_threads);<br><br>    <span class="hljs-type">int</span> var_shared = <span class="hljs-number">-777</span>;<br>    <span class="hljs-type">int</span> var_private = <span class="hljs-number">-777</span>;<br>    <span class="hljs-type">int</span> var_firstprivate = <span class="hljs-number">-777</span>;<br>    <span class="hljs-type">int</span> var_lastprivate = <span class="hljs-number">-777</span>;<br><br>    <span class="hljs-meta">#<span class="hljs-keyword">pragma</span> omp parallel shared(var_shared) private(var_private) firstprivate(var_firstprivate)</span><br>    &#123;<br>        <span class="hljs-meta">#<span class="hljs-keyword">pragma</span> omp for lastprivate(var_lastprivate)</span><br>        <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i = <span class="hljs-number">0</span>; i &lt; <span class="hljs-number">1000</span>; i++)<br>        &#123;<br>            var_shared = i;<br>            var_private = i;<br>            var_firstprivate = i;<br>            var_lastprivate = i;<br>        &#125;<br>    &#125;<br><br>    <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;after parallel region: %d %d %d %d&quot;</span>, <br>        var_shared, var_private, var_firstprivate, var_lastprivate);<br>&#125;<br><br>output：<br>after parallel region: <span class="hljs-number">999</span> <span class="hljs-number">-777</span> <span class="hljs-number">-777</span> <span class="hljs-number">999</span> ✅<br></code></pre></td></tr></table></figure>
+
+<p>花点时间，试着猜测平行区域后的变量的值。注意数据范围条款的用法。<br>var_shared是一个共享变量，它通常会被并行区域更新。<br>var_private被指定为private，所以每个线程都有自己的实例，在并行区域之后，其值仍与之前相同。<br>var_firstprivate被指定为private，并在共享范围内用值初始化，但在并行区域之后，值保持不变。<br>var_lastprivate在for循环的最后一次迭代中被更新，以便在并行区域之后使用。</p>
+<h3 id="二、Reduction-clause"><a href="#二、Reduction-clause" class="headerlink" title="二、Reduction clause"></a>二、Reduction clause</h3><p>Reduction子句是一个数据范围子句，可以用来并行地执行某种形式的递归计算。它定义了计算还原的区域，并指定了一个运算符和一个或多个列表还原变量。减少子句的语法如下。</p>
+<figure class="highlight ada"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs ada">reduction (operator : <span class="hljs-type">list</span>)<br></code></pre></td></tr></table></figure>
+
+<p>列表中的变量在包围的上下文中不能是私有的。私有变量不能在reduce子句中指定。一个变量不能同时在共享子句和reduce子句中指定。</p>
+<p>对于每个列表项，在每次迭代中都会创建一个私有副本，并以运算符的中性常量值进行初始化。下表是每个运算符的列表及其语义初始化值。</p>
+<table>
+<thead>
+<tr>
+<th align="left">Operator</th>
+<th align="left">Initializer</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">+</td>
+<td align="left">var &#x3D; 0</td>
+</tr>
+<tr>
+<td align="left">-</td>
+<td align="left">var &#x3D; 0</td>
+</tr>
+<tr>
+<td align="left">*</td>
+<td align="left">var &#x3D; 1</td>
+</tr>
+<tr>
+<td align="left">&amp;</td>
+<td align="left">var &#x3D; ~ 0</td>
+</tr>
+<tr>
+<td align="left">&#96;</td>
+<td align="left">&#96;</td>
+</tr>
+<tr>
+<td align="left">^</td>
+<td align="left">var &#x3D; 0</td>
+</tr>
+<tr>
+<td align="left">&amp;&amp;</td>
+<td align="left">var &#x3D; 1</td>
+</tr>
+<tr>
+<td align="left">&#96;</td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left">max</td>
+<td align="left">var &#x3D; most negative number</td>
+</tr>
+<tr>
+<td align="left">min</td>
+<td align="left">var &#x3D; most positive number</td>
+</tr>
+</tbody></table>
+<p>在该区域结束后，原始列表项被使用与运算符相关的组合器用私有拷贝的值更新。<br>让我们观察一下下面的例子：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;stdio.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;omp.h&gt;</span></span><br><br><span class="hljs-type">int</span> <span class="hljs-title function_">main</span><span class="hljs-params">()</span><br>&#123;<br>    <span class="hljs-type">int</span> sum = <span class="hljs-number">0</span>;<br>    <span class="hljs-meta">#<span class="hljs-keyword">pragma</span> omp parallel for reduction(+:sum)</span><br>    <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i = <span class="hljs-number">0</span>; i&lt;<span class="hljs-number">20</span>; i++)<br>    &#123;<br>        sum = sum + i;<br>    &#125;<br>    <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;sum: %d&quot;</span>, sum);<br>&#125;<br><br>output:<br>sum: <span class="hljs-number">190</span><br></code></pre></td></tr></table></figure>
+
+<p>reduction变量是sum，reduction操作是+。reduction操作是自动进行的。它在循环中产生一个私有变量sum，最后将私有部分sum加到全局变量上。</p>
+<h3 id="三、Sum-and-substract（❌-todo）"><a href="#三、Sum-and-substract（❌-todo）" class="headerlink" title="三、Sum and substract（❌ todo）"></a>三、Sum and substract（❌ todo）</h3><p>在这个练习中，你将在一个组合的并行循环结构中练习求和和求减。<br>在这个练习中，我们要生成一些人，这些人要减去我们的苹果值。你需要做的是将代码并行化</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;stdio.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;omp.h&gt;</span></span><br><br><span class="hljs-type">double</span> <span class="hljs-title function_">generate_people</span><span class="hljs-params">(<span class="hljs-type">int</span> i, <span class="hljs-type">int</span> j)</span><br>&#123;<br>    <span class="hljs-keyword">return</span> (<span class="hljs-number">2</span> * i + <span class="hljs-number">3</span> * j); <span class="hljs-comment">// some dummy return value</span><br>&#125;<br><br><span class="hljs-type">int</span> <span class="hljs-title function_">main</span><span class="hljs-params">()</span><br>&#123;<br>    <span class="hljs-type">int</span> num_threads = <span class="hljs-number">4</span>;<br>    omp_set_num_threads(num_threads);<br><br>    <span class="hljs-type">int</span> num = <span class="hljs-number">10</span>;<br>    <span class="hljs-type">int</span> people = <span class="hljs-number">0</span>;<br>    <span class="hljs-type">int</span> apples = <span class="hljs-number">5000</span>;<br><br>    <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i = <span class="hljs-number">0</span>; i &lt; num; i++) &#123;<br>        <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> j = i+<span class="hljs-number">1</span>; j &lt; num; j++) &#123;<br>            <span class="hljs-type">int</span> ppl = generate_people(i, j);<br>            people += ppl;<br>            apples -= ppl;<br>        &#125;<br>    &#125;<br><br>    <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;people = %d\n&quot;</span>, people);<br>    <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;apples = %d&quot;</span>, apples);<br>&#125;<br><br>output：<br>people = <span class="hljs-number">1095</span><br>apples = <span class="hljs-number">3905</span><br></code></pre></td></tr></table></figure>
+
+<p>​		<strong>练习</strong></p>
+<ul>
+<li>进入练习，添加一个带有for句的平行区域。</li>
+<li>添加两个减少句：一个是增加人，另一个是减少苹果。</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><code class="hljs c">%%file reduction.c<br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;stdio.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;omp.h&gt;</span></span><br><br><span class="hljs-type">double</span> <span class="hljs-title function_">generate_people</span><span class="hljs-params">(<span class="hljs-type">int</span> i, <span class="hljs-type">int</span> j)</span><br>&#123;<br>    <span class="hljs-keyword">return</span> (<span class="hljs-number">2</span> * i + <span class="hljs-number">3</span> * j); <span class="hljs-comment">// some dummy return value</span><br>&#125;<br><br><span class="hljs-type">int</span> <span class="hljs-title function_">main</span><span class="hljs-params">()</span><br>    &#123;<br>    <span class="hljs-type">int</span> num_threads = <span class="hljs-number">4</span>;<br>    omp_set_num_threads(num_threads);<br><br>    <span class="hljs-type">int</span> num = <span class="hljs-number">10</span>;<br>    <span class="hljs-type">int</span> people = <span class="hljs-number">0</span>;<br>    <span class="hljs-type">int</span> apples = <span class="hljs-number">5000</span>;<br><br>    <span class="hljs-meta">#<span class="hljs-keyword">pragma</span> omp parallel for reduction(+:people) reduction(-:apples)</span><br>    <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i = <span class="hljs-number">0</span>; i &lt; num; i++) &#123;<br>        <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> j = i+<span class="hljs-number">1</span>; j &lt; num; j++) &#123;<br>            <span class="hljs-type">int</span> ppl = generate_people(i, j);<br>            people += ppl;<br>            apples -= ppl;<br>        &#125;<br>    &#125;<br><br>    <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;people = %d\n&quot;</span>, people);<br>    <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;apples = %d&quot;</span>, apples);<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>​		然后回答这个问题。</p>
+<ul>
+<li>当我们试图让人们 “共享 “时会发生什么？为什么不能？</li>
+</ul>
+<h3 id="四、Combined-parallel-worksharing-directives"><a href="#四、Combined-parallel-worksharing-directives" class="headerlink" title="四、Combined parallel worksharing directives"></a>四、Combined parallel worksharing directives</h3><p>组合结构体是指定一个紧紧嵌套在另一个结构体中的结构体的快捷方式。指定一个组合构架在语义上与指定第一个构架包围第二个构架的实例以及没有其他语句是相同的。适用于两种指令的大部分规则、条款和限制都是有效的。并行结构体可以与其中一个工作共享结构体结合，例如for和section。</p>
+<p><strong>parallel for</strong></p>
+<p>当我们使用一个只包含一个for指令的并行区域时，我们可以用这个组合指令来代替单独的指令。</p>
+<figure class="highlight inform7"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs inform7">#pragma omp parallel for <span class="hljs-comment">[clause<span class="hljs-comment">[<span class="hljs-comment">[,]</span>clause]</span>...]</span><br></code></pre></td></tr></table></figure>
+
+<p>这条指令接纳了并行指令和for指令的所有子句，除了禁止使用nowait子句。<br>这个组合指令必须直接放在for循环的前面。下面是一个组合结构的例子。</p>
+<figure class="highlight arduino"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs arduino"><span class="hljs-type">int</span> i;<br><span class="hljs-type">int</span> f = <span class="hljs-number">7</span>;<br><br><span class="hljs-meta">#<span class="hljs-keyword">pragma</span> omp parallel for</span><br>     <span class="hljs-keyword">for</span> (i = <span class="hljs-number">0</span>; i&lt;<span class="hljs-number">20</span>; i++)  &#123;<br>          c[i] = a[i] + b[i];<br>     &#125;<br></code></pre></td></tr></table></figure>
+
+
+
+
+
+<h3 id="五、Calculate-Pi-with-combined-constructs"><a href="#五、Calculate-Pi-with-combined-constructs" class="headerlink" title="五、Calculate Pi with combined constructs"></a>五、Calculate Pi with combined constructs</h3><p>using reducer</p>
+<pre><code class="hljs">/* calculate pi = integral [0..1] 4/(1+x**2) dx */
+w = 1.0/n;
+sum = 0.0;
+#pragma omp parallel private(x,sum0)
+&#123;
+   #pragma omp for reduction(+:sum)        
+    for (i = 1; i &lt;= n; i++)
+    &#123;
+        x = f(w*((double)i-0.5));
+        sum += x;
+    &#125;   
+&#125; /*end omp parallel*/ 
+pi = w*sum;
+</code></pre>
 <h1 id="X、参考文献-x2F-课程"><a href="#X、参考文献-x2F-课程" class="headerlink" title="X、参考文献&#x2F;课程"></a>X、参考文献&#x2F;课程</h1><ul>
 <li><a target="_blank" rel="noopener" href="https://www.futurelearn.com/courses/interactive-hands-on-introduction-to-parallel-programming/1/todo/105942">Introduction to Parallel Programming</a></li>
 <li><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/488116143">NUMA 的平衡和调度</a></li>
@@ -561,7 +807,7 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>post</div>
+      <div>OpenMP</div>
       <div>http://by.ecel.top/MPI/Introduction-to-Parallel-Programming/OpenMP/</div>
     </div>
     <div class="license-meta">
@@ -605,6 +851,12 @@
                 <div class="post-prevnext my-3">
                   <article class="post-prev col-6">
                     
+                    
+                      <a href="/Algorithm/Double%20to%20Binary%20Number/" title="用二进制表示double">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">用二进制表示double</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
                     
                   </article>
                   <article class="post-next col-6">
