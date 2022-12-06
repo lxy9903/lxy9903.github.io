@@ -29,8 +29,11 @@
 <meta property="og:image" content="http://by.ecel.top/Java/Design_Mode/image-20221124200742966.png">
 <meta property="og:image" content="http://by.ecel.top/Java/Design_Mode/image-20221125210720349.png">
 <meta property="og:image" content="http://by.ecel.top/Java/Design_Mode/image-20221130225741583.png">
+<meta property="og:image" content="http://by.ecel.top/Java/Design_Mode/image-20221201164438455.png">
+<meta property="og:image" content="http://by.ecel.top/Java/Design_Mode/image-20221201215226048.png">
+<meta property="og:image" content="http://by.ecel.top/Java/Design_Mode/image-20221201220504057.png">
 <meta property="article:published_time" content="2022-11-01T07:24:57.000Z">
-<meta property="article:modified_time" content="2022-11-30T14:58:08.824Z">
+<meta property="article:modified_time" content="2022-12-01T14:30:53.775Z">
 <meta property="article:author" content="刘笑笑">
 <meta property="article:tag" content="Java">
 <meta property="article:tag" content="设计模式">
@@ -244,7 +247,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          7.4k 字
+          9.1k 字
         
       </span>
     
@@ -255,7 +258,7 @@
         
         
         
-          62 分钟
+          76 分钟
         
       </span>
     
@@ -298,7 +301,7 @@
               <p class="note note-info">
                 
                   
-                    本文最后更新于：2022年11月30日 晚上
+                    本文最后更新于：2022年12月1日 晚上
                   
                 
               </p>
@@ -414,10 +417,66 @@
 
 
 
-<h4 id="享元模式（Flyweight-Pattern）"><a href="#享元模式（Flyweight-Pattern）" class="headerlink" title="享元模式（Flyweight Pattern）"></a>享元模式（Flyweight Pattern）</h4><h3 id="xxx"><a href="#xxx" class="headerlink" title="xxx"></a>xxx</h3><h4 id="策略模式"><a href="#策略模式" class="headerlink" title="策略模式"></a>策略模式</h4><p>在策略模式（Strategy Pattern）中，一个类的行为或其算法可以在运行时更改。这种类型的设计模式属于行为型模式。</p>
+<h4 id="享元模式（Flyweight-Pattern）"><a href="#享元模式（Flyweight-Pattern）" class="headerlink" title="享元模式（Flyweight Pattern）"></a>享元模式（Flyweight Pattern）</h4><p>享元模式可以理解为带缓存的工厂模式，可以减少创建对象的数目。如String的串池、mysql的缓冲池。</p>
+<img src="/Java/Design_Mode/image-20221201164438455.png" srcset="/img/loading.gif" lazyload alt="image-20221201164438455" style="zoom:50%;">
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">interface</span> <span class="hljs-title class_">Shape</span>&#123;<br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">draw</span><span class="hljs-params">()</span>;<br>&#125;<br><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">Circle</span> <span class="hljs-keyword">implements</span> <span class="hljs-title class_">Shape</span>&#123;<br>    <span class="hljs-keyword">private</span> String key;<br>    <span class="hljs-keyword">public</span> <span class="hljs-title function_">Circle</span><span class="hljs-params">(String key)</span>&#123;<br>        <span class="hljs-built_in">this</span>.key = key;<br>    &#125;<br><br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">draw</span><span class="hljs-params">()</span> &#123;<br>        System.out.println(<span class="hljs-string">&quot;画一个圆圈，key为：&quot;</span>+key);<br>    &#125;<br>&#125;<br><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">FlyWeightFactory</span> &#123;<br>    <span class="hljs-keyword">private</span> ConcurrentHashMap&lt;String, Shape&gt; map = <span class="hljs-keyword">new</span> <span class="hljs-title class_">ConcurrentHashMap</span>&lt;&gt;();<br><br>    <span class="hljs-keyword">public</span> Shape <span class="hljs-title function_">getShape</span><span class="hljs-params">(String key)</span>&#123;<br>        <span class="hljs-type">Shape</span> <span class="hljs-variable">shape</span> <span class="hljs-operator">=</span> map.get(key);<br>        <span class="hljs-keyword">if</span> (shape != <span class="hljs-literal">null</span>)&#123;<br>            <span class="hljs-keyword">return</span> shape;<br>        &#125;<br>        <span class="hljs-keyword">synchronized</span> (map)&#123;<br>            <span class="hljs-keyword">if</span> (map.get(key) != <span class="hljs-literal">null</span>)&#123;<br>                <span class="hljs-keyword">return</span> map.get(key);<br>            &#125;<br>            <span class="hljs-type">Shape</span> <span class="hljs-variable">circle</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Circle</span>(key);<br>            map.put(key, circle);<br>            <span class="hljs-keyword">return</span> circle;<br>        &#125;<br>    &#125;<br><br>&#125;<br></code></pre></td></tr></table></figure>
+
+
+
+<h3 id="xxx"><a href="#xxx" class="headerlink" title="xxx"></a>xxx</h3><h4 id="策略模式"><a href="#策略模式" class="headerlink" title="策略模式"></a>策略模式</h4><p>在策略模式（Strategy Pattern）中，一个类的行为或其算法可以在运行时更改。这种类型的设计模式属于行为型模式。</p>
 <p>在策略模式中，我们创建表示各种策略的对象和一个行为随着策略对象改变而改变的 context 对象。策略对象改变 context 对象的执行算法。</p>
 <h4 id="模板模式"><a href="#模板模式" class="headerlink" title="模板模式"></a>模板模式</h4><p>在模板模式（Template Pattern）中，一个抽象类公开定义了执行它的方法的方式&#x2F;模板。它的子类可以按需要重写方法实现，但调用将以抽象类中定义的方式进行。这种类型的设计模式属于行为型模式。</p>
 <h4 id="观察者模式"><a href="#观察者模式" class="headerlink" title="观察者模式"></a>观察者模式</h4><p>当对象间存在一对多关系时，则使用观察者模式（Observer Pattern）。比如，当一个对象被修改时，则会自动通知依赖它的对象。观察者模式属于行为型模式。</p>
+<h2 id="UML关系"><a href="#UML关系" class="headerlink" title="UML关系"></a>UML关系</h2><img src="/Java/Design_Mode/image-20221201215226048.png" srcset="/img/loading.gif" lazyload alt="image-20221201215226048" style="zoom:50%;">
+
+<p>composition：心脏与人</p>
+<p>aggregation：个人与班级</p>
+<h2 id="Design-Smells"><a href="#Design-Smells" class="headerlink" title="Design Smells"></a><strong>Design Smells</strong></h2><ol>
+<li><p>Rigidity僵化：软件太难改变即使是简单的方式，一个变化会导致其他依赖模块的连锁变化</p>
+</li>
+<li><p>Fragility易碎性：一个单一的变化导致软件很多地方中断</p>
+</li>
+</ol>
+<p>Rigidity和fragility相辅相成，在设计新功能&#x2F;变换时以造成最小的影响为目标</p>
+<ol start="3">
+<li><p>Immobility不动性：设计难以被重复使用</p>
+</li>
+<li><p>概念简介</p>
+</li>
+</ol>
+<p>Viscosity粘度：</p>
+<p>Concept introduction环境层面：开发环境缓慢效率低下；</p>
+<p>软件层面：改变通过黑客的方法比保留设计的方法更容易实现</p>
+<ol start="5">
+<li><p>Opacity不透明：模块难以理解</p>
+</li>
+<li><p>Meaningless Complexity 无意义的复杂：事情做得比它们应该做的更复杂</p>
+</li>
+<li><p>Meaningless Repetition 无意义的重复：缺乏统一的结构</p>
+</li>
+<li><p>Coupling耦合：各部分之间的相互依存关系</p>
+</li>
+</ol>
+<h2 id="Code-Smell"><a href="#Code-Smell" class="headerlink" title="Code Smell"></a>Code Smell</h2><p><strong>Long Method</strong>：一个方法的内容过多，过复杂</p>
+<p><strong>解决办法</strong>：将部分操作拆分成独立方法</p>
+<p><strong>Long Parameter List</strong>：一个方法需要引入的变量过多，过复杂</p>
+<p><strong>解决办法</strong>：充分利用已有变量的资源</p>
+<p><strong>Data Classes</strong>：一个类除了 getter 和 setter 之外没有其他的方法&#x2F;行为了</p>
+<p><strong>解决办法</strong>：充分利用已有变量的资源</p>
+<p><strong>Lazy Class</strong>：一个类的存在不是很有必要 （一个类的子类如果没有任何覆写的方法或</p>
+<p>者新增的方法，那么这个类有可能是一个 Lazy Class）</p>
+<p><strong>Refused Request 被拒绝的遗赠</strong>：子类和父类的关系一开始很简单，但随着时间的推</p>
+<p>移可能会变得越来越复杂。一个子类通常需要紧密的依赖其父类，但有时会矫枉过正。</p>
+<p><strong>Feature Envy</strong> (依恋情结)：某个函数为了计算某个值，从另一个对象那儿调用几乎半打的取值函数。</p>
+<p><strong>Shotgun Surgery</strong> (散弹式修改)：任何修改都需要在许多不同类上做小幅度修改。</p>
+<p>• 原因：单一职责被拆分成大量的散类</p>
+<p>• <strong>解决方法</strong>：运用搬移函数和搬移字段来讲不同类中的相同行为放到一个对立的类中。</p>
+<p><strong>Divergent Change</strong> </p>
+<p>概念简介 (发散式变化)：修个某个功能，要在一个类中改动多处</p>
+<p>Concept introduction</p>
+<p>• <strong>解决方法：</strong>找到造成所有变化的特定原因，将他们放到一个类中。</p>
+<p><img src="/Java/Design_Mode/image-20221201220504057.png" srcset="/img/loading.gif" lazyload alt="image-20221201220504057"></p>
 <h2 id="参考文档"><a href="#参考文档" class="headerlink" title="参考文档"></a>参考文档</h2><ul>
 <li><a target="_blank" rel="noopener" href="https://www.runoob.com/design-pattern/design-pattern-intro.html">菜鸟教程-设计模式简介</a></li>
 <li><a target="_blank" rel="noopener" href="https://www.jianshu.com/p/a3e09071c44f">重构（Refactoring）学习笔记</a></li>
@@ -426,6 +485,7 @@
 <li><a target="_blank" rel="noopener" href="https://blog.csdn.net/ChineseSoftware/article/details/123256575">建造者模式(Builder Pattern)</a></li>
 <li><a target="_blank" rel="noopener" href="https://www.zhihu.com/question/21857130">什么是建造者模式？</a></li>
 <li><a target="_blank" rel="noopener" href="https://www.bilibili.com/read/cv14604081/">18设计模式——建造者模式详解</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/uuuyy_/article/details/122433110">25种代码坏味道总结+优化示例</a></li>
 </ul>
 
                 
