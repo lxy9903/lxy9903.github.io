@@ -4,6 +4,31 @@
   
   
   <entry>
+    <title>协程</title>
+    <link href="/OS/coroutine/"/>
+    <url>/OS/coroutine/</url>
+    
+    <content type="html"><![CDATA[<h2 id="一、什么是协程"><a href="#一、什么是协程" class="headerlink" title="一、什么是协程"></a>一、什么是协程</h2><p>协程是轻量级线程，用户级线程，<strong>协程的切换过程中无需陷入内核</strong>。</p><p>可以将协程理解为一个<strong>特殊的函数</strong>。</p><h3 id="todo：协程与函数区别"><a href="#todo：协程与函数区别" class="headerlink" title="todo：协程与函数区别"></a>todo：协程与函数区别</h3><h2 id="二、协程切换"><a href="#二、协程切换" class="headerlink" title="二、协程切换"></a>二、协程切换</h2><p>进程与线程的切换上下文信息都保存在<strong>内核栈</strong>中，协程的上下文信息存在<strong>用户栈</strong>中</p><!--部分为个人理解，可能存在错误--><p><strong>协程切换</strong></p><p>切换不涉及cpu的切换，将当前协程程的本地数据，程序当前的指针等保存在存在用户栈中。</p><p><strong>线程切换</strong></p><p>当一个cpu从一个线程切换到另一个线程时，cpu需要保存当前线程的本地数据，程序当前的指针等，然后加载下一个等待执行的线程的本地数据，程序指针等。</p><p><strong>进程切换</strong></p><p>比起线程切换，还有需要将数据换入换出。</p><h2 id="三、总结"><a href="#三、总结" class="headerlink" title="三、总结"></a>三、总结</h2><p>一个线程内的协程是串行运行的，共用这个线程占有的cpu核心，协程切换过程中该线程会一直占有这个cpu核心，所以协程间的切换不涉及cpu的切换，可以完全由用户控制，而无需陷入内核。</p><p><strong>比起计算密集型场景，协程更适合IO密集型场景。</strong></p><h2 id="参考文档"><a href="#参考文档" class="headerlink" title="参考文档"></a>参考文档</h2><ul><li><a href="https://blog.csdn.net/sanmi8276/article/details/111375619">什么是协程</a></li><li><a href="https://blog.csdn.net/w2009211777/article/details/125514898">总结：协程与线程</a></li></ul>]]></content>
+    
+    
+    <categories>
+      
+      <category>OS</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>OS</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
     <title>CPU、核心以及与线程之间对应</title>
     <link href="/OS/cpu/"/>
     <url>/OS/cpu/</url>
@@ -13,7 +38,7 @@
     
     <categories>
       
-      <category>Architecture</category>
+      <category>OS</category>
       
     </categories>
     

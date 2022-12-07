@@ -16,24 +16,22 @@
   <meta name="author" content="刘笑笑">
   <meta name="keywords" content="java、go、操作系统、网络">
   
-    <meta name="description" content="什么是CPUcpu的组成 控制单元（管理者）：负责调度运算 运算单元（执行者）：负责算术计算（+-*&#x2F;）逻辑运算（与或非）等运算 存储单元（寄存器）：负责存储缓存数据  指令太多运算速度过快，会存在寄存器存储空间跟不上的情况。cpu为了和内存速度匹配，在寄存器和内存中间加了三级高速缓存。 结构图    工作原理 取指令 指令译码 执行指令 访存取数 结果写回      CPU数，核心数，">
+    <meta name="description" content="一、什么是协程协程是轻量级线程，用户级线程，协程的切换过程中无需陷入内核。 可以将协程理解为一个特殊的函数。 todo：协程与函数区别二、协程切换进程与线程的切换上下文信息都保存在内核栈中，协程的上下文信息存在用户栈中   协程切换 切换不涉及cpu的切换，将当前协程程的本地数据，程序当前的指针等保存在存在用户栈中。 线程切换 当一个cpu从一个线程切换到另一个线程时，cpu需要保存当前线程的本地">
 <meta property="og:type" content="article">
-<meta property="og:title" content="CPU、核心以及与线程之间对应">
-<meta property="og:url" content="http://by.ecel.top/OS/cpu/index.html">
+<meta property="og:title" content="协程">
+<meta property="og:url" content="http://by.ecel.top/OS/coroutine/index.html">
 <meta property="og:site_name" content="Hello">
-<meta property="og:description" content="什么是CPUcpu的组成 控制单元（管理者）：负责调度运算 运算单元（执行者）：负责算术计算（+-*&#x2F;）逻辑运算（与或非）等运算 存储单元（寄存器）：负责存储缓存数据  指令太多运算速度过快，会存在寄存器存储空间跟不上的情况。cpu为了和内存速度匹配，在寄存器和内存中间加了三级高速缓存。 结构图    工作原理 取指令 指令译码 执行指令 访存取数 结果写回      CPU数，核心数，">
+<meta property="og:description" content="一、什么是协程协程是轻量级线程，用户级线程，协程的切换过程中无需陷入内核。 可以将协程理解为一个特殊的函数。 todo：协程与函数区别二、协程切换进程与线程的切换上下文信息都保存在内核栈中，协程的上下文信息存在用户栈中   协程切换 切换不涉及cpu的切换，将当前协程程的本地数据，程序当前的指针等保存在存在用户栈中。 线程切换 当一个cpu从一个线程切换到另一个线程时，cpu需要保存当前线程的本地">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="http://by.ecel.top/OS/cpu/image-20221206171122439.png">
-<meta property="article:published_time" content="2022-12-06T08:48:57.000Z">
-<meta property="article:modified_time" content="2022-12-07T13:24:50.857Z">
+<meta property="article:published_time" content="2022-12-07T13:23:27.000Z">
+<meta property="article:modified_time" content="2022-12-07T14:56:32.477Z">
 <meta property="article:author" content="刘笑笑">
 <meta property="article:tag" content="OS">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="http://by.ecel.top/OS/cpu/image-20221206171122439.png">
   
   
   
-  <title>CPU、核心以及与线程之间对应 - Hello</title>
+  <title>协程 - Hello</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -213,7 +211,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="CPU、核心以及与线程之间对应"></span>
+            <span id="subtitle" data-typed-text="协程"></span>
           
         </div>
 
@@ -224,8 +222,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2022-12-06 16:48" pubdate>
-          2022年12月6日 下午
+        <time datetime="2022-12-07 21:23" pubdate>
+          2022年12月7日 晚上
         </time>
       </span>
     
@@ -236,7 +234,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          559 字
+          386 字
         
       </span>
     
@@ -247,7 +245,7 @@
         
         
         
-          5 分钟
+          4 分钟
         
       </span>
     
@@ -285,7 +283,7 @@
         <div id="board">
           <article class="post-content mx-auto">
             <!-- SEO header -->
-            <h1 style="display: none">CPU、核心以及与线程之间对应</h1>
+            <h1 style="display: none">协程</h1>
             
               <p class="note note-info">
                 
@@ -298,41 +296,22 @@
             
               <div class="markdown-body">
                 
-                <h2 id="什么是CPU"><a href="#什么是CPU" class="headerlink" title="什么是CPU"></a>什么是CPU</h2><h3 id="cpu的组成"><a href="#cpu的组成" class="headerlink" title="cpu的组成"></a>cpu的组成</h3><ul>
-<li>控制单元（管理者）：负责调度运算</li>
-<li>运算单元（执行者）：负责算术计算（+-*&#x2F;）逻辑运算（与或非）等运算</li>
-<li>存储单元（寄存器）：负责存储缓存数据</li>
-</ul>
-<p>指令太多运算速度过快，会存在寄存器存储空间跟不上的情况。cpu为了和内存速度匹配，在寄存器和内存中间加了三级高速缓存。</p>
-<h3 id="结构图"><a href="#结构图" class="headerlink" title="结构图"></a>结构图</h3><!--图源网络，见水印and参考文献1-->
+                <h2 id="一、什么是协程"><a href="#一、什么是协程" class="headerlink" title="一、什么是协程"></a>一、什么是协程</h2><p>协程是轻量级线程，用户级线程，<strong>协程的切换过程中无需陷入内核</strong>。</p>
+<p>可以将协程理解为一个<strong>特殊的函数</strong>。</p>
+<h3 id="todo：协程与函数区别"><a href="#todo：协程与函数区别" class="headerlink" title="todo：协程与函数区别"></a>todo：协程与函数区别</h3><h2 id="二、协程切换"><a href="#二、协程切换" class="headerlink" title="二、协程切换"></a>二、协程切换</h2><p>进程与线程的切换上下文信息都保存在<strong>内核栈</strong>中，协程的上下文信息存在<strong>用户栈</strong>中</p>
+<!--部分为个人理解，可能存在错误-->
 
-<img src="/OS/cpu/image-20221206171122439.png" srcset="/img/loading.gif" lazyload alt="image-20221206171122439" style="zoom:50%;">
-
-<h3 id="工作原理"><a href="#工作原理" class="headerlink" title="工作原理"></a>工作原理</h3><ol>
-<li>取指令</li>
-<li>指令译码</li>
-<li>执行指令</li>
-<li>访存取数</li>
-<li>结果写回</li>
-</ol>
-<!--可完善-->
-
-
-
-<h2 id="CPU数，核心数，线程数的关系"><a href="#CPU数，核心数，线程数的关系" class="headerlink" title="CPU数，核心数，线程数的关系"></a>CPU数，核心数，线程数的关系</h2><p><strong>CPU数：</strong>我们用的电脑一般都只有一个cpu。</p>
-<p><strong>CPU核心数（CPU cores）：</strong>一个CPU上可以有多个核心，每个核中都有独立的ALU，FPU，Cache等组件，每个cpu核心有自己的L1缓存，同一个cpu的不同核心共用L2、L3缓存。</p>
-<p><strong>CPU线程数（processor）：</strong>逻辑核心数，与超线程技术有关，一个物理核心可以对应两个逻辑核心。</p>
-<!-- Intel有超线程技术。AMD没有 -->
-
-
-
-<h2 id="超线程技术"><a href="#超线程技术" class="headerlink" title="超线程技术"></a>超线程技术</h2><p>两个线程同时使用一个cpu核心，比如说当一个逻辑处理器在执行浮点运算（使用处理器的浮点运算单元）时，另一个逻辑处理器可以执行加法运算（使用处理器的整数运算单元）。</p>
-<h2 id="线程是如何使用CPU核心的"><a href="#线程是如何使用CPU核心的" class="headerlink" title="线程是如何使用CPU核心的"></a>线程是如何使用CPU核心的</h2><p>单个线程只能运行在一个cpu核心上</p>
-<p>单个cpu核心只能运行一个线程（无超线程技术情况下）</p>
-<h2 id="协程与cpu核心关系"><a href="#协程与cpu核心关系" class="headerlink" title="协程与cpu核心关系"></a><!--todo-->协程与cpu核心关系</h2><h2 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h2><ul>
-<li><a target="_blank" rel="noopener" href="https://www.elecfans.com/baike/zhujipeijian/cpu/20170526519542.html">cpu的基本结构及其工作原理</a></li>
-<li><a target="_blank" rel="noopener" href="https://baijiahao.baidu.com/s?id=1619812694399963397&wfr=spider&for=pc">CPU科普文：5分钟让你看懂CPU的结构和工作原理</a></li>
-<li><a target="_blank" rel="noopener" href="https://baijiahao.baidu.com/s?id=1666360319131085422&wfr=spider&for=pc">10分钟看懂CPU构造原理</a></li>
+<p><strong>协程切换</strong></p>
+<p>切换不涉及cpu的切换，将当前协程程的本地数据，程序当前的指针等保存在存在用户栈中。</p>
+<p><strong>线程切换</strong></p>
+<p>当一个cpu从一个线程切换到另一个线程时，cpu需要保存当前线程的本地数据，程序当前的指针等，然后加载下一个等待执行的线程的本地数据，程序指针等。</p>
+<p><strong>进程切换</strong></p>
+<p>比起线程切换，还有需要将数据换入换出。</p>
+<h2 id="三、总结"><a href="#三、总结" class="headerlink" title="三、总结"></a>三、总结</h2><p>一个线程内的协程是串行运行的，共用这个线程占有的cpu核心，协程切换过程中该线程会一直占有这个cpu核心，所以协程间的切换不涉及cpu的切换，可以完全由用户控制，而无需陷入内核。</p>
+<p><strong>比起计算密集型场景，协程更适合IO密集型场景。</strong></p>
+<h2 id="参考文档"><a href="#参考文档" class="headerlink" title="参考文档"></a>参考文档</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/sanmi8276/article/details/111375619">什么是协程</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/w2009211777/article/details/125514898">总结：协程与线程</a></li>
 </ul>
 
                 
@@ -379,8 +358,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>CPU、核心以及与线程之间对应</div>
-      <div>http://by.ecel.top/OS/cpu/</div>
+      <div>协程</div>
+      <div>http://by.ecel.top/OS/coroutine/</div>
     </div>
     <div class="license-meta">
       
@@ -392,7 +371,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>发布于</div>
-          <div>2022年12月6日</div>
+          <div>2022年12月7日</div>
         </div>
       
       
@@ -424,18 +403,12 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/OS/coroutine/" title="协程">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">协程</span>
-                        <span class="visible-mobile">上一篇</span>
-                      </a>
-                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/MPI/Introduction-to-Parallel-Programming/Message%20Passing%20Interface/" title="Message Passing Interface">
-                        <span class="hidden-mobile">Message Passing Interface</span>
+                      <a href="/OS/cpu/" title="CPU、核心以及与线程之间对应">
+                        <span class="hidden-mobile">CPU、核心以及与线程之间对应</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
