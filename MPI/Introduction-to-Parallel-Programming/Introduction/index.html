@@ -16,12 +16,12 @@
   <meta name="author" content="刘笑笑">
   <meta name="keywords" content="java、go、操作系统、网络">
   
-    <meta name="description" content="第一周、Introduction to Parallel Programming第一节、Intro to parallel programming一、Hello World!12345678910111213141516171819#include &lt;stdio.h&gt;#include &lt;omp.h&gt;void sayHello()&amp;#123;    printf(&quot;">
+    <meta name="description" content="第一节、Intro to parallel programming一、Hello World!12345678910111213141516171819#include &lt;stdio.h&gt;#include &lt;omp.h&gt;void sayHello()&amp;#123;    printf(&quot;Hello World!xx\n&quot;);    return;&amp;#125">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Introduction to Parallel Programming课程笔记">
+<meta property="og:title" content="Introduction to Parallel Programming">
 <meta property="og:url" content="http://by.ecel.top/MPI/Introduction-to-Parallel-Programming/Introduction/index.html">
 <meta property="og:site_name" content="Hello">
-<meta property="og:description" content="第一周、Introduction to Parallel Programming第一节、Intro to parallel programming一、Hello World!12345678910111213141516171819#include &lt;stdio.h&gt;#include &lt;omp.h&gt;void sayHello()&amp;#123;    printf(&quot;">
+<meta property="og:description" content="第一节、Intro to parallel programming一、Hello World!12345678910111213141516171819#include &lt;stdio.h&gt;#include &lt;omp.h&gt;void sayHello()&amp;#123;    printf(&quot;Hello World!xx\n&quot;);    return;&amp;#125">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="http://by.ecel.top/MPI/Introduction-to-Parallel-Programming/Introduction/hero_f5b1f9fd-0077-43e0-88b-aef0edbf468f.png">
 <meta property="og:image" content="http://by.ecel.top/MPI/Introduction-to-Parallel-Programming/Introduction/image-20221125161210210.png">
@@ -41,7 +41,7 @@
 <meta property="og:image" content="http://by.ecel.top/MPI/Introduction-to-Parallel-Programming/Introduction/image-20221128212103284.png">
 <meta property="og:image" content="http://by.ecel.top/MPI/Introduction-to-Parallel-Programming/Introduction/image-20221128212831945.png">
 <meta property="article:published_time" content="2022-11-23T12:01:51.000Z">
-<meta property="article:modified_time" content="2022-12-04T02:31:07.722Z">
+<meta property="article:modified_time" content="2022-12-10T02:40:41.732Z">
 <meta property="article:author" content="刘笑笑">
 <meta property="article:tag" content="并行编程">
 <meta name="twitter:card" content="summary_large_image">
@@ -49,7 +49,7 @@
   
   
   
-  <title>Introduction to Parallel Programming课程笔记 - Hello</title>
+  <title>Introduction to Parallel Programming - Hello</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -229,7 +229,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="Introduction to Parallel Programming课程笔记"></span>
+            <span id="subtitle" data-typed-text="Introduction to Parallel Programming"></span>
           
         </div>
 
@@ -301,12 +301,12 @@
         <div id="board">
           <article class="post-content mx-auto">
             <!-- SEO header -->
-            <h1 style="display: none">Introduction to Parallel Programming课程笔记</h1>
+            <h1 style="display: none">Introduction to Parallel Programming</h1>
             
               <p class="note note-info">
                 
                   
-                    本文最后更新于：2022年12月4日 上午
+                    本文最后更新于：2022年12月10日 上午
                   
                 
               </p>
@@ -314,7 +314,7 @@
             
               <div class="markdown-body">
                 
-                <h1 id="第一周、Introduction-to-Parallel-Programming"><a href="#第一周、Introduction-to-Parallel-Programming" class="headerlink" title="第一周、Introduction to Parallel Programming"></a>第一周、<a target="_blank" rel="noopener" href="https://www.futurelearn.com/courses/interactive-hands-on-introduction-to-parallel-programming/1/todo/105942">Introduction to Parallel Programming</a></h1><h2 id="第一节、Intro-to-parallel-programming"><a href="#第一节、Intro-to-parallel-programming" class="headerlink" title="第一节、Intro to parallel programming"></a>第一节、Intro to parallel programming</h2><h3 id="一、Hello-World"><a href="#一、Hello-World" class="headerlink" title="一、Hello World!"></a>一、Hello World!</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;stdio.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;omp.h&gt;</span></span><br><span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">sayHello</span><span class="hljs-params">()</span></span>&#123;<br>    <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;Hello World!xx\n&quot;</span>);<br>    <span class="hljs-keyword">return</span>;<br>&#125;<br><span class="hljs-function"><span class="hljs-type">int</span> <span class="hljs-title">main</span><span class="hljs-params">(<span class="hljs-type">int</span> argc, <span class="hljs-type">char</span>** argv)</span></span>&#123;<br><br>    <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;Hello World!\n&quot;</span>);<br>    <span class="hljs-meta">#<span class="hljs-keyword">pragma</span> omp parallel num_threads(3)</span><br>    <span class="hljs-built_in">sayHello</span>();    <br>    <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;<br>&#125;<br><br>output:<br>Hello World!<br>Hello World!xx<br>Hello World!xx<br>Hello World!xx<br></code></pre></td></tr></table></figure>
+                <h2 id="第一节、Intro-to-parallel-programming"><a href="#第一节、Intro-to-parallel-programming" class="headerlink" title="第一节、Intro to parallel programming"></a>第一节、Intro to parallel programming</h2><h3 id="一、Hello-World"><a href="#一、Hello-World" class="headerlink" title="一、Hello World!"></a>一、Hello World!</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;stdio.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;omp.h&gt;</span></span><br><span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">sayHello</span><span class="hljs-params">()</span></span>&#123;<br>    <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;Hello World!xx\n&quot;</span>);<br>    <span class="hljs-keyword">return</span>;<br>&#125;<br><span class="hljs-function"><span class="hljs-type">int</span> <span class="hljs-title">main</span><span class="hljs-params">(<span class="hljs-type">int</span> argc, <span class="hljs-type">char</span>** argv)</span></span>&#123;<br><br>    <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;Hello World!\n&quot;</span>);<br>    <span class="hljs-meta">#<span class="hljs-keyword">pragma</span> omp parallel num_threads(3)</span><br>    <span class="hljs-built_in">sayHello</span>();    <br>    <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;<br>&#125;<br><br>output:<br>Hello World!<br>Hello World!xx<br>Hello World!xx<br>Hello World!xx<br></code></pre></td></tr></table></figure>
 
 
 
@@ -1014,7 +1014,7 @@ free(iterations);
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>Introduction to Parallel Programming课程笔记</div>
+      <div>Introduction to Parallel Programming</div>
       <div>http://by.ecel.top/MPI/Introduction-to-Parallel-Programming/Introduction/</div>
     </div>
     <div class="license-meta">

@@ -16,24 +16,22 @@
   <meta name="author" content="刘笑笑">
   <meta name="keywords" content="java、go、操作系统、网络">
   
-    <meta name="description" content="一、基本介绍 X、参考文献  （b站）CUDA在现代C++中如何运用？看这一个就够了！ Mpi与Cuda混合编程（Makefile）">
+    <meta name="description" content="第一节、Advanced communication in MPI一、Welcome to Week 4在本周，我们将介绍一些高级MPI主题，当你问自己如何做得更好时，你可能会发现这些主题很有用。一个更好的并行化方法是将计算和通信与非阻塞通信重叠起来。另一个问题是，我们是否可以用MPI和OpenMP减少内存，用混合或单边的方法获得速度？当事情变得很大时，我们希望把它们和我们自己的派生类型结合在一起">
 <meta property="og:type" content="article">
-<meta property="og:title" content="MPI和Cuda学习">
-<meta property="og:url" content="http://by.ecel.top/MPI/MPI%20and%20Cuda/index.html">
+<meta property="og:title" content="MPI Continued">
+<meta property="og:url" content="http://by.ecel.top/MPI/Introduction-to-Parallel-Programming/MPI%20Continued/index.html">
 <meta property="og:site_name" content="Hello">
-<meta property="og:description" content="一、基本介绍 X、参考文献  （b站）CUDA在现代C++中如何运用？看这一个就够了！ Mpi与Cuda混合编程（Makefile）">
+<meta property="og:description" content="第一节、Advanced communication in MPI一、Welcome to Week 4在本周，我们将介绍一些高级MPI主题，当你问自己如何做得更好时，你可能会发现这些主题很有用。一个更好的并行化方法是将计算和通信与非阻塞通信重叠起来。另一个问题是，我们是否可以用MPI和OpenMP减少内存，用混合或单边的方法获得速度？当事情变得很大时，我们希望把它们和我们自己的派生类型结合在一起">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2022-11-21T13:01:51.000Z">
-<meta property="article:modified_time" content="2022-11-29T08:23:56.803Z">
+<meta property="article:published_time" content="2022-12-10T02:32:47.000Z">
+<meta property="article:modified_time" content="2022-12-10T02:44:17.850Z">
 <meta property="article:author" content="刘笑笑">
-<meta property="article:tag" content="MPI">
-<meta property="article:tag" content="CUDA">
-<meta property="article:tag" content="并行编程">
+<meta property="article:tag" content="并行计算">
 <meta name="twitter:card" content="summary_large_image">
   
   
   
-  <title>MPI和Cuda学习 - Hello</title>
+  <title>MPI Continued - Hello</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -213,7 +211,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="MPI和Cuda学习"></span>
+            <span id="subtitle" data-typed-text="MPI Continued"></span>
           
         </div>
 
@@ -224,8 +222,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2022-11-21 21:01" pubdate>
-          2022年11月21日 晚上
+        <time datetime="2022-12-10 10:32" pubdate>
+          2022年12月10日 上午
         </time>
       </span>
     
@@ -236,7 +234,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          62 字
+          285 字
         
       </span>
     
@@ -247,7 +245,7 @@
         
         
         
-          1 分钟
+          3 分钟
         
       </span>
     
@@ -285,12 +283,12 @@
         <div id="board">
           <article class="post-content mx-auto">
             <!-- SEO header -->
-            <h1 style="display: none">MPI和Cuda学习</h1>
+            <h1 style="display: none">MPI Continued</h1>
             
               <p class="note note-info">
                 
                   
-                    本文最后更新于：2022年11月29日 下午
+                    本文最后更新于：2022年12月10日 上午
                   
                 
               </p>
@@ -298,12 +296,7 @@
             
               <div class="markdown-body">
                 
-                <p>一、基本介绍</p>
-<p>X、参考文献</p>
-<ul>
-<li><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV16b4y1E74f/?spm_id_from=333.337.search-card.all.click&vd_source=fb926f3550cd847435afc066c3343d2e">（b站）CUDA在现代C++中如何运用？看这一个就够了！</a></li>
-<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/Rong_Toa/article/details/77871833">Mpi与Cuda混合编程（Makefile）</a></li>
-</ul>
+                <h2 id="第一节、Advanced-communication-in-MPI"><a href="#第一节、Advanced-communication-in-MPI" class="headerlink" title="第一节、Advanced communication in MPI"></a>第一节、<strong>Advanced communication in MPI</strong></h2><h3 id="一、Welcome-to-Week-4"><a href="#一、Welcome-to-Week-4" class="headerlink" title="一、Welcome to Week 4"></a>一、Welcome to Week 4</h3><p>在本周，我们将介绍一些高级MPI主题，当你问自己如何做得更好时，你可能会发现这些主题很有用。<br>一个更好的并行化方法是<strong>将计算和通信与非阻塞通信重叠</strong>起来。另一个问题是，我们是否可以<strong>用MPI和OpenMP减少内存，用混合或单边的方法获得速度</strong>？当事情变得很大时，我们希望把它们和我们自己的派生类型结合在一起，这样可以简化编程。在本周结束时，我们将研究一下文件的并行编写，可以用它来代替通过MPI收集结果。还有一些高级的MPI主题，我们不会在这里详细介绍，它们是其他PRACE课程的一部分。</p>
 
                 
               </div>
@@ -325,6 +318,13 @@
   <a href="/categories/MPI/" class="category-chain-item">MPI</a>
   
   
+    <span>></span>
+    
+  <a href="/categories/MPI/Introduction-to-Parallel-Programming/" class="category-chain-item">Introduction-to-Parallel-Programming</a>
+  
+  
+
+  
 
       </span>
     
@@ -337,11 +337,7 @@
     <div class="post-meta">
       <i class="iconfont icon-tags"></i>
       
-        <a href="/tags/MPI/">#MPI</a>
-      
-        <a href="/tags/CUDA/">#CUDA</a>
-      
-        <a href="/tags/%E5%B9%B6%E8%A1%8C%E7%BC%96%E7%A8%8B/">#并行编程</a>
+        <a href="/tags/%E5%B9%B6%E8%A1%8C%E8%AE%A1%E7%AE%97/">#并行计算</a>
       
     </div>
   
@@ -353,8 +349,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>MPI和Cuda学习</div>
-      <div>http://by.ecel.top/MPI/MPI and Cuda/</div>
+      <div>MPI Continued</div>
+      <div>http://by.ecel.top/MPI/Introduction-to-Parallel-Programming/MPI Continued/</div>
     </div>
     <div class="license-meta">
       
@@ -366,7 +362,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>发布于</div>
-          <div>2022年11月21日</div>
+          <div>2022年12月10日</div>
         </div>
       
       
@@ -398,18 +394,12 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/MPI/Introduction-to-Parallel-Programming/Introduction/" title="Introduction to Parallel Programming">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">Introduction to Parallel Programming</span>
-                        <span class="visible-mobile">上一篇</span>
-                      </a>
-                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/Architecture/kafka/" title="kafka">
-                        <span class="hidden-mobile">kafka</span>
+                      <a href="/Documentation/ssh/" title="vscode 远程连接服务器">
+                        <span class="hidden-mobile">vscode 远程连接服务器</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
