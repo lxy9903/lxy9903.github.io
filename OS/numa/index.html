@@ -16,22 +16,28 @@
   <meta name="author" content="刘笑笑">
   <meta name="keywords" content="java、go、操作系统、网络">
   
-    <meta name="description" content="Centos下非Root权限下多个版本gcc(g++)的安装">
+    <meta name="description" content="一、SMP 和 AMP SMP（Sysmmetric Multi-Processor System）：对称多处理器系统。每个处理器具有相同的架构，共享一个物理内存，通过共享内存进行通信。由于系统中所有资源共享，像内存什么的容易成为性能瓶颈，一般SMP拥有四个cpu即会达到性能瓶颈。   AMP（Asymmetric Multiprocessing System）： 即非对称多处理器架构。多个处理器">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Hello">
-<meta property="og:url" content="http://by.ecel.top/Documentation/gcc/index.html">
+<meta property="og:title" content="NUMA（非一致内存访问架构）">
+<meta property="og:url" content="http://by.ecel.top/OS/numa/index.html">
 <meta property="og:site_name" content="Hello">
-<meta property="og:description" content="Centos下非Root权限下多个版本gcc(g++)的安装">
+<meta property="og:description" content="一、SMP 和 AMP SMP（Sysmmetric Multi-Processor System）：对称多处理器系统。每个处理器具有相同的架构，共享一个物理内存，通过共享内存进行通信。由于系统中所有资源共享，像内存什么的容易成为性能瓶颈，一般SMP拥有四个cpu即会达到性能瓶颈。   AMP（Asymmetric Multiprocessing System）： 即非对称多处理器架构。多个处理器">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2022-12-19T07:32:35.336Z">
-<meta property="article:modified_time" content="2022-12-19T07:32:57.014Z">
+<meta property="og:image" content="http://by.ecel.top/OS/numa/image-20221222163328381.png">
+<meta property="og:image" content="http://by.ecel.top/OS/numa/image-20221222163341727.png">
+<meta property="og:image" content="http://by.ecel.top/OS/numa/v2-7993578413e30778cf6765c7a09db24b_1440w.webp">
+<meta property="og:image" content="https://img2018.cnblogs.com/blog/1498760/201903/1498760-20190317164019884-1917976433.png">
+<meta property="article:published_time" content="2022-10-07T05:42:51.000Z">
+<meta property="article:modified_time" content="2022-12-22T12:56:50.715Z">
 <meta property="article:author" content="刘笑笑">
-<meta property="article:tag" content="java、go、操作系统、网络">
+<meta property="article:tag" content="OS">
+<meta property="article:tag" content="cpu">
 <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://by.ecel.top/OS/numa/image-20221222163328381.png">
   
   
   
-  <title>Hello</title>
+  <title>NUMA（非一致内存访问架构） - Hello</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -211,7 +217,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text=""></span>
+            <span id="subtitle" data-typed-text="NUMA（非一致内存访问架构）"></span>
           
         </div>
 
@@ -222,8 +228,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2022-12-19 15:32" pubdate>
-          2022年12月19日 下午
+        <time datetime="2022-10-07 13:42" pubdate>
+          2022年10月7日 下午
         </time>
       </span>
     
@@ -234,7 +240,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          30 字
+          1.9k 字
         
       </span>
     
@@ -245,7 +251,7 @@
         
         
         
-          1 分钟
+          16 分钟
         
       </span>
     
@@ -283,12 +289,12 @@
         <div id="board">
           <article class="post-content mx-auto">
             <!-- SEO header -->
-            <h1 style="display: none"></h1>
+            <h1 style="display: none">NUMA（非一致内存访问架构）</h1>
             
               <p class="note note-info">
                 
                   
-                    本文最后更新于：2022年12月19日 下午
+                    本文最后更新于：2022年12月22日 晚上
                   
                 
               </p>
@@ -296,7 +302,58 @@
             
               <div class="markdown-body">
                 
-                <p><a target="_blank" rel="noopener" href="https://www.jianshu.com/p/e5c984100a0e">Centos下非Root权限下多个版本gcc(g++)的安装</a></p>
+                <h2 id="一、SMP-和-AMP"><a href="#一、SMP-和-AMP" class="headerlink" title="一、SMP 和 AMP"></a>一、SMP 和 AMP</h2><ul>
+<li><p><strong>SMP（Sysmmetric Multi-Processor System）</strong>：对称多处理器系统。每个处理器具有相同的架构，共享一个物理内存，通过共享内存进行通信。由于系统中所有资源共享，像内存什么的容易成为性能瓶颈，一般SMP拥有四个cpu即会达到性能瓶颈。</p>
+<img src="/OS/numa/image-20221222163328381.png" srcset="/img/loading.gif" lazyload alt="image-20221222163328381" style="zoom:50%;">
+</li>
+<li><p><strong>AMP（Asymmetric Multiprocessing System）</strong>： 即非对称多处理器架构。多个处理器可能是异构的，每个处理器拥有自己独立的内存空间，通信则通过处理器间的通信机制</p>
+</li>
+</ul>
+<h2 id="二、NUMA-和-UMA"><a href="#二、NUMA-和-UMA" class="headerlink" title="二、NUMA 和 UMA"></a>二、NUMA 和 UMA</h2><ul>
+<li><p><strong>NUMA（Non-Uniform Memory Access）</strong>：非一致性存储器访问，内存分为本地内存和非本地内存，</p>
+<p>利用NUMA技术，可以把几十个CPU(甚至上百个CPU)组合在一个服务器内，解决SMP扩展能力上的限制问题。</p>
+</li>
+</ul>
+<img src="/OS/numa/image-20221222163341727.png" srcset="/img/loading.gif" lazyload alt="image-20221222163341727" style="zoom:50%;">
+
+<ul>
+<li>**UMA(Uniform Memory Access)**：均匀内存访问架构，处理器对共享内存的访问距离和时间是相同的。</li>
+</ul>
+<h2 id="copy："><a href="#copy：" class="headerlink" title="copy："></a>copy：</h2><h3 id="一、"><a href="#一、" class="headerlink" title="一、"></a>一、</h3><p>NUMA架构图结构如下所示：</p>
+<img src="/OS/numa/v2-7993578413e30778cf6765c7a09db24b_1440w.webp" srcset="/img/loading.gif" lazyload alt="img" style="zoom: 67%;">
+
+<ul>
+<li>每个CPU核独享L1、L2级缓存，L3级缓存为共享缓存</li>
+<li>一个SOCKET称之为一个NUMA结点，不同NUMA节点之间通过总线连接</li>
+<li>接近NUMA结点的内存成为本地内存，其他NUMA节点的内存称之为远端内存</li>
+<li>NUMA节点对本地内存的访问更快</li>
+</ul>
+<h3 id="二、"><a href="#二、" class="headerlink" title="二、"></a>二、</h3><img src="https://img2018.cnblogs.com/blog/1498760/201903/1498760-20190317164019884-1917976433.png" srcset="/img/loading.gif" lazyload alt="img" style="zoom: 67%;">
+
+
+
+<ul>
+<li><p>Socket：表示一颗物理 CPU 的封装（物理 CPU 插槽），简称插槽。为了避免将逻辑处理器和物理处理器混淆，Intel 将物理处理器称为插槽。</p>
+</li>
+<li><p>Core： 物理 CPU 封装内的独立的一组程序执行的硬件单元，比如寄存器，计算单元等。</p>
+</li>
+<li><p>Thread： 使用超线程技术虚拟出来的逻辑 Core，需要 CPU 支持。为了便于区分，逻辑 Core 一般被写作 Processor。在具有 Intel 超线程技术的处理器上，每个内核可以具有两个逻辑处理器，这两个逻辑处理器共享大多数内核资源（如内存缓存和功能单元）。此类逻辑处理器通常称为 Thread 。</p>
+</li>
+<li><p>Node： 包含有若干个物理 CPU 的组。</p>
+</li>
+</ul>
+<h3 id="三、"><a href="#三、" class="headerlink" title="三、"></a>三、</h3><ul>
+<li>Socket<br>一个Socket对应一个物理CPU。 这个词大概是从CPU在主板上的物理连接方式上来的，可以理解为 Socket 就是主板上的 CPU 插槽。处理器通过主板的Socket来插到主板上。 尤其是有了多核(Multi-core)系统以后，Multi-socket系统被用来指明系统到底存在多少个物理CPU。</li>
+<li>Node<br>NUMA体系结构中多了Node的概念，这个概念其实是用来解决core的分组的问题。每个node有自己的内部CPU，总线和内存，同时还可以访问其他node内的内存，NUMA的最大的优势就是可以方便的增加CPU的数量。通常一个 Socket 有一个Node，也有可能一个Socket有多个 Node。</li>
+<li>Core<br>CPU的运算核心。 x86的核包含了CPU运算的基本部件，如逻辑运算单元(ALU), 浮点运算单元(FPU), L1和L2缓存。 一个Socket里可以有多个Core。如今的多核时代，即使是Single Socket的系统， 也是逻辑上的SMP系统。但是，一个物理CPU的系统不存在非本地内存，因此相当于UMA系统。</li>
+<li>Uncore<br>Intel x86物理CPU里没有放在Core里的部件都被叫做Uncore。Uncore里集成了过去x86 UMA架构时代北桥芯片的基本功能。 在Nehalem时代，内存控制器被集成到CPU里，叫做iMC(Integrated Memory Controller)。 而PCIe Root Complex还做为独立部件在IO Hub芯片里。到了SandyBridge时代，PCIe Root Complex也被集成到了CPU里。 现今的Uncore部分，除了iMC，PCIe Root Complex，还有QPI(QuickPath Interconnect)控制器， L3缓存，CBox(负责缓存一致性)，及其它外设控制器。</li>
+<li>Threads<br>这里特指CPU的多线程技术。在Intel x86架构下，CPU的多线程技术被称作超线程(Hyper-Threading)技术。 Intel的超线程技术在一个处理器Core内部引入了额外的硬件设计模拟了两个逻辑处理器(Logical Processor)， 每个逻辑处理器都有独立的处理器状态，但共享Core内部的计算资源，如ALU，FPU，L1，L2缓存。 这样在最小的硬件投入下提高了CPU在多线程软件工作负载下的性能，提高了硬件使用效率。 x86的超线程技术出现早于NUMA架构。</li>
+</ul>
+<h2 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://www.bbsmax.com/A/1O5EnmkGd7/">NUMA 体系架构</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_20817327/article/details/105925071">NUMA架构详解</a></li>
+<li><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/476411477">NUMA架构详解（知乎）</a></li>
+</ul>
 
                 
               </div>
@@ -305,6 +362,36 @@
             <div>
               <div class="post-metas my-3">
   
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/OS/" class="category-chain-item">OS</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/OS/">#OS</a>
+      
+        <a href="/tags/cpu/">#cpu</a>
+      
+    </div>
   
 </div>
 
@@ -314,8 +401,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div></div>
-      <div>http://by.ecel.top/Documentation/gcc/</div>
+      <div>NUMA（非一致内存访问架构）</div>
+      <div>http://by.ecel.top/OS/numa/</div>
     </div>
     <div class="license-meta">
       
@@ -327,7 +414,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>发布于</div>
-          <div>2022年12月19日</div>
+          <div>2022年10月7日</div>
         </div>
       
       
@@ -359,21 +446,15 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/MPI/mpi%20openmp%20compare/" title="mpi与openmp性能分析">
+                      <a href="/OS/IO/" title="操作系统IO详解">
                         <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">mpi与openmp性能分析</span>
+                        <span class="hidden-mobile">操作系统IO详解</span>
                         <span class="visible-mobile">上一篇</span>
                       </a>
                     
                   </article>
                   <article class="post-next col-6">
                     
-                    
-                      <a href="/OS/Linux/who/" title="用户相关">
-                        <span class="hidden-mobile">用户相关</span>
-                        <span class="visible-mobile">下一篇</span>
-                        <i class="iconfont icon-arrowright"></i>
-                      </a>
                     
                   </article>
                 </div>
