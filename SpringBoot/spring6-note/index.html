@@ -16,12 +16,12 @@
   <meta name="author" content="刘笑笑">
   <meta name="keywords" content="java、go、操作系统、网络">
   
-    <meta name="description" content="概述spring特点 非侵入式 控制反转IOC 面向切片编程：AOP 容器 组件化 一站式  核心模块  Spring core	核心容器  spring-core：IOC和DI的基本实现 spring-beans：BeanFactory和Bean的装配管理 spring-context：环境上下问，即IOC容器（ApplicationContext） spring-expression：sp">
+    <meta name="description" content="title: Springboot6-notedate: 2024-03-31 15:49:56tags:   概述spring特点 非侵入式 控制反转IOC 面向切片编程：AOP 容器 组件化 一站式  核心模块  Spring core	核心容器  spring-core：IOC和DI的基本实现 spring-beans：BeanFactory和Bean的装配管理 spring-context">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Springboot6-note">
+<meta property="og:title" content="Hello">
 <meta property="og:url" content="http://by.ecel.top/SpringBoot/spring6-note/index.html">
 <meta property="og:site_name" content="Hello">
-<meta property="og:description" content="概述spring特点 非侵入式 控制反转IOC 面向切片编程：AOP 容器 组件化 一站式  核心模块  Spring core	核心容器  spring-core：IOC和DI的基本实现 spring-beans：BeanFactory和Bean的装配管理 spring-context：环境上下问，即IOC容器（ApplicationContext） spring-expression：sp">
+<meta property="og:description" content="title: Springboot6-notedate: 2024-03-31 15:49:56tags:   概述spring特点 非侵入式 控制反转IOC 面向切片编程：AOP 容器 组件化 一站式  核心模块  Spring core	核心容器  spring-core：IOC和DI的基本实现 spring-beans：BeanFactory和Bean的装配管理 spring-context">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="http://by.ecel.top/SpringBoot/spring6-note/image-20240331155619637.png">
 <meta property="og:image" content="http://by.ecel.top/SpringBoot/spring6-note/4CA3BDE0-EBAB-478B-BC99-8AC316D0E58A.jpeg">
@@ -47,8 +47,86 @@
 <meta property="og:image" content="http://by.ecel.top/SpringBoot/spring6-note/image-20240331222522126.png">
 <meta property="og:image" content="http://by.ecel.top/SpringBoot/spring6-note/image-20240331222930753.png">
 <meta property="og:image" content="http://by.ecel.top/SpringBoot/spring6-note/image-20240331222850613.png">
-<meta property="article:published_time" content="2024-03-31T07:49:56.000Z">
-<meta property="article:modified_time" content="2024-03-31T14:29:34.599Z">
+<meta property="og:image" content="http://by.ecel.top/SpringBoot/spring6-note/image-20240401125131188.png">
+<meta property="og:image" content="http://by.ecel.top/SpringBoot/spring6-note/image-20240401125913188.png">
+<meta property="og:image" content="http://by.ecel.top/SpringBoot/spring6-note/image-20240401130956823.png">
+<meta property="og:image" content="http://by.ecel.top/SpringBoot/spring6-note/image-20240401131049143.png">
+<meta property="og:image" content="http://by.ecel.top/SpringBoot/spring6-note/image-20240401212153149.png">
+<meta property="og:image" content="http://by.ecel.top/SpringBoot/spring6-note/image-20240401212518469.png">
+<meta property="og:image" content="http://by.ecel.top/SpringBoot/spring6-note/image-20240401212349121.png">
+<meta property="og:image" content="http://by.ecel.top/SpringBoot/spring6-note/image-20240401213331592.png">
+<meta property="og:image" content="http://by.ecel.top/SpringBoot/spring6-note/image-20240402213324451.png">
+<meta property="og:image" content="http://by.ecel.top/SpringBoot/spring6-note/image-20240402213551463.png">
+<meta property="og:image" content="http://by.ecel.top/SpringBoot/spring6-note/image-20240402213947632.png">
+<meta property="og:image" content="http://by.ecel.top/SpringBoot/spring6-note/image-20240402215326180.png">
+<meta property="og:image" content="http://by.ecel.top/SpringBoot/spring6-note/image-20240402215215564.png">
+<meta property="og:image" content="http://by.ecel.top/SpringBoot/spring6-note/image-20240402215148660.png">
+<meta property="og:image" content="http://by.ecel.top/SpringBoot/spring6-note/image-20240402215449294.png">
+<meta property="og:image" content="http://by.ecel.top/SpringBoot/spring6-note/image-20240402232837946.png">
+<meta property="og:image" content="http://by.ecel.top/SpringBoot/spring6-note/image-20240402233136408.png">
+<meta property="og:image" content="http://by.ecel.top/SpringBoot/spring6-note/image-20240402235102237.png">
+<meta property="og:image" content="http://by.ecel.top/SpringBoot/spring6-note/image-20240402235011778.png">
+<meta property="og:image" content="http://by.ecel.top/SpringBoot/spring6-note/image-20240402235418890.png">
+<meta property="og:image" content="http://by.ecel.top/SpringBoot/spring6-note/image-20240404191944552.png">
+<meta property="og:image" content="http://by.ecel.top/SpringBoot/spring6-note/image-20240405150147107.png">
+<meta property="og:image" content="http://by.ecel.top/SpringBoot/spring6-note/image-20240405150323600.png">
+<meta property="og:image" content="http://by.ecel.top/SpringBoot/spring6-note/image-20240404192114107.png">
+<meta property="og:image" content="http://by.ecel.top/SpringBoot/spring6-note/image-20240405150600325.png">
+<meta property="og:image" content="http://by.ecel.top/SpringBoot/spring6-note/image-20240405150749589.png">
+<meta property="og:image" content="http://by.ecel.top/SpringBoot/spring6-note/image-20240405151706235.png">
+<meta property="og:image" content="http://by.ecel.top/SpringBoot/spring6-note/image-20240405152007955.png">
+<meta property="og:image" content="http://by.ecel.top/SpringBoot/spring6-note/image-20240405152114584.png">
+<meta property="og:image" content="http://by.ecel.top/SpringBoot/spring6-note/image-20240405152609230.png">
+<meta property="og:image" content="http://by.ecel.top/SpringBoot/spring6-note/image-20240405152712044.png">
+<meta property="og:image" content="http://by.ecel.top/SpringBoot/spring6-note/image-20240405152738782.png">
+<meta property="og:image" content="http://by.ecel.top/SpringBoot/spring6-note/image-20240405172837446.png">
+<meta property="og:image" content="http://by.ecel.top/SpringBoot/spring6-note/image-20240405172545654.png">
+<meta property="og:image" content="http://by.ecel.top/SpringBoot/spring6-note/image-20240405173218503.png">
+<meta property="og:image" content="http://by.ecel.top/SpringBoot/spring6-note/image-20240405175850810.png">
+<meta property="og:image" content="http://by.ecel.top/SpringBoot/spring6-note/image-20240405180032387.png">
+<meta property="og:image" content="http://by.ecel.top/SpringBoot/spring6-note/image-20240405180144819.png">
+<meta property="og:image" content="http://by.ecel.top/SpringBoot/spring6-note/image-20240405191952547.png">
+<meta property="og:image" content="http://by.ecel.top/SpringBoot/spring6-note/image-20240405192237025.png">
+<meta property="og:image" content="http://by.ecel.top/SpringBoot/spring6-note/image-20240405202425278.png">
+<meta property="og:image" content="http://by.ecel.top/SpringBoot/spring6-note/image-20240405203130106.png">
+<meta property="og:image" content="http://by.ecel.top/SpringBoot/spring6-note/image-20240405203243963.png">
+<meta property="og:image" content="http://by.ecel.top/SpringBoot/spring6-note/image-20240405204220838.png">
+<meta property="og:image" content="http://by.ecel.top/SpringBoot/spring6-note/image-20240405203634186.png">
+<meta property="og:image" content="http://by.ecel.top/SpringBoot/spring6-note/image-20240405204516571.png">
+<meta property="og:image" content="http://by.ecel.top/SpringBoot/spring6-note/image-20240405204649552.png">
+<meta property="og:image" content="http://by.ecel.top/SpringBoot/spring6-note/image-20240405205834100.png">
+<meta property="og:image" content="http://by.ecel.top/SpringBoot/spring6-note/image-20240405205932534.png">
+<meta property="og:image" content="http://by.ecel.top/SpringBoot/spring6-note/image-20240405202919380.png">
+<meta property="og:image" content="http://by.ecel.top/SpringBoot/spring6-note/image-20240405210307237.png">
+<meta property="og:image" content="http://by.ecel.top/SpringBoot/spring6-note/image-20240405210815192.png">
+<meta property="og:image" content="http://by.ecel.top/SpringBoot/spring6-note/image-20240405211007162.png">
+<meta property="og:image" content="http://by.ecel.top/SpringBoot/spring6-note/image-20240405211340876.png">
+<meta property="og:image" content="http://by.ecel.top/SpringBoot/spring6-note/image-20240405211449707.png">
+<meta property="og:image" content="http://by.ecel.top/SpringBoot/spring6-note/image-20240405211624250.png">
+<meta property="og:image" content="http://by.ecel.top/SpringBoot/spring6-note/image-20240405211716788.png">
+<meta property="og:image" content="http://by.ecel.top/SpringBoot/spring6-note/image-20240405212006200.png">
+<meta property="og:image" content="http://by.ecel.top/SpringBoot/spring6-note/image-20240405212209704.png">
+<meta property="og:image" content="http://by.ecel.top/SpringBoot/spring6-note/image-20240405212300806.png">
+<meta property="og:image" content="http://by.ecel.top/SpringBoot/spring6-note/image-20240405212406325.png">
+<meta property="og:image" content="http://by.ecel.top/SpringBoot/spring6-note/image-20240405213006396.png">
+<meta property="og:image" content="http://by.ecel.top/SpringBoot/spring6-note/image-20240405213213407.png">
+<meta property="og:image" content="http://by.ecel.top/SpringBoot/spring6-note/image-20240405213245427.png">
+<meta property="og:image" content="http://by.ecel.top/SpringBoot/spring6-note/image-20240405213800086.png">
+<meta property="og:image" content="http://by.ecel.top/SpringBoot/spring6-note/image-20240405214025978.png">
+<meta property="og:image" content="http://by.ecel.top/SpringBoot/spring6-note/image-20240405214114416.png">
+<meta property="og:image" content="http://by.ecel.top/SpringBoot/spring6-note/image-20240405214243255.png">
+<meta property="og:image" content="http://by.ecel.top/SpringBoot/spring6-note/image-20240406102315451.png">
+<meta property="og:image" content="http://by.ecel.top/SpringBoot/spring6-note/image-20240406102546341.png">
+<meta property="og:image" content="http://by.ecel.top/SpringBoot/spring6-note/image-20240406103731880.png">
+<meta property="og:image" content="http://by.ecel.top/SpringBoot/spring6-note/image-20240406103828678.png">
+<meta property="og:image" content="http://by.ecel.top/SpringBoot/spring6-note/image-20240406105248805.png">
+<meta property="og:image" content="http://by.ecel.top/SpringBoot/spring6-note/image-20240406105643700.png">
+<meta property="og:image" content="http://by.ecel.top/SpringBoot/spring6-note/image-20240406110236630.png">
+<meta property="og:image" content="http://by.ecel.top/SpringBoot/spring6-note/image-20240406110753522.png">
+<meta property="og:image" content="http://by.ecel.top/SpringBoot/spring6-note/image-20240406110846128.png">
+<meta property="og:image" content="http://by.ecel.top/SpringBoot/spring6-note/image-20240406112023303.png">
+<meta property="article:published_time" content="2024-03-31T07:49:56.685Z">
+<meta property="article:modified_time" content="2024-04-06T03:28:03.378Z">
 <meta property="article:author" content="刘笑笑">
 <meta property="article:tag" content="java、go、操作系统、网络">
 <meta name="twitter:card" content="summary_large_image">
@@ -56,7 +134,7 @@
   
   
   
-  <title>Springboot6-note - Hello</title>
+  <title>Hello</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -236,7 +314,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="Springboot6-note"></span>
+            <span id="subtitle" data-typed-text=""></span>
           
         </div>
 
@@ -259,7 +337,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          2.2k 字
+          5.7k 字
         
       </span>
     
@@ -270,7 +348,7 @@
         
         
         
-          19 分钟
+          48 分钟
         
       </span>
     
@@ -308,12 +386,12 @@
         <div id="board">
           <article class="post-content mx-auto">
             <!-- SEO header -->
-            <h1 style="display: none">Springboot6-note</h1>
+            <h1 style="display: none"></h1>
             
               <p class="note note-info">
                 
                   
-                    本文最后更新于：2024年3月31日 晚上
+                    本文最后更新于：2024年4月6日 上午
                   
                 
               </p>
@@ -321,9 +399,10 @@
             
               <div class="markdown-body">
                 
-                <!--注：jdk 17 ， spring 6， maven 3.6+-->
+                <p>title: Springboot6-note<br>date: 2024-03-31 15:49:56<br>tags:</p>
+<!--注：jdk 17 ， spring 6， maven 3.6+-->
 
-<h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><h3 id="spring特点"><a href="#spring特点" class="headerlink" title="spring特点"></a>spring特点</h3><ul>
+<h1 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h1><h2 id="spring特点"><a href="#spring特点" class="headerlink" title="spring特点"></a>spring特点</h2><ul>
 <li>非侵入式</li>
 <li>控制反转IOC</li>
 <li>面向切片编程：AOP</li>
@@ -331,7 +410,7 @@
 <li>组件化</li>
 <li>一站式</li>
 </ul>
-<h3 id="核心模块"><a href="#核心模块" class="headerlink" title="核心模块"></a>核心模块</h3><p><img src="/SpringBoot/spring6-note/image-20240331155619637.png" srcset="/img/loading.gif" lazyload alt="image-20240331155619637"></p>
+<h2 id="核心模块"><a href="#核心模块" class="headerlink" title="核心模块"></a>核心模块</h2><p><img src="/SpringBoot/spring6-note/image-20240331155619637.png" srcset="/img/loading.gif" lazyload alt="image-20240331155619637"></p>
 <ol>
 <li><p>Spring core	核心容器</p>
 <ul>
@@ -358,18 +437,18 @@
 </ul>
 </li>
 </ol>
-<h2 id="入门"><a href="#入门" class="headerlink" title="入门"></a>入门</h2><h3 id="创建过程"><a href="#创建过程" class="headerlink" title="创建过程"></a>创建过程</h3><p><img src="/SpringBoot/spring6-note/4CA3BDE0-EBAB-478B-BC99-8AC316D0E58A.jpeg" srcset="/img/loading.gif" lazyload alt="4CA3BDE0-EBAB-478B-BC99-8AC316D0E58A"></p>
-<h3 id="获取bean过程"><a href="#获取bean过程" class="headerlink" title="获取bean过程"></a><strong>获取bean过程</strong></h3><p>通过解析xml获取对象信息，再通过反射创建对象</p>
+<h1 id="入门"><a href="#入门" class="headerlink" title="入门"></a>入门</h1><h2 id="创建过程"><a href="#创建过程" class="headerlink" title="创建过程"></a>创建过程</h2><p><img src="/SpringBoot/spring6-note/4CA3BDE0-EBAB-478B-BC99-8AC316D0E58A.jpeg" srcset="/img/loading.gif" lazyload alt="4CA3BDE0-EBAB-478B-BC99-8AC316D0E58A"></p>
+<h2 id="获取bean过程"><a href="#获取bean过程" class="headerlink" title="获取bean过程"></a><strong>获取bean过程</strong></h2><p>通过解析xml获取对象信息，再通过反射创建对象</p>
 <p><img src="/SpringBoot/spring6-note/86B50429-7C38-454C-9909-6CC91AE08FFD.jpeg" srcset="/img/loading.gif" lazyload alt="86B50429-7C38-454C-9909-6CC91AE08FFD"></p>
-<h3 id="反射创建对象"><a href="#反射创建对象" class="headerlink" title="反射创建对象"></a><strong>反射创建对象</strong></h3><figure class="highlight reasonml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs reasonml">Class clazz = <span class="hljs-module-access"><span class="hljs-module"><span class="hljs-identifier">Class</span>.</span></span><span class="hljs-keyword">for</span><span class="hljs-constructor">Name(<span class="hljs-string">&quot;com.xxx.User&quot;</span>)</span>;<br>user o = (User)clazz.get<span class="hljs-constructor">DeclaredConstructor()</span>.<span class="hljs-keyword">new</span><span class="hljs-constructor">Instance()</span>;<br></code></pre></td></tr></table></figure>
+<h2 id="反射创建对象"><a href="#反射创建对象" class="headerlink" title="反射创建对象"></a><strong>反射创建对象</strong></h2><figure class="highlight reasonml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs reasonml">Class clazz = <span class="hljs-module-access"><span class="hljs-module"><span class="hljs-identifier">Class</span>.</span></span><span class="hljs-keyword">for</span><span class="hljs-constructor">Name(<span class="hljs-string">&quot;com.xxx.User&quot;</span>)</span>;<br>user o = (User)clazz.get<span class="hljs-constructor">DeclaredConstructor()</span>.<span class="hljs-keyword">new</span><span class="hljs-constructor">Instance()</span>;<br></code></pre></td></tr></table></figure>
 
-<h3 id="Bean放置位置"><a href="#Bean放置位置" class="headerlink" title="Bean放置位置"></a>Bean放置位置</h3><figure class="highlight coffeescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs coffeescript"><span class="hljs-built_in">Map</span>&lt;<span class="hljs-built_in">String</span>, BeanDefinition&gt; beanDefinitionMap;<br></code></pre></td></tr></table></figure>
+<h2 id="Bean放置位置"><a href="#Bean放置位置" class="headerlink" title="Bean放置位置"></a>Bean放置位置</h2><figure class="highlight coffeescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs coffeescript"><span class="hljs-built_in">Map</span>&lt;<span class="hljs-built_in">String</span>, BeanDefinition&gt; beanDefinitionMap;<br></code></pre></td></tr></table></figure>
 
-<h3 id="日志组件：Log4j2"><a href="#日志组件：Log4j2" class="headerlink" title="日志组件：Log4j2"></a>日志组件：Log4j2</h3><p><img src="/SpringBoot/spring6-note/D8776398-5C10-4177-84B1-4E31153F735E.jpeg" srcset="/img/loading.gif" lazyload alt="D8776398-5C10-4177-84B1-4E31153F735E"></p>
-<h2 id="容器：IOC"><a href="#容器：IOC" class="headerlink" title="容器：IOC"></a>容器：IOC</h2><h3 id="Ioc概述"><a href="#Ioc概述" class="headerlink" title="Ioc概述"></a>Ioc概述</h3><p>Ioc：Inversion of Control的简写，<strong>控制反转</strong>，这是一种<strong>设计思想</strong>，可以使得程序更加地<strong>松耦合</strong>、<strong>高扩展</strong></p>
+<h2 id="日志组件：Log4j2"><a href="#日志组件：Log4j2" class="headerlink" title="日志组件：Log4j2"></a>日志组件：Log4j2</h2><p><img src="/SpringBoot/spring6-note/D8776398-5C10-4177-84B1-4E31153F735E.jpeg" srcset="/img/loading.gif" lazyload alt="D8776398-5C10-4177-84B1-4E31153F735E"></p>
+<h1 id="容器：IOC"><a href="#容器：IOC" class="headerlink" title="容器：IOC"></a>容器：IOC</h1><h2 id="Ioc概述"><a href="#Ioc概述" class="headerlink" title="Ioc概述"></a>Ioc概述</h2><p>Ioc：Inversion of Control的简写，<strong>控制反转</strong>，这是一种<strong>设计思想</strong>，可以使得程序更加地<strong>松耦合</strong>、<strong>高扩展</strong></p>
 <p>Spring通过<strong>Ioc容器</strong>管理<strong>对象</strong>的<strong>实例化</strong>与<strong>初始化</strong>，控制对象之间的<strong>依赖关系</strong>（在对象A中使用对象B）</p>
 <p>Ioc容器管理的对象称为<strong>Spring Bean</strong>，bean与其他java对象没有任何区别</p>
-<h3 id="Ioc创建过程"><a href="#Ioc创建过程" class="headerlink" title="Ioc创建过程"></a>Ioc创建过程</h3><ol>
+<h2 id="Ioc创建2过程"><a href="#Ioc创建2过程" class="headerlink" title="Ioc创建2过程"></a>Ioc创建2过程</h2><ol>
 <li><p>配置<strong>XML文件</strong>（或<strong>注解、Java Config</strong>）<strong>定义BeanDefinition</strong>：在IOC容器的配置文件中，定义需要被管理的Bean，并为每个Bean指定唯一的标识符和相应的属性。</p>
 </li>
 <li><p>通过<strong>BeanDefinitionReader</strong>接口获取BeanDefinition：IOC容器使用BeanDefinitionReader接口来读取配置文件，并解析配置信息，将其转化为内部数据结构，如BeanDefinition。BeanDefinition包含了Bean的相关信息，如类名、属性值、依赖关系等。</p>
@@ -381,9 +460,9 @@
 <li><p>将Bean放入容器：初始化完成后，IOC容器会将实例化和初始化后的Bean放入容器中进行管理。容器会维护一个<strong>Bean的实例池</strong>，用于存储已创建的Bean实例。<strong>ApplicationContext</strong>通过<strong>BeanFactory</strong>可以获取所有bean。</p>
 <figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs angelscript"><span class="hljs-keyword">public</span> <span class="hljs-keyword">interface</span> <span class="hljs-symbol">ApplicationContext</span> <span class="hljs-symbol">extends</span> <span class="hljs-symbol">EnvironmentCapable</span>, <span class="hljs-symbol">ListableBeanFactory</span>, <span class="hljs-symbol">HierarchicalBeanFactory</span>, <span class="hljs-symbol">MessageSource</span>, <span class="hljs-symbol">ApplicationEventPublisher</span>, <span class="hljs-symbol">ResourcePatternResolver</span> &#123;&#125;<br></code></pre></td></tr></table></figure></li>
 </ol>
-<h3 id="依赖注入DI"><a href="#依赖注入DI" class="headerlink" title="依赖注入DI"></a>依赖注入DI</h3><p>DI：dependency injection的简写，指spring创建对象过程中，将对象的依赖属通过配置进行注入</p>
+<h2 id="依赖注入DI"><a href="#依赖注入DI" class="headerlink" title="依赖注入DI"></a>依赖注入DI</h2><p>DI：dependency injection的简写，指spring创建对象过程中，将对象的依赖属通过配置进行注入</p>
 <p>注入方式：1.set注入；2.构造注入</p>
-<h3 id="Ioc容器中Spring中的实现"><a href="#Ioc容器中Spring中的实现" class="headerlink" title="Ioc容器中Spring中的实现"></a>Ioc容器中Spring中的实现</h3><p>Spring 中的 Ioc容器是Ioc思想的一个落地产品</p>
+<h2 id="Ioc容器中Spring中的实现"><a href="#Ioc容器中Spring中的实现" class="headerlink" title="Ioc容器中Spring中的实现"></a>Ioc容器中Spring中的实现</h2><p>Spring 中的 Ioc容器是Ioc思想的一个落地产品</p>
 <ol>
 <li><p>BeanFactory</p>
 <p>这是Ioc容器的基本实现，是spring内部使用接口，不供外部使用</p>
@@ -397,33 +476,274 @@
 </ol>
 <img src="/SpringBoot/spring6-note/image-20240331181306251.png" srcset="/img/loading.gif" lazyload alt="image-20240331181306251">
 
-<h2 id="基于xml管理bean"><a href="#基于xml管理bean" class="headerlink" title="基于xml管理bean"></a>基于xml管理bean</h2><p><img src="/SpringBoot/spring6-note/3A3748FC-4656-4EFC-BCFD-E32A7BBDFB11.jpeg" srcset="/img/loading.gif" lazyload alt="3A3748FC-4656-4EFC-BCFD-E32A7BBDFB11"></p>
-<h3 id="获取bean"><a href="#获取bean" class="headerlink" title="获取bean"></a>获取bean</h3><p><strong>根据ID、类型获取bean</strong></p>
+<h1 id="基于xml管理bean"><a href="#基于xml管理bean" class="headerlink" title="基于xml管理bean"></a>基于xml管理bean</h1><p><img src="/SpringBoot/spring6-note/3A3748FC-4656-4EFC-BCFD-E32A7BBDFB11.jpeg" srcset="/img/loading.gif" lazyload alt="3A3748FC-4656-4EFC-BCFD-E32A7BBDFB11"></p>
+<h2 id="获取bean"><a href="#获取bean" class="headerlink" title="获取bean"></a>获取bean</h2><p><strong>根据ID、类型获取bean</strong></p>
 <p><img src="/SpringBoot/spring6-note/A05CDD73-8AF5-4404-BD7F-5C852BAAEBC4.jpeg" srcset="/img/loading.gif" lazyload alt="A05CDD73-8AF5-4404-BD7F-5C852BAAEBC4"></p>
 <p>当接口只有<strong>一个实现类</strong>时，可以根据接口<strong>类型获取bean</strong></p>
-<h3 id="属性注入"><a href="#属性注入" class="headerlink" title="属性注入"></a>属性注入</h3><h4 id="set注入"><a href="#set注入" class="headerlink" title="set注入"></a>set注入</h4><p>注：Book类中需要有**setBname(String bname)<strong>和</strong>setAuthor(String author)**方法</p>
+<h2 id="属性注入"><a href="#属性注入" class="headerlink" title="属性注入"></a>属性注入</h2><h3 id="set注入"><a href="#set注入" class="headerlink" title="set注入"></a>set注入</h3><p>注：Book类中需要有**setBname(String bname)<strong>和</strong>setAuthor(String author)**方法</p>
 <p><img src="/SpringBoot/spring6-note/F0ED7606-D024-4EB5-80FF-1B4E9A242288.jpeg" srcset="/img/loading.gif" lazyload alt="F0ED7606-D024-4EB5-80FF-1B4E9A242288"></p>
-<h4 id="构造器注入"><a href="#构造器注入" class="headerlink" title="构造器注入"></a>构造器注入</h4><p>注：Book类中需要有<strong>有参构造器</strong>，且参数分别为bname和author</p>
+<h3 id="构造器注入"><a href="#构造器注入" class="headerlink" title="构造器注入"></a>构造器注入</h3><p>注：Book类中需要有<strong>有参构造器</strong>，且参数分别为bname和author</p>
 <p><img src="/SpringBoot/spring6-note/image-20240331214332902.png" srcset="/img/loading.gif" lazyload alt="image-20240331214332902"></p>
-<h3 id="特殊注入"><a href="#特殊注入" class="headerlink" title="特殊注入"></a>特殊注入</h3><h4 id="字面量赋值"><a href="#字面量赋值" class="headerlink" title="字面量赋值"></a>字面量赋值</h4><figure class="highlight abnf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs abnf">int a <span class="hljs-operator">=</span> <span class="hljs-number">10</span><span class="hljs-comment">;</span><br>String a<span class="hljs-operator">=</span> <span class="hljs-string">&quot;a&quot;</span><span class="hljs-comment">;</span><br></code></pre></td></tr></table></figure>
+<h2 id="特殊注入"><a href="#特殊注入" class="headerlink" title="特殊注入"></a>特殊注入</h2><h3 id="字面量赋值"><a href="#字面量赋值" class="headerlink" title="字面量赋值"></a>字面量赋值</h3><figure class="highlight abnf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs abnf">int a <span class="hljs-operator">=</span> <span class="hljs-number">10</span><span class="hljs-comment">;</span><br>String a<span class="hljs-operator">=</span> <span class="hljs-string">&quot;a&quot;</span><span class="hljs-comment">;</span><br></code></pre></td></tr></table></figure>
 
-<h4 id="nul值"><a href="#nul值" class="headerlink" title="nul值"></a>nul值</h4><img src="/SpringBoot/spring6-note/image-20240331214755618.png" srcset="/img/loading.gif" lazyload alt="image-20240331214755618" style="zoom:50%;">
+<h3 id="nul值"><a href="#nul值" class="headerlink" title="nul值"></a>nul值</h3><img src="/SpringBoot/spring6-note/image-20240331214755618.png" srcset="/img/loading.gif" lazyload alt="image-20240331214755618" style="zoom:50%;">
 
-<h4 id="xml实体"><a href="#xml实体" class="headerlink" title="xml实体"></a>xml实体</h4><p>特殊值转义</p>
-<h4 id="CDATA节"><a href="#CDATA节" class="headerlink" title="CDATA节"></a>CDATA节</h4><p>特殊值处理</p>
+<h3 id="xml实体"><a href="#xml实体" class="headerlink" title="xml实体"></a>xml实体</h3><p>特殊值转义</p>
+<h3 id="CDATA节"><a href="#CDATA节" class="headerlink" title="CDATA节"></a>CDATA节</h3><p>特殊值处理</p>
 <p><img src="/SpringBoot/spring6-note/image-20240331215056804.png" srcset="/img/loading.gif" lazyload alt="image-20240331215056804"></p>
-<h3 id="对象注入"><a href="#对象注入" class="headerlink" title="对象注入"></a>对象注入</h3><h4 id="外部Bean"><a href="#外部Bean" class="headerlink" title="外部Bean"></a>外部Bean</h4><p><img src="/SpringBoot/spring6-note/image-20240331220653124.png" srcset="/img/loading.gif" lazyload alt="image-20240331220653124"></p>
-<h4 id="内部Bean"><a href="#内部Bean" class="headerlink" title="内部Bean"></a>内部Bean</h4><p><img src="/SpringBoot/spring6-note/image-20240331220317176.png" srcset="/img/loading.gif" lazyload alt="image-20240331220317176"></p>
-<h4 id="级联属性赋值"><a href="#级联属性赋值" class="headerlink" title="级联属性赋值"></a>级联属性赋值</h4><p><img src="/SpringBoot/spring6-note/image-20240331220609445.png" srcset="/img/loading.gif" lazyload alt="image-20240331220609445"></p>
-<h3 id="其他注入"><a href="#其他注入" class="headerlink" title="其他注入"></a>其他注入</h3><h4 id="数组注入"><a href="#数组注入" class="headerlink" title="数组注入"></a>数组注入</h4><p><img src="/SpringBoot/spring6-note/image-20240331221009730.png" srcset="/img/loading.gif" lazyload alt="image-20240331221009730"></p>
-<h4 id="List注入"><a href="#List注入" class="headerlink" title="List注入"></a>List注入</h4><p><img src="/SpringBoot/spring6-note/image-20240331221250549.png" srcset="/img/loading.gif" lazyload alt="image-20240331221250549"></p>
-<h4 id="Map注入"><a href="#Map注入" class="headerlink" title="Map注入"></a>Map注入</h4><p><img src="/SpringBoot/spring6-note/image-20240331221728338.png" srcset="/img/loading.gif" lazyload alt="image-20240331221728338"></p>
-<h4 id="引用注入"><a href="#引用注入" class="headerlink" title="引用注入"></a>引用注入</h4><p><img src="/SpringBoot/spring6-note/image-20240331222623633.png" srcset="/img/loading.gif" lazyload alt="image-20240331222623633"></p>
+<h2 id="对象注入"><a href="#对象注入" class="headerlink" title="对象注入"></a>对象注入</h2><h3 id="外部Bean"><a href="#外部Bean" class="headerlink" title="外部Bean"></a>外部Bean</h3><p><img src="/SpringBoot/spring6-note/image-20240331220653124.png" srcset="/img/loading.gif" lazyload alt="image-20240331220653124"></p>
+<h3 id="内部Bean"><a href="#内部Bean" class="headerlink" title="内部Bean"></a>内部Bean</h3><p><img src="/SpringBoot/spring6-note/image-20240331220317176.png" srcset="/img/loading.gif" lazyload alt="image-20240331220317176"></p>
+<h3 id="级联属性赋值"><a href="#级联属性赋值" class="headerlink" title="级联属性赋值"></a>级联属性赋值</h3><p><img src="/SpringBoot/spring6-note/image-20240331220609445.png" srcset="/img/loading.gif" lazyload alt="image-20240331220609445"></p>
+<h2 id="其他注入"><a href="#其他注入" class="headerlink" title="其他注入"></a>其他注入</h2><h3 id="数组注入"><a href="#数组注入" class="headerlink" title="数组注入"></a>数组注入</h3><p><img src="/SpringBoot/spring6-note/image-20240331221009730.png" srcset="/img/loading.gif" lazyload alt="image-20240331221009730"></p>
+<h3 id="List注入"><a href="#List注入" class="headerlink" title="List注入"></a>List注入</h3><p><img src="/SpringBoot/spring6-note/image-20240331221250549.png" srcset="/img/loading.gif" lazyload alt="image-20240331221250549"></p>
+<h3 id="Map注入"><a href="#Map注入" class="headerlink" title="Map注入"></a>Map注入</h3><p><img src="/SpringBoot/spring6-note/image-20240331221728338.png" srcset="/img/loading.gif" lazyload alt="image-20240331221728338"></p>
+<h3 id="引用注入"><a href="#引用注入" class="headerlink" title="引用注入"></a>引用注入</h3><p><img src="/SpringBoot/spring6-note/image-20240331222623633.png" srcset="/img/loading.gif" lazyload alt="image-20240331222623633"></p>
 <p><img src="/SpringBoot/spring6-note/image-20240331222426691.png" srcset="/img/loading.gif" lazyload alt="image-20240331222426691"></p>
 <p><img src="/SpringBoot/spring6-note/image-20240331222522126.png" srcset="/img/loading.gif" lazyload alt="image-20240331222522126"></p>
-<h4 id="P命名空间注入"><a href="#P命名空间注入" class="headerlink" title="P命名空间注入"></a>P命名空间注入</h4><p><img src="/SpringBoot/spring6-note/image-20240331222930753.png" srcset="/img/loading.gif" lazyload alt="image-20240331222930753"></p>
+<h3 id="P命名空间注入"><a href="#P命名空间注入" class="headerlink" title="P命名空间注入"></a>P命名空间注入</h3><p><img src="/SpringBoot/spring6-note/image-20240331222930753.png" srcset="/img/loading.gif" lazyload alt="image-20240331222930753"></p>
 <p><img src="/SpringBoot/spring6-note/image-20240331222850613.png" srcset="/img/loading.gif" lazyload alt="image-20240331222850613"></p>
-<h3 id="Bean作用域"><a href="#Bean作用域" class="headerlink" title="Bean作用域"></a>Bean作用域</h3><h3 id="Bean生命周期"><a href="#Bean生命周期" class="headerlink" title="Bean生命周期"></a>Bean生命周期</h3>
+<h2 id="引入外部属性文件"><a href="#引入外部属性文件" class="headerlink" title="引入外部属性文件"></a>引入外部属性文件</h2><h2 id="Bean作用域"><a href="#Bean作用域" class="headerlink" title="Bean作用域"></a>Bean作用域</h2><p><img src="/SpringBoot/spring6-note/image-20240401125131188.png" srcset="/img/loading.gif" lazyload alt="image-20240401125131188"></p>
+<h2 id="Bean生命周期"><a href="#Bean生命周期" class="headerlink" title="Bean生命周期"></a>Bean生命周期</h2><h3 id="生命周期"><a href="#生命周期" class="headerlink" title="生命周期"></a>生命周期</h3><ol>
+<li><strong>Bean对象创建（调用无参构造器）</strong></li>
+<li><strong>注入Bean属性参数</strong></li>
+<li>Bean后置处理器调用（初始化前）</li>
+<li><strong>Bean初始化</strong></li>
+<li>Bean后置处理器调用（初始化后）</li>
+<li>Bean创建完成</li>
+<li>Bean销毁</li>
+<li><strong>Ioc容器关闭</strong></li>
+</ol>
+<p><img src="/SpringBoot/spring6-note/image-20240401125913188.png" srcset="/img/loading.gif" lazyload alt="image-20240401125913188"></p>
+<p>其中initMethod和destroyMethod由自己编写配置</p>
+<h3 id="后置处理器"><a href="#后置处理器" class="headerlink" title="后置处理器"></a>后置处理器</h3><p><strong>后置处理器对Ioc容器中的<u>所有Bean</u>都会执行</strong></p>
+<p><img src="/SpringBoot/spring6-note/image-20240401130956823.png" srcset="/img/loading.gif" lazyload alt="image-20240401130956823"></p>
+<p><img src="/SpringBoot/spring6-note/image-20240401131049143.png" srcset="/img/loading.gif" lazyload alt="image-20240401131049143"></p>
+<h2 id="FactoryBean"><a href="#FactoryBean" class="headerlink" title="FactoryBean"></a>FactoryBean</h2><p><img src="/SpringBoot/spring6-note/image-20240401212153149.png" srcset="/img/loading.gif" lazyload alt="image-20240401212153149"></p>
+<p><img src="/SpringBoot/spring6-note/image-20240401212518469.png" srcset="/img/loading.gif" lazyload alt="image-20240401212518469"></p>
+<p><img src="/SpringBoot/spring6-note/image-20240401212349121.png" srcset="/img/loading.gif" lazyload alt="image-20240401212349121"></p>
+<h2 id="基于xml的自动装配"><a href="#基于xml的自动装配" class="headerlink" title="基于xml的自动装配"></a>基于xml的自动装配</h2><p>controller -&gt; service -&gt; dao</p>
+<p><img src="/SpringBoot/spring6-note/image-20240401213331592.png" srcset="/img/loading.gif" lazyload alt="image-20240401213331592"></p>
+<p>byName需要保证属性名称和id相一致</p>
+<h1 id="基于注解管理Bean"><a href="#基于注解管理Bean" class="headerlink" title="基于注解管理Bean"></a>基于注解管理Bean</h1><p>注解是代码中的一种特殊标识，可以用在<strong>类</strong>上，<strong>属性</strong>上，<strong>方法</strong>上</p>
+<h2 id="通过注解实现自动装配过程"><a href="#通过注解实现自动装配过程" class="headerlink" title="通过注解实现自动装配过程"></a>通过注解实现自动装配过程</h2><ol>
+<li><p>引入依赖</p>
+</li>
+<li><p>开启组件扫描</p>
+<p><img src="/SpringBoot/spring6-note/image-20240402213324451.png" srcset="/img/loading.gif" lazyload alt="image-20240402213324451"></p>
+<p><img src="/SpringBoot/spring6-note/image-20240402213551463.png" srcset="/img/loading.gif" lazyload alt="image-20240402213551463"></p>
+<p><img src="/SpringBoot/spring6-note/image-20240402213947632.png" srcset="/img/loading.gif" lazyload alt="image-20240402213947632"></p>
+</li>
+<li><p>定义Bean</p>
+</li>
+<li><p>依赖注入</p>
+</li>
+</ol>
+<h2 id="定义Bean的注解"><a href="#定义Bean的注解" class="headerlink" title="定义Bean的注解"></a>定义Bean的注解</h2><p>@Component，@Service，@Controller，@Repository</p>
+<h2 id="数据注入"><a href="#数据注入" class="headerlink" title="数据注入"></a>数据注入</h2><h3 id="Autowired注入"><a href="#Autowired注入" class="headerlink" title="@Autowired注入"></a>@Autowired注入</h3><p>默认根据类型进行自动装配</p>
+<figure class="highlight less"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs less"><span class="hljs-variable">@Target</span>(&#123;ElementType.CONSTRUCTOR, ElementType.METHOD, ElementType.PARAMETER, ElementType.FIELD, ElementType.ANNOTATION_TYPE&#125;)<br><span class="hljs-variable">@Retention</span>(RetentionPolicy.RUNTIME)<br><span class="hljs-variable">@Documented</span><br>public <span class="hljs-variable">@interface</span> Autowired &#123;<br><br>	<span class="hljs-comment">/**</span><br><span class="hljs-comment">	 * Declares whether the annotated dependency is required.</span><br><span class="hljs-comment">	 * &lt;p&gt;Defaults to &#123;@code true&#125;.</span><br><span class="hljs-comment">	 */</span><br>	<span class="hljs-selector-tag">boolean</span> <span class="hljs-selector-tag">required</span>() <span class="hljs-selector-tag">default</span> <span class="hljs-selector-tag">true</span>;<br><br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>分析：</p>
+<ol>
+<li><p>该注解可以在构造方法、普通方法、参数、注解上使用</p>
+</li>
+<li><p>使用该注解需要Bean存在</p>
+</li>
+</ol>
+<h3 id="Autowired注解"><a href="#Autowired注解" class="headerlink" title="@Autowired注解"></a>@Autowired注解</h3><h4 id="属性注入-1"><a href="#属性注入-1" class="headerlink" title="属性注入"></a><strong>属性注入</strong></h4><p><img src="/SpringBoot/spring6-note/image-20240402215326180.png" srcset="/img/loading.gif" lazyload alt="image-20240402215326180"></p>
+<h4 id="set注入-1"><a href="#set注入-1" class="headerlink" title="set注入"></a><strong>set注入</strong></h4><p><img src="/SpringBoot/spring6-note/image-20240402215215564.png" srcset="/img/loading.gif" lazyload alt="image-20240402215215564"></p>
+<h4 id="构造注入"><a href="#构造注入" class="headerlink" title="构造注入"></a><strong>构造注入</strong></h4><p><img src="/SpringBoot/spring6-note/image-20240402215148660.png" srcset="/img/loading.gif" lazyload alt="image-20240402215148660"></p>
+<h4 id="形参注入"><a href="#形参注入" class="headerlink" title="形参注入"></a><strong>形参注入</strong></h4><p><img src="/SpringBoot/spring6-note/image-20240402215449294.png" srcset="/img/loading.gif" lazyload alt="image-20240402215449294"></p>
+<h4 id="默认注入"><a href="#默认注入" class="headerlink" title="默认注入"></a>默认注入</h4><p>当只有一个构造函数，且改构造函数为有参构造函数时，默认直接注入</p>
+<p><img src="/SpringBoot/spring6-note/image-20240402232837946.png" srcset="/img/loading.gif" lazyload alt="image-20240402232837946"></p>
+<h4 id="结合-Qualify按名称注入"><a href="#结合-Qualify按名称注入" class="headerlink" title="结合@Qualify按名称注入"></a>结合@Qualify按名称注入</h4><p><img src="/SpringBoot/spring6-note/image-20240402233136408.png" srcset="/img/loading.gif" lazyload alt="image-20240402233136408"></p>
+<h3 id="Resource注解"><a href="#Resource注解" class="headerlink" title="@Resource注解"></a>@Resource注解</h3><p>@Resource属于jdk扩展包，@Autowired属于spring包</p>
+<p><img src="/SpringBoot/spring6-note/image-20240402235102237.png" srcset="/img/loading.gif" lazyload alt="image-20240402235102237"></p>
+<ol>
+<li><p>默认根据name进行注入</p>
+</li>
+<li><p>没有指定name时根据属性名称进行注入</p>
+</li>
+<li><p>没有匹配成功时根据类型进行注入</p>
+<p><img src="/SpringBoot/spring6-note/image-20240402235011778.png" srcset="/img/loading.gif" lazyload alt="image-20240402235011778"></p>
+</li>
+</ol>
+<h1 id="Spring全注解开发"><a href="#Spring全注解开发" class="headerlink" title="Spring全注解开发"></a>Spring全注解开发</h1><p>使用配置类代替xml配置文件</p>
+<p><img src="/SpringBoot/spring6-note/image-20240402235418890.png" srcset="/img/loading.gif" lazyload alt="image-20240402235418890"></p>
+<h1 id="手写IOC"><a href="#手写IOC" class="headerlink" title="手写IOC"></a>手写IOC</h1><h2 id="回顾Java反射"><a href="#回顾Java反射" class="headerlink" title="回顾Java反射"></a>回顾Java反射</h2><p>Java反射机制表现在<strong>运行状态</strong>中，通过反射，对于任何一个类都能知道该类的属性和方法，对于任何对象都能调用该对象的属性和方法。</p>
+<p>反射可以<strong>动态获取信息，调用方法</strong>。</p>
+<h3 id="获取Class对象的三种方式"><a href="#获取Class对象的三种方式" class="headerlink" title="获取Class对象的三种方式"></a>获取Class对象的三种方式</h3><p><img src="/SpringBoot/spring6-note/image-20240404191944552.png" srcset="/img/loading.gif" lazyload alt="image-20240404191944552"></p>
+<h3 id="通过反射获取构造方法"><a href="#通过反射获取构造方法" class="headerlink" title="通过反射获取构造方法"></a>通过反射获取构造方法</h3><ol>
+<li><p>获取所有public构造方法</p>
+<p><img src="/SpringBoot/spring6-note/image-20240405150147107.png" srcset="/img/loading.gif" lazyload alt="image-20240405150147107"></p>
+</li>
+<li><p>获取所有构造方法，包括私有方法</p>
+<p><img src="/SpringBoot/spring6-note/image-20240405150323600.png" srcset="/img/loading.gif" lazyload alt="image-20240405150323600"></p>
+</li>
+</ol>
+<h3 id="通过反射获取对象"><a href="#通过反射获取对象" class="headerlink" title="通过反射获取对象"></a>通过反射获取对象</h3><ol>
+<li><h5 id="通过class获取对象，无参"><a href="#通过class获取对象，无参" class="headerlink" title="通过class获取对象，无参"></a>通过class获取对象，无参</h5><p><img src="/SpringBoot/spring6-note/image-20240404192114107.png" srcset="/img/loading.gif" lazyload alt="image-20240404192114107"></p>
+</li>
+<li><p>通过有参构造（public）创建对象</p>
+<p><img src="/SpringBoot/spring6-note/image-20240405150600325.png" srcset="/img/loading.gif" lazyload alt="image-20240405150600325"></p>
+</li>
+<li><p>通过有参构造（private）创建对象</p>
+<p><img src="/SpringBoot/spring6-note/image-20240405150749589.png" srcset="/img/loading.gif" lazyload alt="image-20240405150749589"></p>
+</li>
+</ol>
+<h3 id="通过反射获取属性"><a href="#通过反射获取属性" class="headerlink" title="通过反射获取属性"></a>通过反射获取属性</h3><ol>
+<li><p>获取public属性</p>
+<p><img src="/SpringBoot/spring6-note/image-20240405151706235.png" srcset="/img/loading.gif" lazyload alt="image-20240405151706235"></p>
+</li>
+<li><p>获取所有属性，包括private</p>
+<p><img src="/SpringBoot/spring6-note/image-20240405152007955.png" srcset="/img/loading.gif" lazyload alt="image-20240405152007955"></p>
+</li>
+<li><p>给private属性赋值</p>
+<p><img src="/SpringBoot/spring6-note/image-20240405152114584.png" srcset="/img/loading.gif" lazyload alt="image-20240405152114584"></p>
+</li>
+</ol>
+<p>						</p>
+<h3 id="通过反射获取方法"><a href="#通过反射获取方法" class="headerlink" title="通过反射获取方法"></a>通过反射获取方法</h3><ol>
+<li><p>获取public方法</p>
+<p><img src="/SpringBoot/spring6-note/image-20240405152609230.png" srcset="/img/loading.gif" lazyload alt="image-20240405152609230"></p>
+</li>
+<li><p>获取所有方法，包括private</p>
+<p><img src="/SpringBoot/spring6-note/image-20240405152712044.png" srcset="/img/loading.gif" lazyload alt="image-20240405152712044"></p>
+</li>
+<li><p>调用private方法</p>
+<p><img src="/SpringBoot/spring6-note/image-20240405152738782.png" srcset="/img/loading.gif" lazyload alt="image-20240405152738782"></p>
+</li>
+</ol>
+<h2 id="实现SpringIoc（todo-4-6）"><a href="#实现SpringIoc（todo-4-6）" class="headerlink" title="实现SpringIoc（todo 4.6）"></a>实现SpringIoc（todo 4.6）</h2><h3 id="创建Bean注解"><a href="#创建Bean注解" class="headerlink" title="创建Bean注解"></a>创建Bean注解</h3><h3 id="创建Di注解"><a href="#创建Di注解" class="headerlink" title="创建Di注解"></a>创建Di注解</h3><h3 id="实现Bean创建"><a href="#实现Bean创建" class="headerlink" title="实现Bean创建"></a>实现Bean创建</h3><h3 id="实现依赖注入"><a href="#实现依赖注入" class="headerlink" title="实现依赖注入"></a>实现依赖注入</h3><h1 id="面向切面编程Aop"><a href="#面向切面编程Aop" class="headerlink" title="面向切面编程Aop"></a>面向切面编程Aop</h1><h2 id="代理模式"><a href="#代理模式" class="headerlink" title="代理模式"></a>代理模式</h2><p><img src="/SpringBoot/spring6-note/image-20240405172837446.png" srcset="/img/loading.gif" lazyload alt="image-20240405172837446"></p>
+<h3 id="静态代理"><a href="#静态代理" class="headerlink" title="静态代理"></a>静态代理</h3><p><img src="/SpringBoot/spring6-note/image-20240405172545654.png" srcset="/img/loading.gif" lazyload alt="image-20240405172545654"></p>
+<p>静态代理的缺点是，不够灵活，当需要增加新的需要代理的方式时，就得修改这个代理类</p>
+<h3 id="动态代理"><a href="#动态代理" class="headerlink" title="动态代理"></a>动态代理</h3><p><img src="/SpringBoot/spring6-note/image-20240405173218503.png" srcset="/img/loading.gif" lazyload alt="image-20240405173218503"></p>
+<p>todo：自己通过Proxy实现动态代理</p>
+<h2 id="AOP概述"><a href="#AOP概述" class="headerlink" title="AOP概述"></a>AOP概述</h2><p>Aop<strong>面向切面编程</strong>，是一种<strong>设计思想</strong>，通过<strong>预编译方式</strong>和<strong>运行期动态代理</strong>方式，在不改变源代码情况下，给程序动态<strong>统一添加额外功能</strong>的技术。</p>
+<p>利用Aop技术可以<strong>隔离业务</strong>，降低业务逻辑各部分之间的<strong>耦合度</strong>，提高程序可用性，提高开发效率。</p>
+<h3 id="AOP相关术语"><a href="#AOP相关术语" class="headerlink" title="AOP相关术语"></a>AOP相关术语</h3><ol>
+<li><p>横切关注点：需要解决的问题，如果用户验证，日志管理</p>
+</li>
+<li><p>通知（增强）：想要增强的功能</p>
+<p>分为前置通知、返回通知、异常通知、后置通知、环绕通知</p>
+<p><img src="/SpringBoot/spring6-note/image-20240405175850810.png" srcset="/img/loading.gif" lazyload alt="image-20240405175850810"></p>
+</li>
+<li><p>切面：封装方法的类</p>
+<p><img src="/SpringBoot/spring6-note/image-20240405180032387.png" srcset="/img/loading.gif" lazyload alt="image-20240405180032387"></p>
+</li>
+<li><p>目标：被代理的目标对象</p>
+</li>
+<li><p>代理：代理对象</p>
+</li>
+<li><p>连接点：允许通知的地方</p>
+<p><img src="/SpringBoot/spring6-note/image-20240405180144819.png" srcset="/img/loading.gif" lazyload alt="image-20240405180144819"></p>
+</li>
+<li><p>切入点：连接点定位的地方，实际增强的方法</p>
+</li>
+</ol>
+<h2 id="基于注解的AOP"><a href="#基于注解的AOP" class="headerlink" title="基于注解的AOP"></a>基于注解的AOP</h2><p>动态代理分为基于<strong>jdk</strong>的动态代理，和基于<strong>cglib</strong>的动态代理</p>
+<p><img src="/SpringBoot/spring6-note/image-20240405191952547.png" srcset="/img/loading.gif" lazyload alt="image-20240405191952547"></p>
+<p><img src="/SpringBoot/spring6-note/image-20240405192237025.png" srcset="/img/loading.gif" lazyload alt="image-20240405192237025"></p>
+<h3 id="jdk代理"><a href="#jdk代理" class="headerlink" title="jdk代理"></a>jdk代理</h3><p>代理对象和目标对象实现相同的接口</p>
+<h3 id="cglib代理"><a href="#cglib代理" class="headerlink" title="cglib代理"></a>cglib代理</h3><p>代理对象继承目标对象</p>
+<h3 id="切入点表达式"><a href="#切入点表达式" class="headerlink" title="切入点表达式"></a>切入点表达式</h3><p><img src="/SpringBoot/spring6-note/image-20240405202425278.png" srcset="/img/loading.gif" lazyload alt="image-20240405202425278"></p>
+<h3 id="前置通知具体实现"><a href="#前置通知具体实现" class="headerlink" title="前置通知具体实现"></a>前置通知具体实现</h3><ol>
+<li><p>引入依赖</p>
+<img src="/SpringBoot/spring6-note/image-20240405203130106.png" srcset="/img/loading.gif" lazyload alt="image-20240405203130106" style="zoom:50%;">
+</li>
+<li><p>设置xml</p>
+<img src="/SpringBoot/spring6-note/image-20240405203243963.png" srcset="/img/loading.gif" lazyload alt="image-20240405203243963" style="zoom: 33%;">
+</li>
+<li><p>生成aspect类</p>
+<p><strong>可以通过JoinPoint获取需要增强的方法的具体信息</strong></p>
+<p><img src="/SpringBoot/spring6-note/image-20240405204220838.png" srcset="/img/loading.gif" lazyload alt="image-20240405204220838"></p>
+</li>
+<li><p>切入点表达式</p>
+</li>
+</ol>
+<p><img src="/SpringBoot/spring6-note/image-20240405203634186.png" srcset="/img/loading.gif" lazyload alt="image-20240405203634186"></p>
+<h3 id="其他通知——返回通知"><a href="#其他通知——返回通知" class="headerlink" title="其他通知——返回通知"></a>其他通知——返回通知</h3><p>返回通知在后置通知之前，可以通过returning能得到目标方法的返回值</p>
+<p><img src="/SpringBoot/spring6-note/image-20240405204516571.png" srcset="/img/loading.gif" lazyload alt="image-20240405204516571"></p>
+<h3 id="其他通知——异常通知"><a href="#其他通知——异常通知" class="headerlink" title="其他通知——异常通知"></a>其他通知——异常通知</h3><p>异常通知通过throwing获取抛出的异常</p>
+<p><img src="/SpringBoot/spring6-note/image-20240405204649552.png" srcset="/img/loading.gif" lazyload alt="image-20240405204649552"></p>
+<h3 id="其他通知——环绕通知"><a href="#其他通知——环绕通知" class="headerlink" title="其他通知——环绕通知"></a>其他通知——环绕通知</h3><img src="/SpringBoot/spring6-note/image-20240405205834100.png" srcset="/img/loading.gif" lazyload alt="image-20240405205834100" style="zoom: 33%;">
+
+<img src="/SpringBoot/spring6-note/image-20240405205932534.png" srcset="/img/loading.gif" lazyload alt="image-20240405205932534" style="zoom:50%;">
+
+<h3 id="重用切入点表达式"><a href="#重用切入点表达式" class="headerlink" title="重用切入点表达式"></a>重用切入点表达式</h3><p>pass：在其他类里面pointCut()前面需要加上全类名</p>
+<p><img src="/SpringBoot/spring6-note/image-20240405202919380.png" srcset="/img/loading.gif" lazyload alt="image-20240405202919380"></p>
+<h3 id="切面优先级"><a href="#切面优先级" class="headerlink" title="切面优先级"></a>切面优先级</h3><p><img src="/SpringBoot/spring6-note/image-20240405210307237.png" srcset="/img/loading.gif" lazyload alt="image-20240405210307237"></p>
+<h2 id="基于xml的Aop"><a href="#基于xml的Aop" class="headerlink" title="基于xml的Aop"></a>基于xml的Aop</h2><p><img src="/SpringBoot/spring6-note/image-20240405210815192.png" srcset="/img/loading.gif" lazyload alt="image-20240405210815192"></p>
+<h1 id="Junit"><a href="#Junit" class="headerlink" title="Junit"></a>Junit</h1><h2 id="Spring整合Junit5"><a href="#Spring整合Junit5" class="headerlink" title="Spring整合Junit5"></a>Spring整合Junit5</h2><h3 id="相关依赖"><a href="#相关依赖" class="headerlink" title="相关依赖"></a>相关依赖</h3><p><img src="/SpringBoot/spring6-note/image-20240405211007162.png" srcset="/img/loading.gif" lazyload alt="image-20240405211007162"></p>
+<h3 id="具体实现"><a href="#具体实现" class="headerlink" title="具体实现"></a>具体实现</h3><img src="/SpringBoot/spring6-note/image-20240405211340876.png" srcset="/img/loading.gif" lazyload alt="image-20240405211340876" style="zoom: 50%;">
+
+<p>用法二：</p>
+<img src="/SpringBoot/spring6-note/image-20240405211449707.png" srcset="/img/loading.gif" lazyload alt="image-20240405211449707" style="zoom: 50%;">
+
+<h2 id="Spring整合Junit4"><a href="#Spring整合Junit4" class="headerlink" title="Spring整合Junit4"></a>Spring整合Junit4</h2><h3 id="相关依赖-1"><a href="#相关依赖-1" class="headerlink" title="相关依赖"></a>相关依赖</h3><img src="/SpringBoot/spring6-note/image-20240405211624250.png" srcset="/img/loading.gif" lazyload alt="image-20240405211624250" style="zoom:50%;">
+
+<h3 id="具体实现-1"><a href="#具体实现-1" class="headerlink" title="具体实现"></a>具体实现</h3><img src="/SpringBoot/spring6-note/image-20240405211716788.png" srcset="/img/loading.gif" lazyload alt="image-20240405211716788" style="zoom:50%;">
+
+
+
+<h1 id="事务"><a href="#事务" class="headerlink" title="事务"></a>事务</h1><h2 id="JdbcTemplate"><a href="#JdbcTemplate" class="headerlink" title="JdbcTemplate"></a>JdbcTemplate</h2><p>Spring对<strong>JDBC</strong>进行类封装，使用Jdbc Template操作数据库</p>
+<p><img src="/SpringBoot/spring6-note/image-20240405212006200.png" srcset="/img/loading.gif" lazyload alt="image-20240405212006200"></p>
+<h3 id="相关依赖-2"><a href="#相关依赖-2" class="headerlink" title="相关依赖"></a>相关依赖</h3><img src="/SpringBoot/spring6-note/image-20240405212209704.png" srcset="/img/loading.gif" lazyload alt="image-20240405212209704" style="zoom:50%;">
+
+<h3 id="创建jdbc-properies"><a href="#创建jdbc-properies" class="headerlink" title="创建jdbc.properies"></a>创建jdbc.properies</h3><p><img src="/SpringBoot/spring6-note/image-20240405212300806.png" srcset="/img/loading.gif" lazyload alt="image-20240405212300806"></p>
+<h3 id="配置xml"><a href="#配置xml" class="headerlink" title="配置xml"></a>配置xml</h3><img src="/SpringBoot/spring6-note/image-20240405212406325.png" srcset="/img/loading.gif" lazyload alt="image-20240405212406325" style="zoom:50%;">
+
+<h3 id="增删改操作"><a href="#增删改操作" class="headerlink" title="增删改操作"></a>增删改操作</h3><p>增加</p>
+<img src="/SpringBoot/spring6-note/image-20240405213006396.png" srcset="/img/loading.gif" lazyload alt="image-20240405213006396" style="zoom: 33%;">
+
+<p>修改</p>
+<img src="/SpringBoot/spring6-note/image-20240405213213407.png" srcset="/img/loading.gif" lazyload alt="image-20240405213213407" style="zoom: 33%;">
+
+<p>删除</p>
+<img src="/SpringBoot/spring6-note/image-20240405213245427.png" srcset="/img/loading.gif" lazyload alt="image-20240405213245427" style="zoom:50%;">
+
+<h3 id="查询操作"><a href="#查询操作" class="headerlink" title="查询操作"></a>查询操作</h3><h4 id="单条查询"><a href="#单条查询" class="headerlink" title="单条查询"></a>单条查询</h4><p>写法一</p>
+<img src="/SpringBoot/spring6-note/image-20240405213800086.png" srcset="/img/loading.gif" lazyload alt="image-20240405213800086" style="zoom:50%;">
+
+<p>写法二</p>
+<p><img src="/SpringBoot/spring6-note/image-20240405214025978.png" srcset="/img/loading.gif" lazyload alt="image-20240405214025978"></p>
+<h4 id="List查询"><a href="#List查询" class="headerlink" title="List查询"></a>List查询</h4><img src="/SpringBoot/spring6-note/image-20240405214114416.png" srcset="/img/loading.gif" lazyload alt="image-20240405214114416" style="zoom:50%;">
+
+<h4 id="查询单个值"><a href="#查询单个值" class="headerlink" title="查询单个值"></a>查询单个值</h4><img src="/SpringBoot/spring6-note/image-20240405214243255.png" srcset="/img/loading.gif" lazyload alt="image-20240405214243255" style="zoom:50%;">
+
+<h2 id="事务概述"><a href="#事务概述" class="headerlink" title="事务概述"></a>事务概述</h2><p>事务是不可分割的数据库操作，要么全部执行，要么全部不执行</p>
+<h3 id="事务特性"><a href="#事务特性" class="headerlink" title="事务特性"></a>事务特性</h3><h4 id="原子性（Automatic）"><a href="#原子性（Automatic）" class="headerlink" title="原子性（Automatic）"></a>原子性（Automatic）</h4><p>要么全部完成，要么不会完成，回滚到最初状态。通过undo log实现</p>
+<h4 id="一致性（Consistenty）"><a href="#一致性（Consistenty）" class="headerlink" title="一致性（Consistenty）"></a>一致性（Consistenty）</h4><p>操作前操作后都处于一致状态，操作前后总量不变</p>
+<h4 id="隔离性（Isolation）"><a href="#隔离性（Isolation）" class="headerlink" title="隔离性（Isolation）"></a>隔离性（Isolation）</h4><p>并发操作时，每个事务都有各种独立的空间，修改隔离</p>
+<h4 id="持久性（Durability）"><a href="#持久性（Durability）" class="headerlink" title="持久性（Durability）"></a>持久性（Durability）</h4><p>只要事务成功，就会持久保持，redo log</p>
+<h3 id="编程式事务"><a href="#编程式事务" class="headerlink" title="编程式事务"></a>编程式事务</h3><img src="/SpringBoot/spring6-note/image-20240406102315451.png" srcset="/img/loading.gif" lazyload alt="image-20240406102315451" style="zoom: 50%;">
+
+<h3 id="声明式事务"><a href="#声明式事务" class="headerlink" title="声明式事务"></a>声明式事务</h3><p>eg：用户买书事务</p>
+<img src="/SpringBoot/spring6-note/image-20240406102546341.png" srcset="/img/loading.gif" lazyload alt="image-20240406102546341" style="zoom:50%;">
+
+<h4 id="开启事务xml"><a href="#开启事务xml" class="headerlink" title="开启事务xml"></a>开启事务xml</h4><p><img src="/SpringBoot/spring6-note/image-20240406103731880.png" srcset="/img/loading.gif" lazyload alt="image-20240406103731880"></p>
+<h2 id="基于注解（注解位置：service层）"><a href="#基于注解（注解位置：service层）" class="headerlink" title="基于注解（注解位置：service层）"></a>基于注解（注解位置：service层）</h2><p>注：@Transactional可以修饰类，类中所有方法都开启事务</p>
+<img src="/SpringBoot/spring6-note/image-20240406103828678.png" srcset="/img/loading.gif" lazyload alt="image-20240406103828678" style="zoom:50%;">
+
+<h3 id="事务属性"><a href="#事务属性" class="headerlink" title="事务属性"></a>事务属性</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@Target(&#123;ElementType.TYPE, ElementType.METHOD&#125;)</span><br><span class="hljs-meta">@Retention(RetentionPolicy.RUNTIME)</span><br><span class="hljs-meta">@Inherited</span><br><span class="hljs-meta">@Documented</span><br><span class="hljs-meta">@Reflective</span><br><span class="hljs-keyword">public</span> <span class="hljs-meta">@interface</span> Transactional &#123;<br>    <span class="hljs-meta">@AliasFor(&quot;transactionManager&quot;)</span><br>    String <span class="hljs-title function_">value</span><span class="hljs-params">()</span> <span class="hljs-keyword">default</span> <span class="hljs-string">&quot;&quot;</span>;<br><br>    <span class="hljs-meta">@AliasFor(&quot;value&quot;)</span><br>    String <span class="hljs-title function_">transactionManager</span><span class="hljs-params">()</span> <span class="hljs-keyword">default</span> <span class="hljs-string">&quot;&quot;</span>;<br><br>    String[] label() <span class="hljs-keyword">default</span> &#123;&#125;;<br><br>    Propagation <span class="hljs-title function_">propagation</span><span class="hljs-params">()</span> <span class="hljs-keyword">default</span> Propagation.REQUIRED; <span class="hljs-comment">// 传播行为 </span><br><br>    Isolation <span class="hljs-title function_">isolation</span><span class="hljs-params">()</span> <span class="hljs-keyword">default</span> Isolation.DEFAULT; <span class="hljs-comment">// 隔离级别</span><br><br>    <span class="hljs-type">int</span> <span class="hljs-title function_">timeout</span><span class="hljs-params">()</span> <span class="hljs-keyword">default</span> -<span class="hljs-number">1</span>; <span class="hljs-comment">// 超时回滚，默认用不超时</span><br><br>    String <span class="hljs-title function_">timeoutString</span><span class="hljs-params">()</span> <span class="hljs-keyword">default</span> <span class="hljs-string">&quot;&quot;</span>;<br><br>    <span class="hljs-type">boolean</span> <span class="hljs-title function_">readOnly</span><span class="hljs-params">()</span> <span class="hljs-keyword">default</span> <span class="hljs-literal">false</span>; <span class="hljs-comment">// 只读设置</span><br><br>    Class&lt;? <span class="hljs-keyword">extends</span> <span class="hljs-title class_">Throwable</span>&gt;[] rollbackFor() <span class="hljs-keyword">default</span> &#123;&#125;; <span class="hljs-comment">// 回滚策略，回滚的类</span><br><br>    String[] rollbackForClassName() <span class="hljs-keyword">default</span> &#123;&#125;; <span class="hljs-comment">// 回滚策略，按全类名</span><br><br>    Class&lt;? <span class="hljs-keyword">extends</span> <span class="hljs-title class_">Throwable</span>&gt;[] noRollbackFor() <span class="hljs-keyword">default</span> &#123;&#125;; <span class="hljs-comment">// 回滚策略，不回滚的类</span><br><br>    String[] noRollbackForClassName() <span class="hljs-keyword">default</span> &#123;&#125;; <span class="hljs-comment">// 回滚策略，按全类名</span><br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="数据库隔离级别"><a href="#数据库隔离级别" class="headerlink" title="数据库隔离级别"></a>数据库隔离级别</h3><h4 id="存在问题"><a href="#存在问题" class="headerlink" title="存在问题"></a>存在问题</h4><p>脏读</p>
+<p>不可重复读</p>
+<p>幻读</p>
+<h4 id="隔离级别"><a href="#隔离级别" class="headerlink" title="隔离级别"></a>隔离级别</h4><p>读未提交</p>
+<p>读已提交</p>
+<p>可重复读</p>
+<p>串行化</p>
+<p><img src="/SpringBoot/spring6-note/image-20240406105248805.png" srcset="/img/loading.gif" lazyload alt="image-20240406105248805"></p>
+<h4 id="传播行为"><a href="#传播行为" class="headerlink" title="传播行为"></a>传播行为</h4><p>通过<strong>propagation</strong>控制事务的粒度</p>
+<p><img src="/SpringBoot/spring6-note/image-20240406105643700.png" srcset="/img/loading.gif" lazyload alt="image-20240406105643700"></p>
+<p><img src="/SpringBoot/spring6-note/image-20240406110236630.png" srcset="/img/loading.gif" lazyload alt="image-20240406110236630"></p>
+<h2 id="全注解开发——配置类"><a href="#全注解开发——配置类" class="headerlink" title="全注解开发——配置类"></a>全注解开发——配置类</h2><img src="/SpringBoot/spring6-note/image-20240406110753522.png" srcset="/img/loading.gif" lazyload alt="image-20240406110753522" style="zoom:50%;">
+
+<img src="/SpringBoot/spring6-note/image-20240406110846128.png" srcset="/img/loading.gif" lazyload alt="image-20240406110846128" style="zoom:50%;">
+
+<h2 id="基于xml事务"><a href="#基于xml事务" class="headerlink" title="基于xml事务"></a>基于xml事务</h2><img src="/SpringBoot/spring6-note/image-20240406112023303.png" srcset="/img/loading.gif" lazyload alt="image-20240406112023303" style="zoom:50%;">
+
+<h1 id="资源操作resource（todo-p6）"><a href="#资源操作resource（todo-p6）" class="headerlink" title="资源操作resource（todo p6）"></a>资源操作resource（todo p6）</h1><h1 id="i18n国际化（todo-p2）"><a href="#i18n国际化（todo-p2）" class="headerlink" title="i18n国际化（todo p2）"></a>i18n国际化（todo p2）</h1><h1 id="数据校验（todo-p4）"><a href="#数据校验（todo-p4）" class="headerlink" title="数据校验（todo p4）"></a>数据校验（todo p4）</h1><h1 id="提前编译（todo-p4）"><a href="#提前编译（todo-p4）" class="headerlink" title="提前编译（todo p4）"></a>提前编译（todo p4）</h1><h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1>
                 
               </div>
             
@@ -440,7 +760,7 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>Springboot6-note</div>
+      <div></div>
       <div>http://by.ecel.top/SpringBoot/spring6-note/</div>
     </div>
     <div class="license-meta">
