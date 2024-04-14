@@ -16,12 +16,12 @@
   <meta name="author" content="刘笑笑">
   <meta name="keywords" content="java、go、操作系统、网络">
   
-    <meta name="description" content="关于SpringBoot“Spring Boot makes it easy to create stand-alone, production-grade Spring based Applications that you can “just run”.” SpringBoot可以简单快速地开发一个Spring项目。 特性：  可以快速创建独立的Spring应用程序 直接嵌入Tomcat、Je">
+    <meta name="description" content="关于SpringBoot Spring Boot makes it easy to create stand-alone, production-grade Spring based Applications that you can “just run”.  SpringBoot可以简单快速地开发一个Spring项目。 特性：  可以快速创建独立的Spring应用程序 直接嵌入Tomcat、Je">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Springboot3的启动流程分析">
 <meta property="og:url" content="http://by.ecel.top/SpringBoot/springboot3/index.html">
 <meta property="og:site_name" content="Hello">
-<meta property="og:description" content="关于SpringBoot“Spring Boot makes it easy to create stand-alone, production-grade Spring based Applications that you can “just run”.” SpringBoot可以简单快速地开发一个Spring项目。 特性：  可以快速创建独立的Spring应用程序 直接嵌入Tomcat、Je">
+<meta property="og:description" content="关于SpringBoot Spring Boot makes it easy to create stand-alone, production-grade Spring based Applications that you can “just run”.  SpringBoot可以简单快速地开发一个Spring项目。 特性：  可以快速创建独立的Spring应用程序 直接嵌入Tomcat、Je">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="http://by.ecel.top/SpringBoot/springboot3/image-20231213232637162.png">
 <meta property="og:image" content="http://by.ecel.top/SpringBoot/springboot3/image-20231213233321719.png">
@@ -64,8 +64,39 @@
 <meta property="og:image" content="http://by.ecel.top/SpringBoot/springboot3/image-20240406222130747.png">
 <meta property="og:image" content="http://by.ecel.top/SpringBoot/springboot3/image-20240406222458792.png">
 <meta property="og:image" content="http://by.ecel.top/SpringBoot/springboot3/image-20240406223027499.png">
+<meta property="og:image" content="http://by.ecel.top/SpringBoot/springboot3/image-20240407115354450.png">
+<meta property="og:image" content="http://by.ecel.top/SpringBoot/springboot3/image-20240407115539943.png">
+<meta property="og:image" content="http://by.ecel.top/SpringBoot/springboot3/image-20240407115839382.png">
+<meta property="og:image" content="http://by.ecel.top/SpringBoot/springboot3/image-20240407122053252.png">
+<meta property="og:image" content="http://by.ecel.top/SpringBoot/springboot3/image-20240407151110506.png">
+<meta property="og:image" content="http://by.ecel.top/SpringBoot/springboot3/image-20240407161859149.png">
+<meta property="og:image" content="http://by.ecel.top/SpringBoot/springboot3/image-20240407163011650.png">
+<meta property="og:image" content="http://by.ecel.top/SpringBoot/springboot3/image-20240407162420212.png">
+<meta property="og:image" content="http://by.ecel.top/SpringBoot/springboot3/image-20240407162940374.png">
+<meta property="og:image" content="http://by.ecel.top/SpringBoot/springboot3/image-20240407164329364.png">
+<meta property="og:image" content="http://by.ecel.top/SpringBoot/springboot3/image-20240407164513250.png">
+<meta property="og:image" content="http://by.ecel.top/SpringBoot/springboot3/image-20240407165119732.png">
+<meta property="og:image" content="http://by.ecel.top/SpringBoot/springboot3/image-20240407170536184.png">
+<meta property="og:image" content="http://by.ecel.top/SpringBoot/springboot3/image-20240407170603059.png">
+<meta property="og:image" content="http://by.ecel.top/SpringBoot/springboot3/image-20240407171010034.png">
+<meta property="og:image" content="http://by.ecel.top/SpringBoot/springboot3/image-20240407171038167.png">
+<meta property="og:image" content="http://by.ecel.top/SpringBoot/springboot3/image-20240407171735060.png">
+<meta property="og:image" content="http://by.ecel.top/SpringBoot/springboot3/image-20240407172051872.png">
+<meta property="og:image" content="http://by.ecel.top/SpringBoot/springboot3/image-20240407172029494.png">
+<meta property="og:image" content="http://by.ecel.top/SpringBoot/springboot3/image-20240407174420968.png">
+<meta property="og:image" content="http://by.ecel.top/SpringBoot/springboot3/image-20240407174746345.png">
+<meta property="og:image" content="http://by.ecel.top/SpringBoot/springboot3/image-20240407175526722.png">
+<meta property="og:image" content="http://by.ecel.top/SpringBoot/springboot3/image-20240407195907243.png">
+<meta property="og:image" content="http://by.ecel.top/SpringBoot/springboot3/image-20240408204615763.png">
+<meta property="og:image" content="http://by.ecel.top/SpringBoot/springboot3/image-20240408204826908.png">
+<meta property="og:image" content="http://by.ecel.top/SpringBoot/springboot3/image-20240408212824628.png">
+<meta property="og:image" content="http://by.ecel.top/SpringBoot/springboot3/image-20240408213009486.png">
+<meta property="og:image" content="http://by.ecel.top/SpringBoot/springboot3/image-20240408212904114.png">
+<meta property="og:image" content="http://by.ecel.top/SpringBoot/springboot3/image-20240408212718468.png">
+<meta property="og:image" content="http://by.ecel.top/SpringBoot/springboot3/image-20240408212746517.png">
+<meta property="og:image" content="http://by.ecel.top/SpringBoot/springboot3/image-20240408213526788.png">
 <meta property="article:published_time" content="2023-12-13T14:57:36.171Z">
-<meta property="article:modified_time" content="2024-04-06T14:30:45.585Z">
+<meta property="article:modified_time" content="2024-04-11T13:44:04.417Z">
 <meta property="article:author" content="刘笑笑">
 <meta property="article:tag" content="Springboot">
 <meta name="twitter:card" content="summary_large_image">
@@ -276,7 +307,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          3.9k 字
+          10k 字
         
       </span>
     
@@ -287,7 +318,7 @@
         
         
         
-          33 分钟
+          86 分钟
         
       </span>
     
@@ -330,7 +361,7 @@
               <p class="note note-info">
                 
                   
-                    本文最后更新于：2024年4月6日 晚上
+                    本文最后更新于：2024年4月11日 晚上
                   
                 
               </p>
@@ -338,7 +369,9 @@
             
               <div class="markdown-body">
                 
-                <h1 id="关于SpringBoot"><a href="#关于SpringBoot" class="headerlink" title="关于SpringBoot"></a>关于SpringBoot</h1><p>“Spring Boot makes it easy to create stand-alone, production-grade Spring based Applications that you can “just run”.”</p>
+                <h1 id="关于SpringBoot"><a href="#关于SpringBoot" class="headerlink" title="关于SpringBoot"></a>关于SpringBoot</h1><blockquote>
+<p>Spring Boot makes it easy to create stand-alone, production-grade Spring based Applications that you can “just run”.</p>
+</blockquote>
 <p><strong>SpringBoot可以简单快速地开发一个Spring项目。</strong></p>
 <p><strong>特性：</strong></p>
 <ul>
@@ -528,6 +561,201 @@
 <h3 id="日志文件"><a href="#日志文件" class="headerlink" title="日志文件"></a>日志文件</h3><img src="/SpringBoot/springboot3/image-20240406222458792.png" srcset="/img/loading.gif" lazyload alt="image-20240406222458792" style="zoom:50%;">
 
 <h3 id="日志归档和滚动切割"><a href="#日志归档和滚动切割" class="headerlink" title="日志归档和滚动切割"></a>日志归档和滚动切割</h3><img src="/SpringBoot/springboot3/image-20240406223027499.png" srcset="/img/loading.gif" lazyload alt="image-20240406223027499" style="zoom:50%;">
+
+<h1 id="Springboot-web开发"><a href="#Springboot-web开发" class="headerlink" title="Springboot web开发"></a>Springboot web开发</h1><h2 id="自动配置web场景"><a href="#自动配置web场景" class="headerlink" title="自动配置web场景"></a>自动配置web场景</h2><ol>
+<li><p>整合web场景</p>
+<figure class="highlight plaintext"><figcaption><span>m</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs x">&lt;dependency&gt;<br>    &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;<br>    &lt;artifactId&gt;spring-boot-starter-web&lt;/artifactId&gt;<br>&lt;/dependency&gt;<br></code></pre></td></tr></table></figure>
+</li>
+<li><p>引入autoconfigure功能</p>
+</li>
+<li><p><strong>@EnableAutoConfiguration</strong>通过**@Import({AutoConfigurationImportSelector.class})**批量导入组件</p>
+<blockquote>
+<p>@EnableAutoConfiguration是@SpringBootApplication关键三注解之一</p>
+</blockquote>
+</li>
+<li><p>加载<strong>META-INF&#x2F;spring&#x2F;%s.imports</strong>文件中配置的所有组件</p>
+</li>
+<li><p>web相关自动配置类如下</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><code class="hljs stylus">org<span class="hljs-selector-class">.springframework</span><span class="hljs-selector-class">.boot</span><span class="hljs-selector-class">.autoconfigure</span><span class="hljs-selector-class">.web</span><span class="hljs-selector-class">.client</span><span class="hljs-selector-class">.RestTemplateAutoConfiguration</span><br>org<span class="hljs-selector-class">.springframework</span><span class="hljs-selector-class">.boot</span><span class="hljs-selector-class">.autoconfigure</span><span class="hljs-selector-class">.web</span><span class="hljs-selector-class">.embedded</span><span class="hljs-selector-class">.EmbeddedWebServerFactoryCustomizerAutoConfiguration</span><br>===========================以下为响应式编程相关组件<br>org<span class="hljs-selector-class">.springframework</span><span class="hljs-selector-class">.boot</span><span class="hljs-selector-class">.autoconfigure</span><span class="hljs-selector-class">.web</span><span class="hljs-selector-class">.reactive</span><span class="hljs-selector-class">.HttpHandlerAutoConfiguration</span><br>org<span class="hljs-selector-class">.springframework</span><span class="hljs-selector-class">.boot</span><span class="hljs-selector-class">.autoconfigure</span><span class="hljs-selector-class">.web</span><span class="hljs-selector-class">.reactive</span><span class="hljs-selector-class">.ReactiveMultipartAutoConfiguration</span><br>org<span class="hljs-selector-class">.springframework</span><span class="hljs-selector-class">.boot</span><span class="hljs-selector-class">.autoconfigure</span><span class="hljs-selector-class">.web</span><span class="hljs-selector-class">.reactive</span><span class="hljs-selector-class">.ReactiveWebServerFactoryAutoConfiguration</span><br>org<span class="hljs-selector-class">.springframework</span><span class="hljs-selector-class">.boot</span><span class="hljs-selector-class">.autoconfigure</span><span class="hljs-selector-class">.web</span><span class="hljs-selector-class">.reactive</span><span class="hljs-selector-class">.WebFluxAutoConfiguration</span><br>org<span class="hljs-selector-class">.springframework</span><span class="hljs-selector-class">.boot</span><span class="hljs-selector-class">.autoconfigure</span><span class="hljs-selector-class">.web</span><span class="hljs-selector-class">.reactive</span><span class="hljs-selector-class">.WebSessionIdResolverAutoConfiguration</span><br>org<span class="hljs-selector-class">.springframework</span><span class="hljs-selector-class">.boot</span><span class="hljs-selector-class">.autoconfigure</span><span class="hljs-selector-class">.web</span><span class="hljs-selector-class">.reactive</span><span class="hljs-selector-class">.error</span><span class="hljs-selector-class">.ErrorWebFluxAutoConfiguration</span><br>org<span class="hljs-selector-class">.springframework</span><span class="hljs-selector-class">.boot</span><span class="hljs-selector-class">.autoconfigure</span><span class="hljs-selector-class">.web</span><span class="hljs-selector-class">.reactive</span><span class="hljs-selector-class">.function</span><span class="hljs-selector-class">.client</span><span class="hljs-selector-class">.ClientHttpConnectorAutoConfiguration</span><br>org<span class="hljs-selector-class">.springframework</span><span class="hljs-selector-class">.boot</span><span class="hljs-selector-class">.autoconfigure</span><span class="hljs-selector-class">.web</span><span class="hljs-selector-class">.reactive</span><span class="hljs-selector-class">.function</span><span class="hljs-selector-class">.client</span><span class="hljs-selector-class">.WebClientAutoConfiguration</span><br>===========================以上为响应式编程相关组件<br>org<span class="hljs-selector-class">.springframework</span><span class="hljs-selector-class">.boot</span><span class="hljs-selector-class">.autoconfigure</span><span class="hljs-selector-class">.web</span><span class="hljs-selector-class">.servlet</span><span class="hljs-selector-class">.DispatcherServletAutoConfiguration</span><br>org<span class="hljs-selector-class">.springframework</span><span class="hljs-selector-class">.boot</span><span class="hljs-selector-class">.autoconfigure</span><span class="hljs-selector-class">.web</span><span class="hljs-selector-class">.servlet</span><span class="hljs-selector-class">.ServletWebServerFactoryAutoConfiguration</span><br>org<span class="hljs-selector-class">.springframework</span><span class="hljs-selector-class">.boot</span><span class="hljs-selector-class">.autoconfigure</span><span class="hljs-selector-class">.web</span><span class="hljs-selector-class">.servlet</span><span class="hljs-selector-class">.error</span><span class="hljs-selector-class">.ErrorMvcAutoConfiguration</span><br>org<span class="hljs-selector-class">.springframework</span><span class="hljs-selector-class">.boot</span><span class="hljs-selector-class">.autoconfigure</span><span class="hljs-selector-class">.web</span><span class="hljs-selector-class">.servlet</span><span class="hljs-selector-class">.HttpEncodingAutoConfiguration</span><br>org<span class="hljs-selector-class">.springframework</span><span class="hljs-selector-class">.boot</span><span class="hljs-selector-class">.autoconfigure</span><span class="hljs-selector-class">.web</span><span class="hljs-selector-class">.servlet</span><span class="hljs-selector-class">.MultipartAutoConfiguration</span><br>org<span class="hljs-selector-class">.springframework</span><span class="hljs-selector-class">.boot</span><span class="hljs-selector-class">.autoconfigure</span><span class="hljs-selector-class">.web</span><span class="hljs-selector-class">.servlet</span>.WebMvcAutoConfiguration<br></code></pre></td></tr></table></figure>
+</li>
+<li><p>通过自动配置类绑定配置文件相关组件</p>
+<ul>
+<li>SpringMVC的所有配置<strong>spring.mvc</strong></li>
+<li>Web场景通用配置<strong>spring.web</strong></li>
+<li>文件上传配置<strong>spring.servlet.multipart</strong></li>
+<li>服务器配置<strong>server</strong>，如编码方式、端口</li>
+</ul>
+</li>
+</ol>
+<h2 id="配置文件默认效果"><a href="#配置文件默认效果" class="headerlink" title="配置文件默认效果"></a>配置文件默认效果</h2><img src="/SpringBoot/springboot3/image-20240407115354450.png" srcset="/img/loading.gif" lazyload alt="image-20240407115354450" style="zoom:50%;">
+
+<h2 id="springweb实践三种方式"><a href="#springweb实践三种方式" class="headerlink" title="springweb实践三种方式"></a>springweb实践三种方式</h2><img src="/SpringBoot/springboot3/image-20240407115539943.png" srcset="/img/loading.gif" lazyload alt="image-20240407115539943" style="zoom:50%;">
+
+<p>总结：</p>
+<img src="/SpringBoot/springboot3/image-20240407115839382.png" srcset="/img/loading.gif" lazyload alt="image-20240407115839382" style="zoom: 67%;">
+
+
+
+<h2 id="springweb实践两种模式"><a href="#springweb实践两种模式" class="headerlink" title="springweb实践两种模式"></a>springweb实践两种模式</h2><ol>
+<li>前后分离模式：@RestController响应式JSON数据</li>
+<li>前后不分离模式：@Controller+Thymeleaf模版引擎</li>
+</ol>
+<h2 id="静态资源"><a href="#静态资源" class="headerlink" title="静态资源"></a>静态资源</h2><h3 id="WebMvcAutoConfiguration原理"><a href="#WebMvcAutoConfiguration原理" class="headerlink" title="WebMvcAutoConfiguration原理"></a>WebMvcAutoConfiguration原理</h3><h4 id="1-生效条件"><a href="#1-生效条件" class="headerlink" title="1. 生效条件"></a>1. 生效条件</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@AutoConfiguration(</span><br><span class="hljs-meta">    after = &#123;DispatcherServletAutoConfiguration.class, TaskExecutionAutoConfiguration.class, ValidationAutoConfiguration.class&#125;// 在这些自动配置之后</span><br><span class="hljs-meta">)</span><br><span class="hljs-meta">@ConditionalOnWebApplication(  // servlet类型web应用生效，not react</span><br><span class="hljs-meta">    type = Type.SERVLET</span><br><span class="hljs-meta">)</span><br><span class="hljs-meta">@ConditionalOnClass(&#123;Servlet.class, DispatcherServlet.class, WebMvcConfigurer.class&#125;)</span><br><span class="hljs-meta">@ConditionalOnMissingBean(&#123;WebMvcConfigurationSupport.class&#125;)</span> <span class="hljs-comment">// 没有WebMvcConfigurationSupport Bean才生效</span><br><span class="hljs-meta">@AutoConfigureOrder(-2147483638)</span><span class="hljs-comment">// 优先级</span><br><span class="hljs-meta">@ImportRuntimeHints(&#123;WebResourcesRuntimeHints.class&#125;)</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">WebMvcAutoConfiguration</span> &#123;...&#125;<br></code></pre></td></tr></table></figure>
+
+<h4 id="2-效果"><a href="#2-效果" class="headerlink" title="2. 效果"></a>2. 效果</h4><ol>
+<li><p>引入两个FIlter</p>
+<p>a. <strong>HiddenHttpMethodFilter</strong>：页面表单提交Rest请求（GET、POST、PUT、DELETE）</p>
+<p>b. <strong>FormContentFilter</strong>：表单内容Filter，让PUT和DELETE请求数据不被忽略</p>
+</li>
+<li><p>引入<strong>WebMvcConfigurer</strong>，给容器添加各种定制功能</p>
+<p>所有功能都会和配置文件进行绑定</p>
+<p>a. WebMvcProperties:  <strong>spring.mvc</strong> 配置文件</p>
+<p>b. WebProperties：<strong>spring.web</strong> 配置文件</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@Import(&#123;EnableWebMvcConfiguration.class&#125;)</span> <span class="hljs-comment">// 额外导入配置</span><br><span class="hljs-meta">@EnableConfigurationProperties(&#123;WebMvcProperties.class, WebProperties.class&#125;)</span> <br><span class="hljs-meta">@Order(0)</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">WebMvcAutoConfigurationAdapter</span> <span class="hljs-keyword">implements</span> <span class="hljs-title class_">WebMvcConfigurer</span>, ServletContextAware &#123;...&#125;<br> <br></code></pre></td></tr></table></figure></li>
+</ol>
+<h4 id="3-WebMvcConfigurer"><a href="#3-WebMvcConfigurer" class="headerlink" title="3. WebMvcConfigurer"></a>3. WebMvcConfigurer</h4><p>提供了配置SpringMVC底层的所有组件入口</p>
+<img src="/SpringBoot/springboot3/image-20240407122053252.png" srcset="/img/loading.gif" lazyload alt="image-20240407122053252" style="zoom:50%;">
+
+<h4 id="4-静态资源源码规则"><a href="#4-静态资源源码规则" class="headerlink" title="4. 静态资源源码规则"></a>4. 静态资源源码规则</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">addResourceHandlers</span><span class="hljs-params">(ResourceHandlerRegistry registry)</span> &#123;<br>    <span class="hljs-keyword">if</span> (!<span class="hljs-built_in">this</span>.resourceProperties.isAddMappings()) &#123;<br>        logger.debug(<span class="hljs-string">&quot;Default resource handling disabled&quot;</span>);<br>    &#125; <span class="hljs-keyword">else</span> &#123;<br>        <span class="hljs-built_in">this</span>.addResourceHandler(registry, <span class="hljs-built_in">this</span>.mvcProperties.getWebjarsPathPattern(), <span class="hljs-string">&quot;classpath:/META-INF/resources/webjars/&quot;</span>);<br>        <span class="hljs-built_in">this</span>.addResourceHandler(registry, <span class="hljs-built_in">this</span>.mvcProperties.getStaticPathPattern(), (registration) -&gt; &#123;<br>            registration.addResourceLocations(<span class="hljs-built_in">this</span>.resourceProperties.getStaticLocations());<br>            <span class="hljs-keyword">if</span> (<span class="hljs-built_in">this</span>.servletContext != <span class="hljs-literal">null</span>) &#123;<br>                <span class="hljs-type">ServletContextResource</span> <span class="hljs-variable">resource</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">ServletContextResource</span>(<span class="hljs-built_in">this</span>.servletContext, <span class="hljs-string">&quot;/&quot;</span>);<br>                registration.addResourceLocations(<span class="hljs-keyword">new</span> <span class="hljs-title class_">Resource</span>[]&#123;resource&#125;);<br>            &#125;<br>        &#125;);<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>规则一：访问 <strong>&#x2F;webjar&#x2F;**</strong> 路径去 classpath:&#x2F;META-INF&#x2F;resources&#x2F;webjars&#x2F;</p>
+<ol>
+<li>maven导入依赖</li>
+</ol>
+<p>规则二：访问 <strong>&#x2F;**</strong> 路径静态资源默认四个位置找资源</p>
+<ol>
+<li><p>classpath:&#x2F;META-INF&#x2F;resources&#x2F;</p>
+</li>
+<li><p>classpath:&#x2F;resources&#x2F;</p>
+</li>
+<li><p>classpath:&#x2F;static&#x2F;</p>
+</li>
+<li><p>classpath:&#x2F;public&#x2F;</p>
+<img src="/SpringBoot/springboot3/image-20240407151110506.png" srcset="/img/loading.gif" lazyload alt="image-20240407151110506" style="zoom:50%;"></li>
+</ol>
+<p>规则三：静态资源默认都有缓存</p>
+<ol>
+<li>通过 <code>spring.web</code> 配置缓存设置</li>
+<li>cachePeriod：缓存周期，多久找服务器要新的，默认0s，以秒计数</li>
+<li>cacheControl：HTTP缓存控制，默认无</li>
+<li>useLastModified：是否使用最后一次修改，默认true</li>
+</ol>
+<blockquote>
+<p>如果浏览器访问过静态资源 index.js，如果资源没有变化，下次访问可以直接用浏览器中缓存的，不需要再次请求资源</p>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">addResourceHandler</span><span class="hljs-params">(ResourceHandlerRegistry registry, String pattern, Consumer&lt;ResourceHandlerRegistration&gt; customizer)</span> &#123;<br>    <span class="hljs-keyword">if</span> (!registry.hasMappingForPattern(pattern)) &#123;<br>        <span class="hljs-type">ResourceHandlerRegistration</span> <span class="hljs-variable">registration</span> <span class="hljs-operator">=</span> registry.addResourceHandler(<span class="hljs-keyword">new</span> <span class="hljs-title class_">String</span>[]&#123;pattern&#125;);<br>        customizer.accept(registration);<br>        registration.setCachePeriod(<span class="hljs-built_in">this</span>.getSeconds(<span class="hljs-built_in">this</span>.resourceProperties.getCache().getPeriod()));<br>     registration.setCacheControl(<span class="hljs-built_in">this</span>.resourceProperties.getCache().getCachecontrol().toHttpCacheControl());<br>        registration.setUseLastModified(<span class="hljs-built_in">this</span>.resourceProperties.getCache().isUseLastModified());<br>        <span class="hljs-built_in">this</span>.customizeResourceHandlerRegistration(registration);<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h4 id="5-欢迎页"><a href="#5-欢迎页" class="headerlink" title="5. 欢迎页"></a>5. 欢迎页</h4><ol>
+<li>在静态资源目录下找index.html</li>
+<li>没有就在templates下找index模板页</li>
+</ol>
+<h4 id="6-Favicon"><a href="#6-Favicon" class="headerlink" title="6. Favicon"></a>6. Favicon</h4><blockquote>
+<p>页面图标，左上角</p>
+</blockquote>
+<ol>
+<li>在静态资源目录下找favicon.ico</li>
+</ol>
+<h3 id="自定义静态资源规则"><a href="#自定义静态资源规则" class="headerlink" title="自定义静态资源规则"></a>自定义静态资源规则</h3><h4 id="配置方式"><a href="#配置方式" class="headerlink" title="配置方式"></a>配置方式</h4><p><strong>spring.web</strong></p>
+<img src="/SpringBoot/springboot3/image-20240407161859149.png" srcset="/img/loading.gif" lazyload alt="image-20240407161859149" style="zoom:50%;">
+
+<img src="/SpringBoot/springboot3/image-20240407163011650.png" srcset="/img/loading.gif" lazyload alt="image-20240407163011650" style="zoom:50%;">
+
+<p><strong>spring.mvc</strong></p>
+<img src="/SpringBoot/springboot3/image-20240407162420212.png" srcset="/img/loading.gif" lazyload alt="image-20240407162420212" style="zoom:50%;">
+
+<img src="/SpringBoot/springboot3/image-20240407162940374.png" srcset="/img/loading.gif" lazyload alt="image-20240407162940374" style="zoom:50%;">
+
+<h4 id="代码方式"><a href="#代码方式" class="headerlink" title="代码方式"></a>代码方式</h4><blockquote>
+<ul>
+<li>容器中只要有一个WebMvcConfigurer组件，配置的底层行为都会生效</li>
+<li>@EnableWebMvc会禁用boot的默认设置</li>
+</ul>
+</blockquote>
+<p>写法一：</p>
+<img src="/SpringBoot/springboot3/image-20240407164329364.png" srcset="/img/loading.gif" lazyload alt="image-20240407164329364" style="zoom:50%;">
+
+<blockquote>
+<p>访问<strong>classpath:&#x2F;a&#x2F;</strong> 和 <strong>classpath:&#x2F;b&#x2F;<strong>中静态文件链接需要加</strong>static</strong>前缀</p>
+</blockquote>
+<p>写法二：</p>
+<img src="/SpringBoot/springboot3/image-20240407164513250.png" srcset="/img/loading.gif" lazyload alt="image-20240407164513250" style="zoom:50%;">
+
+<h4 id="为什么容器中放入一个WebMvcConfigurer就会自动生效？——配饰器模式"><a href="#为什么容器中放入一个WebMvcConfigurer就会自动生效？——配饰器模式" class="headerlink" title="为什么容器中放入一个WebMvcConfigurer就会自动生效？——配饰器模式"></a>为什么容器中放入一个WebMvcConfigurer就会自动生效？——配饰器模式</h4><img src="/SpringBoot/springboot3/image-20240407165119732.png" srcset="/img/loading.gif" lazyload alt="image-20240407165119732" style="zoom: 50%;">
+
+<h3 id="路径匹配"><a href="#路径匹配" class="headerlink" title="路径匹配"></a>路径匹配</h3><h4 id="Ant风格匹配规则（spring5-3以前）"><a href="#Ant风格匹配规则（spring5-3以前）" class="headerlink" title="Ant风格匹配规则（spring5.3以前）"></a>Ant风格匹配规则（spring5.3以前）</h4><img src="/SpringBoot/springboot3/image-20240407170536184.png" srcset="/img/loading.gif" lazyload alt="image-20240407170536184" style="zoom:50%;">
+
+<h4 id="Parser风格（5-3以后默认）"><a href="#Parser风格（5-3以后默认）" class="headerlink" title="Parser风格（5.3以后默认）"></a>Parser风格（5.3以后默认）</h4><img src="/SpringBoot/springboot3/image-20240407170603059.png" srcset="/img/loading.gif" lazyload alt="image-20240407170603059" style="zoom:50%;">
+
+<h3 id="内容协商"><a href="#内容协商" class="headerlink" title="内容协商"></a>内容协商</h3><blockquote>
+<p>一套系统适配多端数据返回</p>
+</blockquote>
+<img src="/SpringBoot/springboot3/image-20240407171010034.png" srcset="/img/loading.gif" lazyload alt="image-20240407171010034" style="zoom:50%;">
+
+<h4 id="默认规则"><a href="#默认规则" class="headerlink" title="默认规则"></a>默认规则</h4><img src="/SpringBoot/springboot3/image-20240407171038167.png" srcset="/img/loading.gif" lazyload alt="image-20240407171038167" style="zoom:50%;">
+
+<h4 id="效果演示"><a href="#效果演示" class="headerlink" title="效果演示"></a>效果演示</h4><ol>
+<li><p>引入pom依赖</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs xml"><span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>com.fasterxml.jackson.dataformat<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>jackson-dataformat-xml<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span><br></code></pre></td></tr></table></figure>
+</li>
+<li><p>注解标识（当controller返回为一个</p>
+<img src="/SpringBoot/springboot3/image-20240407171735060.png" srcset="/img/loading.gif" lazyload alt="image-20240407171735060" style="zoom:50%;">
+</li>
+<li><p>开启基于参数内容协商</p>
+<img src="/SpringBoot/springboot3/image-20240407172051872.png" srcset="/img/loading.gif" lazyload alt="image-20240407172051872" style="zoom:50%;">
+</li>
+<li><p>演示效果</p>
+</li>
+</ol>
+<img src="/SpringBoot/springboot3/image-20240407172029494.png" srcset="/img/loading.gif" lazyload alt="image-20240407172029494" style="zoom:50%;">
+
+<h4 id="内容协商原理"><a href="#内容协商原理" class="headerlink" title="内容协商原理"></a>内容协商原理</h4><h5 id="RequestBody由-HttpMessageConverters进行处理"><a href="#RequestBody由-HttpMessageConverters进行处理" class="headerlink" title="@RequestBody由@HttpMessageConverters进行处理"></a>@RequestBody由@HttpMessageConverters进行处理</h5><ol>
+<li><strong>如果controller方法的返回值标注了@ResponseBody注解</strong></li>
+</ol>
+<img src="/SpringBoot/springboot3/image-20240407174420968.png" srcset="/img/loading.gif" lazyload alt="image-20240407174420968" style="zoom:50%;">
+
+<ol start="2">
+<li><strong>HttpMessageConverter会先进行内容协商</strong></li>
+</ol>
+<img src="/SpringBoot/springboot3/image-20240407174746345.png" srcset="/img/loading.gif" lazyload alt="image-20240407174746345" style="zoom:50%;">
+
+<h5 id="WebMvcAutoConfiguration提供几种默认HttpMessageConverter"><a href="#WebMvcAutoConfiguration提供几种默认HttpMessageConverter" class="headerlink" title="WebMvcAutoConfiguration提供几种默认HttpMessageConverter"></a>WebMvcAutoConfiguration提供几种默认HttpMessageConverter</h5><img src="/SpringBoot/springboot3/image-20240407175526722.png" srcset="/img/loading.gif" lazyload alt="image-20240407175526722" style="zoom:50%;">
+
+<h4 id="自定义内容协商——yaml为例"><a href="#自定义内容协商——yaml为例" class="headerlink" title="自定义内容协商——yaml为例"></a>自定义内容协商——yaml为例</h4><h5 id="1-增加yaml返回支持"><a href="#1-增加yaml返回支持" class="headerlink" title="1. 增加yaml返回支持"></a>1. 增加yaml返回支持</h5><p>导入依赖</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs xml"><span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>com.fasterxml.jackson.dataformat<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>jackson-dataformat-yaml<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span><br></code></pre></td></tr></table></figure>
+
+<p>编写配置</p>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs ini"><span class="hljs-comment"># 新增一种媒体类型</span><br><span class="hljs-attr">spring.mvc.contentregotiation.media-types.yaml</span>=text/yaml<br></code></pre></td></tr></table></figure>
+
+<p>增加HttpMessageConverter组件，负责把对象写出为yaml格式</p>
+<img src="/SpringBoot/springboot3/image-20240407195907243.png" srcset="/img/loading.gif" lazyload alt="image-20240407195907243" style="zoom:50%;">
+
+<h2 id="Thymeleaf整合（todo-p38-p44）"><a href="#Thymeleaf整合（todo-p38-p44）" class="headerlink" title="Thymeleaf整合（todo p38-p44）"></a>Thymeleaf整合（todo p38-p44）</h2><p>前后端不分离的项目</p>
+<h2 id="国际化"><a href="#国际化" class="headerlink" title="国际化"></a>国际化</h2><p>步骤</p>
+<img src="/SpringBoot/springboot3/image-20240408204615763.png" srcset="/img/loading.gif" lazyload alt="image-20240408204615763" style="zoom:50%;">
+
+<img src="/SpringBoot/springboot3/image-20240408204826908.png" srcset="/img/loading.gif" lazyload alt="image-20240408204826908" style="zoom:50%;">
+
+<h2 id="错误处理"><a href="#错误处理" class="headerlink" title="错误处理"></a>错误处理</h2><h3 id="错误处理流程"><a href="#错误处理流程" class="headerlink" title="错误处理流程"></a>错误处理流程</h3><img src="/SpringBoot/springboot3/image-20240408212824628.png" srcset="/img/loading.gif" lazyload alt="image-20240408212824628" style="zoom: 33%;">
+
+<img src="/SpringBoot/springboot3/image-20240408213009486.png" srcset="/img/loading.gif" lazyload alt="image-20240408213009486" style="zoom:50%;">
+
+<h3 id="错误处理相关配置"><a href="#错误处理相关配置" class="headerlink" title="错误处理相关配置"></a>错误处理相关配置</h3><p><strong>server.error</strong></p>
+<img src="/SpringBoot/springboot3/image-20240408212904114.png" srcset="/img/loading.gif" lazyload alt="image-20240408212904114" style="zoom:50%;">
+
+<h3 id="自定义错误处理类"><a href="#自定义错误处理类" class="headerlink" title="自定义错误处理类"></a>自定义错误处理类</h3><ol>
+<li><p>写在类里面</p>
+<img src="/SpringBoot/springboot3/image-20240408212718468.png" srcset="/img/loading.gif" lazyload alt="image-20240408212718468" style="zoom:50%;">
+</li>
+<li><p>写在单独类里面</p>
+</li>
+</ol>
+<img src="/SpringBoot/springboot3/image-20240408212746517.png" srcset="/img/loading.gif" lazyload alt="image-20240408212746517" style="zoom:50%;">
+
+<h3 id="最近实战"><a href="#最近实战" class="headerlink" title="最近实战"></a>最近实战</h3><img src="/SpringBoot/springboot3/image-20240408213526788.png" srcset="/img/loading.gif" lazyload alt="image-20240408213526788" style="zoom:50%;">
+
+<h2 id="嵌入式容器"><a href="#嵌入式容器" class="headerlink" title="嵌入式容器"></a>嵌入式容器</h2><p>servlet容器</p>
+<p>自动配置类：DispatcherServletAutoConfiguration</p>
+
                 
               </div>
             
