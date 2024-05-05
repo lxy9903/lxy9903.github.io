@@ -16,21 +16,22 @@
   <meta name="author" content="刘笑笑">
   <meta name="keywords" content="java、go、操作系统、网络">
   
-    <meta name="description" content="数据库相关 什么是事物 Oracle中怎么样保障事务 在代码中如何实现事务 数据库隔离级别  Java相关 private，public，procted，default static  设计模式 单例模式 代理模式 工厂模式 观察者模式 配饰器模式——WebMvcConfigurer 组合模式  Springboot相关 springboot有些什么特点，spring有些什么特点 什么是sprin">
+    <meta name="description" content="数据库相关 什么是事物 Oracle中怎么样保障事务 在代码中如何实现事务 数据库隔离级别 Mybatis vs Hibernate  Java相关 private，public，procted，default static  设计模式 单例模式 代理模式 工厂模式 观察者模式 配饰器模式——WebMvcConfigurer 组合模式  Springboot相关 springboot有些什么特点，">
 <meta property="og:type" content="article">
 <meta property="og:title" content="problems">
 <meta property="og:url" content="http://by.ecel.top/Interview/problems/index.html">
 <meta property="og:site_name" content="Hello">
-<meta property="og:description" content="数据库相关 什么是事物 Oracle中怎么样保障事务 在代码中如何实现事务 数据库隔离级别  Java相关 private，public，procted，default static  设计模式 单例模式 代理模式 工厂模式 观察者模式 配饰器模式——WebMvcConfigurer 组合模式  Springboot相关 springboot有些什么特点，spring有些什么特点 什么是sprin">
+<meta property="og:description" content="数据库相关 什么是事物 Oracle中怎么样保障事务 在代码中如何实现事务 数据库隔离级别 Mybatis vs Hibernate  Java相关 private，public，procted，default static  设计模式 单例模式 代理模式 工厂模式 观察者模式 配饰器模式——WebMvcConfigurer 组合模式  Springboot相关 springboot有些什么特点，">
 <meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://by.ecel.top/Interview/problems/image-20240428162208147.png">
 <meta property="og:image" content="http://by.ecel.top/Interview/problems/image-20240414111930386.png">
 <meta property="og:image" content="http://by.ecel.top/Interview/problems/image-20240414112930367.png">
 <meta property="article:published_time" content="2024-03-31T08:04:46.000Z">
-<meta property="article:modified_time" content="2024-04-14T03:30:03.573Z">
+<meta property="article:modified_time" content="2024-04-28T09:34:50.013Z">
 <meta property="article:author" content="刘笑笑">
 <meta property="article:tag" content="java、go、操作系统、网络">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="http://by.ecel.top/Interview/problems/image-20240414111930386.png">
+<meta name="twitter:image" content="http://by.ecel.top/Interview/problems/image-20240428162208147.png">
   
   
   
@@ -237,7 +238,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          381 字
+          596 字
         
       </span>
     
@@ -248,7 +249,7 @@
         
         
         
-          4 分钟
+          5 分钟
         
       </span>
     
@@ -291,7 +292,7 @@
               <p class="note note-info">
                 
                   
-                    本文最后更新于：2024年4月14日 中午
+                    本文最后更新于：2024年4月28日 下午
                   
                 
               </p>
@@ -304,6 +305,7 @@
 <li>Oracle中怎么样保障事务</li>
 <li>在代码中如何实现事务</li>
 <li>数据库隔离级别</li>
+<li>Mybatis vs Hibernate</li>
 </ol>
 <h1 id="Java相关"><a href="#Java相关" class="headerlink" title="Java相关"></a>Java相关</h1><ol>
 <li>private，public，procted，default</li>
@@ -334,8 +336,26 @@
 </li>
 </ol>
 <h1 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h1><ol>
-<li>dependencemanage会不会直接引入依赖</li>
-<li>dependencemanage和dependencies的区别</li>
+<li><p>dependencemanage会不会直接引入依赖</p>
+</li>
+<li><p>dependencemanage和dependencies的区别</p>
+</li>
+<li><p>rpc和rest区别</p>
+</li>
+<li><p>Lombok：通过注解简化代码，get&#x2F;set&#x2F;construct&#x2F;toString&#x2F;hashcode</p>
+<p>需要在实体类中添加@Data注解</p>
+<img src="/Interview/problems/image-20240428162208147.png" srcset="/img/loading.gif" lazyload alt="image-20240428162208147" style="zoom:50%;">
+</li>
+<li><p>防止sql注入</p>
+<p>1）在mybatis使用#{…}代替${…}</p>
+<blockquote>
+<p>#{…}会将传入数据进行预编译</p>
+</blockquote>
+<p>2）mybatis中使用concat</p>
+<blockquote>
+<p>concat(‘%’,’#{name}’,’%’) 而非’%#{name}%’</p>
+</blockquote>
+</li>
 </ol>
 <h1 id="高并发"><a href="#高并发" class="headerlink" title="高并发"></a>高并发</h1><ol>
 <li><p>模拟高并发工具：JMeter</p>
@@ -348,6 +368,8 @@
 </li>
 </ol>
 <img src="/Interview/problems/image-20240414112930367.png" srcset="/img/loading.gif" lazyload alt="image-20240414112930367" style="zoom:50%;">
+
+
                 
               </div>
             
