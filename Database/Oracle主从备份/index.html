@@ -1,0 +1,757 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="刘笑笑">
+  <meta name="keywords" content="java、go、操作系统、网络">
+  
+    <meta name="description" content="Oracle Data Guard（物理备库） + 最大可用模式 + Fast-Start Failover（FSFO） 一、Data Guard 是什么？Data Guard 用于：  实时传输主库 redo log 到备库 备库将 redo 实时 apply 保持两个数据库一致  重点：备库不能自主写数据，只能回放主库的 redo。 ✔ 主库：能读能写 ✔ 备库：只写（redo apply），">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Oracle主从备份">
+<meta property="og:url" content="http://by.ecel.top/Database/Oracle%E4%B8%BB%E4%BB%8E%E5%A4%87%E4%BB%BD/index.html">
+<meta property="og:site_name" content="title">
+<meta property="og:description" content="Oracle Data Guard（物理备库） + 最大可用模式 + Fast-Start Failover（FSFO） 一、Data Guard 是什么？Data Guard 用于：  实时传输主库 redo log 到备库 备库将 redo 实时 apply 保持两个数据库一致  重点：备库不能自主写数据，只能回放主库的 redo。 ✔ 主库：能读能写 ✔ 备库：只写（redo apply），">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2025-11-26T08:44:32.000Z">
+<meta property="article:modified_time" content="2025-11-26T09:22:41.270Z">
+<meta property="article:author" content="刘笑笑">
+<meta property="article:tag" content="Oracle">
+<meta property="article:tag" content="备份">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>Oracle主从备份 - title</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"by.ecel.top","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Tech Notes</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="Oracle主从备份"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2025-11-26 16:44" pubdate>
+          2025年11月26日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          693 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          6 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">Oracle主从备份</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="Oracle-Data-Guard（物理备库）-最大可用模式-Fast-Start-Failover（FSFO）"><a href="#Oracle-Data-Guard（物理备库）-最大可用模式-Fast-Start-Failover（FSFO）" class="headerlink" title="Oracle Data Guard（物理备库） + 最大可用模式 + Fast-Start Failover（FSFO）"></a><strong>Oracle Data Guard（物理备库） + 最大可用模式 + Fast-Start Failover（FSFO）</strong></h1><hr>
+<h2 id="一、Data-Guard-是什么？"><a href="#一、Data-Guard-是什么？" class="headerlink" title="一、Data Guard 是什么？"></a>一、Data Guard 是什么？</h2><p>Data Guard 用于：</p>
+<ul>
+<li><strong>实时传输主库 redo log</strong> 到备库</li>
+<li>备库将 redo <strong>实时 apply</strong></li>
+<li>保持两个数据库一致</li>
+</ul>
+<p><strong>重点：备库不能自主写数据，只能回放主库的 redo。</strong></p>
+<p>✔ 主库：能读能写<br> ✔ 备库：只写（redo apply），不能读<br> ✔ 实时同步</p>
+<hr>
+<h2 id="二、选择“物理备库（Physical-Standby）”而不是逻辑备库"><a href="#二、选择“物理备库（Physical-Standby）”而不是逻辑备库" class="headerlink" title="二、选择“物理备库（Physical Standby）”而不是逻辑备库"></a>二、选择“物理备库（Physical Standby）”而不是逻辑备库</h2><p>Oracle 有两种备库：</p>
+<table>
+<thead>
+<tr>
+<th>类型</th>
+<th>同步方式</th>
+<th>是否读写</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>物理备库 Physical Standby</strong></td>
+<td>Redo 二进制级别 apply</td>
+<td><strong>不能读</strong>（除非 Active Data Guard）</td>
+<td>与主库完全一致，最快最可靠</td>
+</tr>
+<tr>
+<td>逻辑备库 Logical Standby</td>
+<td>Redo 解析成 SQL 后执行</td>
+<td>可以读写</td>
+<td>稍慢，有延迟</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="三、主从同步方式：选择“最大可用模式（Maximum-Availability）”"><a href="#三、主从同步方式：选择“最大可用模式（Maximum-Availability）”" class="headerlink" title="三、主从同步方式：选择“最大可用模式（Maximum Availability）”"></a>三、主从同步方式：选择“最大可用模式（Maximum Availability）”</h2><p>Data Guard 有三种同步模式：</p>
+<p><strong>1）Maximum Performance（异步）</strong></p>
+<ul>
+<li>高性能但可能丢数据</li>
+</ul>
+<p><strong>2）Maximum Protection（强同步）</strong></p>
+<ul>
+<li>备库挂了主库会停</li>
+</ul>
+<p><strong>3）Maximum Availability（强同步+保护模式）</strong></p>
+<ul>
+<li>redo <strong>同步写入备库</strong></li>
+<li>备库确认后主库事务才提交</li>
+<li>备库短暂不可用时主库自动转为异步，不影响服务</li>
+<li>备库恢复后自动切回同步</li>
+</ul>
+<p>优点：</p>
+<p>✔ 几乎 0 数据丢失<br> ✔ 主库稳定（备库挂了不会阻塞）<br> ✔ 金融、电商常用</p>
+<hr>
+<h2 id="四、秒级切换：Fast-Start-Failover（FSFO）"><a href="#四、秒级切换：Fast-Start-Failover（FSFO）" class="headerlink" title="四、秒级切换：Fast-Start Failover（FSFO）"></a>四、秒级切换：Fast-Start Failover（FSFO）</h2><p>Data Guard 支持 <strong>自动主备切换</strong>：</p>
+<ul>
+<li>由一个 <strong>Observer进程</strong> 持续监控主库</li>
+<li>主库故障（掉电、网络断开、崩溃等）</li>
+<li>Observer 自动触发 failover</li>
+<li>备库在 <strong>1–10 秒内切换为新主库</strong></li>
+</ul>
+<p>无需人工参与。</p>
+<p>✔ 秒级切换<br> ✔ 数据一致<br> ✔ 自动恢复</p>
+<hr>
+<h2 id="五、最终架构"><a href="#五、最终架构" class="headerlink" title="五、最终架构"></a>五、最终架构</h2><figure class="highlight smali"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs smali">      (SYNC redo shipping)<br>┌──────────────────────────────┐<br>│         Primary DB           │<br>└──────────────────────────────┘<br>            ↑     |<br>      redo  │     | apply<br>            │     ↓<br>┌──────────────────────────────┐<br>│     Physical Standby DB      │<br>└──────────────────────────────┘<br>            ↑<br>            │<span class="hljs-built_in"> monitor</span><br><span class="hljs-built_in"></span>            ↓<br>┌──────────────────────────────┐<br>│           Observer           │<br>└──────────────────────────────┘<br></code></pre></td></tr></table></figure>
+
+<p>行为说明：</p>
+<ul>
+<li>主库负责 <strong>读 + 写</strong></li>
+<li>备库只做 <strong>redo apply（写）</strong></li>
+<li>Observer 监控后自动触发 failover</li>
+</ul>
+<hr>
+<h2 id="六、为什么-Oracle-能“只写不读-秒级切换”？"><a href="#六、为什么-Oracle-能“只写不读-秒级切换”？" class="headerlink" title="六、为什么 Oracle 能“只写不读 + 秒级切换”？"></a>六、为什么 Oracle 能“只写不读 + 秒级切换”？</h2><p>因为：</p>
+<p><strong>1）Oracle redo 是二进制级别，不经过 SQL 转换</strong></p>
+<p>同步速度快、可靠性强。</p>
+<p><strong>2）物理备库完全继承主库结构</strong></p>
+<p>切换几乎不需要额外操作。</p>
+<p><strong>3）FSFO 自动化，不依赖人工</strong></p>
+<p>秒级切换不是吹的，是全自动。</p>
+<hr>
+<h2 id="七、Fast-Start-Failover（FSFO）自动故障切换"><a href="#七、Fast-Start-Failover（FSFO）自动故障切换" class="headerlink" title="七、Fast-Start Failover（FSFO）自动故障切换"></a><strong>七、Fast-Start Failover（FSFO）自动故障切换</strong></h2><blockquote>
+<ul>
+<li>由 <strong>Observer（观察者进程）</strong> 监控主库</li>
+<li>主库故障时自动触发 failover</li>
+<li>Standby 立即升级为新的 Primary</li>
+<li>典型切换耗时 <strong>2–10 秒</strong></li>
+</ul>
+</blockquote>
+<p>为什么这么快？</p>
+<p><strong>1）物理备库与主库是二进制级别同步（Redo）</strong></p>
+<p>实时 apply，几乎无延迟。</p>
+<p><strong>2）Standby 数据结构与 Primary 完全一致</strong></p>
+<p>不需要重放 SQL、不需要构造数据。</p>
+<p><strong>3）failover 是自动、即时的</strong></p>
+<p>Observer 监控的是 TCP+心跳，与主库崩溃检测非常快。</p>
+<h2 id="八、对比-MySQL，有类似方案吗？"><a href="#八、对比-MySQL，有类似方案吗？" class="headerlink" title="八、对比 MySQL，有类似方案吗？"></a>八、对比 MySQL，有类似方案吗？</h2><p>有，但没有 Oracle 完整：</p>
+<h3 id="MySQL-等价方案："><a href="#MySQL-等价方案：" class="headerlink" title="MySQL 等价方案："></a>MySQL 等价方案：</h3><ul>
+<li><strong>MySQL MGR（Group Replication）</strong></li>
+<li><strong>InnoDB Cluster</strong></li>
+</ul>
+<p>但：</p>
+<ul>
+<li>使用 binlog event 同步，不如 Oracle redo 一致性强</li>
+<li>切换也通常要依赖 Router，而不是像 FSFO 那样自动</li>
+<li>“只写不读”的逻辑也不如 Oracle 明确</li>
+</ul>
+<hr>
+<h1 id=""><a href="#" class="headerlink" title=""></a></h1>
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Database/" class="category-chain-item">Database</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/Oracle/" class="print-no-link">#Oracle</a>
+      
+        <a href="/tags/%E5%A4%87%E4%BB%BD/" class="print-no-link">#备份</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>Oracle主从备份</div>
+      <div>http://by.ecel.top/Database/Oracle主从备份/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>刘笑笑</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2025年11月26日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/Others/%E7%9F%A5%E8%AF%86%E7%82%B9%E6%80%BB%E7%BB%93/" title="知识点总结">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">知识点总结</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/Caching/Redis%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%E4%B8%8E%E5%BA%95%E5%B1%82%E7%BB%93%E6%9E%84/" title="Redis数据类型与底层结构">
+                        <span class="hidden-mobile">Redis数据类型与底层结构</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

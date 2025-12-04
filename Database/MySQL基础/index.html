@@ -1,0 +1,1211 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="刘笑笑">
+  <meta name="keywords" content="java、go、操作系统、网络">
+  
+    <meta name="description" content="一、MySQL 整体架构（高层与实现细节）核心组件  客户端 &#x2F; 协议层：解析客户端协议、权限校验。 连接管理：连接池&#x2F;线程管理、认证、SSL。 解析器（Parser）&#x2F;预处理器（Preprocessor）&#x2F;优化器（Optimizer）：SQL -&gt; AST -&gt; 重写 -&gt; 查询计划（cost-based）。 执行器（Executor）：">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MySQL — 基础知识">
+<meta property="og:url" content="http://by.ecel.top/Database/MySQL%E5%9F%BA%E7%A1%80/index.html">
+<meta property="og:site_name" content="title">
+<meta property="og:description" content="一、MySQL 整体架构（高层与实现细节）核心组件  客户端 &#x2F; 协议层：解析客户端协议、权限校验。 连接管理：连接池&#x2F;线程管理、认证、SSL。 解析器（Parser）&#x2F;预处理器（Preprocessor）&#x2F;优化器（Optimizer）：SQL -&gt; AST -&gt; 重写 -&gt; 查询计划（cost-based）。 执行器（Executor）：">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2025-11-23T12:52:55.000Z">
+<meta property="article:modified_time" content="2025-11-23T13:03:11.667Z">
+<meta property="article:author" content="刘笑笑">
+<meta property="article:tag" content="MySQL">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>MySQL — 基础知识 - title</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"by.ecel.top","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Tech Notes</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="MySQL — 基础知识"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2025-11-23 20:52" pubdate>
+          2025年11月23日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          5.8k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          49 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">MySQL — 基础知识</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h2 id="一、MySQL-整体架构（高层与实现细节）"><a href="#一、MySQL-整体架构（高层与实现细节）" class="headerlink" title="一、MySQL 整体架构（高层与实现细节）"></a>一、MySQL 整体架构（高层与实现细节）</h2><p><strong>核心组件</strong></p>
+<ul>
+<li><strong>客户端 &#x2F; 协议层</strong>：解析客户端协议、权限校验。</li>
+<li><strong>连接管理</strong>：连接池&#x2F;线程管理、认证、SSL。</li>
+<li><strong>解析器（Parser）&#x2F;预处理器（Preprocessor）&#x2F;优化器（Optimizer）</strong>：SQL -&gt; AST -&gt; 重写 -&gt; 查询计划（cost-based）。</li>
+<li><strong>执行器（Executor）</strong>：按计划执行操作，访问存储引擎接口（Handler API）。</li>
+<li><strong>存储引擎层（Storage Engine）</strong>：InnoDB、MyISAM、Memory、NDB 等。InnoDB 是常用事务引擎。</li>
+<li><strong>日志系统</strong>：二进制日志（binlog）、错误日志、慢查询日志、事务日志（Redo&#x2F;Undo for InnoDB）。</li>
+<li><strong>信息 &amp; 监控</strong>：INFORMATION_SCHEMA、PERFORMANCE_SCHEMA、SHOW STATUS、sys schema。</li>
+</ul>
+<p><strong>问题：</strong></p>
+<ul>
+<li>MySQL 的架构分哪几层？每层做什么？</li>
+<li>SQL 的解析到执行的流程（解析 - 预处理 - 优化 - 执行）？</li>
+<li>MySQL 如何和存储引擎交互（Handler 接口）？</li>
+</ul>
+<hr>
+<h2 id="二、存储引擎（重点：InnoDB）及差异"><a href="#二、存储引擎（重点：InnoDB）及差异" class="headerlink" title="二、存储引擎（重点：InnoDB）及差异"></a>二、存储引擎（重点：InnoDB）及差异</h2><p><strong>常见引擎</strong></p>
+<ul>
+<li><strong>InnoDB</strong>（事务、安全、外键、MVCC）——默认引擎。支持行级锁、MVCC、崩溃恢复（redo&#x2F;undo、doublewrite）。</li>
+<li><strong>MyISAM</strong>（非事务、表级锁、快速读）——适用于读多写少的场景（历史）。</li>
+<li><strong>Memory</strong>（内存表，非持久）——速度快，重启丢失数据。</li>
+<li><strong>NDB&#x2F;Cluster</strong>（分布式、高可用）——适用于电信等实时场景。</li>
+<li><strong>Archive、CSV、Federated、Blackhole</strong> 等少见用途引擎。</li>
+</ul>
+<p><strong>InnoDB 关键特性</strong></p>
+<ul>
+<li><strong>聚簇索引（Clustered Index）</strong>：主键索引中包含整行数据；二级索引包含主键指针。</li>
+<li><strong>MVCC（多版本并发控制）</strong>：通过 undo log 提供一致读（consistent read），支持非阻塞读取（快照读）。</li>
+<li><strong>事务日志</strong>：redo log（预写日志用于恢复）、undo log（用于回滚与 MVCC 读视图）。</li>
+<li><strong>缓冲池（InnoDB Buffer Pool）</strong>：缓存数据页与索引页，关键性能点。</li>
+<li><strong>双写缓冲（doublewrite buffer）</strong>：防止部分页写入导致页损坏。</li>
+<li><strong>自适应哈希索引（AHI）、插入缓冲（change buffer）</strong> 等优化结构。</li>
+<li><strong>行级锁：记录锁、间隙锁（gap lock）、next-key lock</strong>。</li>
+<li><strong>崩溃恢复</strong>：基于 redo log + doublewrite + undo 进行恢复。</li>
+</ul>
+<p><strong>面试可能问：</strong></p>
+<ul>
+<li>InnoDB 和 MyISAM 的主要区别？</li>
+<li>InnoDB 怎么保证事务的持久性？（redo + doublewrite + fsync）</li>
+<li>InnoDB 的聚簇索引如何影响二级索引？</li>
+<li>MVCC 的实现细节（读视图、undo log、事务隔离）？</li>
+</ul>
+<p><strong>高质量回答要点：</strong></p>
+<ul>
+<li>MyISAM 无事务，表级锁，支持 FULLTEXT（旧版本），恢复能力弱；InnoDB 支持事务、外键、行级锁，崩溃恢复严格。</li>
+<li>InnoDB durabilty：事务 commit 写 redo log（预写），并最终刷写到磁盘；双写缓冲保护页完整性；checkpoint 控制脏页刷新；binlog 用于复制与持久化操作序列（注意 binlog_format 区别）。</li>
+<li>聚簇索引：主键是叶子节点包含整行。二级索引用主键回表（因此主键选择影响性能和空间）。</li>
+</ul>
+<hr>
+<h2 id="三、存储格式、页、表空间（细节）"><a href="#三、存储格式、页、表空间（细节）" class="headerlink" title="三、存储格式、页、表空间（细节）"></a>三、存储格式、页、表空间（细节）</h2><p><strong>页与行</strong></p>
+<ul>
+<li>InnoDB 页大小默认 16KB（可配置），页是 I&#x2F;O 单位。</li>
+<li>页包含行记录、插入缓冲、空闲空间等。</li>
+<li>行格式（Compact, Redundant, Dynamic, Compressed）。</li>
+<li><strong>行溢出（BLOB&#x2F;TEXT）</strong> 存储在溢出页，叶子页中保存指针。</li>
+</ul>
+<p><strong>表空间</strong></p>
+<ul>
+<li>系统表空间 <code>ibdata1</code>（历史上包含数据字典、undo，现代也支持 file-per-table）。</li>
+<li><code>innodb_file_per_table</code>：每个表一个 .ibd 文件，便于回收空间与表迁移。</li>
+<li>Undo tablespaces（8.0+）单独管理 undo 数据。</li>
+<li><strong>doublewrite buffer</strong>：写入 doublewrite 区域再写入表空间。</li>
+</ul>
+<p><strong>面试可能问：</strong></p>
+<ul>
+<li>页结构、行的存储格式、BLOB 如何存储？</li>
+<li>innodb_file_per_table 的利弊？</li>
+<li>redo&#x2F;undo 在磁盘上的存储与作用？</li>
+</ul>
+<p><strong>回答要点：</strong></p>
+<ul>
+<li>页是 16KB，行存储有记录 header + data。BLOB 在溢出页，只在行里存指针。</li>
+<li><code>innodb_file_per_table=ON</code> 好处：空间释放、独立表迁移、备份灵活；坏处：可能管理复杂、表空间碎片。</li>
+<li>redo 用于重做 committed 事务；undo 用于回滚与构建 MVCC 快照。</li>
+</ul>
+<hr>
+<h2 id="四、事务与隔离（MVCC、隔离级别、异常）"><a href="#四、事务与隔离（MVCC、隔离级别、异常）" class="headerlink" title="四、事务与隔离（MVCC、隔离级别、异常）"></a>四、事务与隔离（MVCC、隔离级别、异常）</h2><p><strong>事务特性（ACID）</strong></p>
+<ul>
+<li>Atomicity、Consistency、Isolation、Durability。</li>
+</ul>
+<p><strong>隔离级别（SQL 标准）</strong></p>
+<ul>
+<li>READ UNCOMMITTED（脏读）</li>
+<li>READ COMMITTED（不可重复读）</li>
+<li>REPEATABLE READ（默认 InnoDB：避免不可重复读，通过 MVCC 解决，但会有幻读通过 next-key lock 处理）</li>
+<li>SERIALIZABLE（最高，强锁）</li>
+</ul>
+<p><strong>InnoDB MVCC</strong></p>
+<ul>
+<li>读取分为两类：<strong>一致性读取（snapshot read）</strong> 和 <strong>当前读取（current read）</strong>。</li>
+<li>一致性读从 undo log 获取快照版本（不加锁）；当前读（如 SELECT … FOR UPDATE）会加锁。</li>
+<li><strong>Read View（读视图）</strong>：记录哪些事务是可见的（undo 被保留直到没有事务需要它）。</li>
+<li><strong>幻读</strong>：REPEATABLE READ + InnoDB 的 next-key lock + gap lock 可以防止幻读（在可重复读实现中）。</li>
+</ul>
+<p><strong>面试问法：</strong></p>
+<ul>
+<li>MVCC 是如何实现的？read view 是什么？</li>
+<li>各隔离级别带来的并发问题（脏读、不可重复读、幻读）举例。</li>
+<li>为何 InnoDB 默认为 REPEATABLE READ 而不是 Serializable？</li>
+<li>如何避免幻读？什么时候会发生死锁？</li>
+</ul>
+<p><strong>回答要点：</strong></p>
+<ul>
+<li>描述 undo log、read view、version chain 的交互：写操作在 undo 中保留旧版本；读操作通过 read view 确定可见版本。</li>
+<li>举例说明脏读&#x2F;不可重复读&#x2F;幻读。</li>
+<li>InnoDB 选 REPEATABLE READ 是权衡性能与一致性；Serializable 性能开销大。</li>
+<li>幻读可通过加锁（SELECT … FOR UPDATE）、使用 SERIALIZABLE，或使用 gap locks 来应对。</li>
+</ul>
+<hr>
+<h2 id="五、锁机制（行锁、表锁、意向锁、MDL、死锁）"><a href="#五、锁机制（行锁、表锁、意向锁、MDL、死锁）" class="headerlink" title="五、锁机制（行锁、表锁、意向锁、MDL、死锁）"></a>五、锁机制（行锁、表锁、意向锁、MDL、死锁）</h2><p><strong>锁种类</strong></p>
+<ul>
+<li><strong>表级锁（MyISAM &#x2F; explicit LOCK TABLES）</strong></li>
+<li><strong>行级锁（InnoDB）</strong>：记录锁（record lock）、间隙锁（gap lock）、next-key lock（记录+gap）。</li>
+<li><strong>意向锁（Intention Locks：IX&#x2F;IS）</strong>：用于提升并发时的表&#x2F;行混合锁协调。</li>
+<li><strong>元数据锁（MDL）</strong>：DDL 与 DML 协调（防止正在使用的表被修改结构）。</li>
+<li><strong>全局&#x2F;元数据&#x2F;metadata locks</strong>。</li>
+<li><strong>应用层锁</strong>：GET_LOCK() &#x2F; RELEASE_LOCK()（用户态互斥）。</li>
+</ul>
+<p><strong>死锁</strong></p>
+<ul>
+<li>InnoDB 使用死锁检测（等待图）并回滚代价较小事务；SHOW ENGINE INNODB STATUS 能看到死锁信息。</li>
+<li>预防死锁：保证加锁顺序、使用较短事务、避免用户交互中的长事务。</li>
+</ul>
+<p><strong>面试问法：</strong></p>
+<ul>
+<li>解释 next-key lock、gap lock、record lock 的用途与区别。</li>
+<li>为什么会出现死锁？如何诊断和优化？</li>
+<li>意向锁的作用是什么？</li>
+</ul>
+<p><strong>回答要点：</strong></p>
+<ul>
+<li>next-key lock &#x3D; record lock + gap lock，用于防止幻读（阻止插入到某个间隙）。</li>
+<li>意向锁是表级的锁标志（在事务要加行锁时表上会设置 IX&#x2F;IS），帮助存储引擎快速判断表级锁冲突。</li>
+<li>通过 <code>innodb_print_all_deadlocks=ON</code>、<code>SHOW ENGINE INNODB STATUS</code>、performance_schema 查看死锁原因；解决策略：短事务、合理索引、固定加锁顺序、升降隔离级别等。</li>
+</ul>
+<hr>
+<h2 id="六、索引（种类、原理、优化、常见误区）"><a href="#六、索引（种类、原理、优化、常见误区）" class="headerlink" title="六、索引（种类、原理、优化、常见误区）"></a>六、索引（种类、原理、优化、常见误区）</h2><p><strong>索引类型</strong></p>
+<ul>
+<li><strong>B+树索引（默认）</strong>：主键（聚簇）&#x2F;非主键（辅助）索引，范围&#x2F;排序良好。</li>
+<li><strong>哈希索引</strong>：Memory 引擎的哈希、InnoDB adaptive hash（内存结构），只用于等值查找。</li>
+<li><strong>全文索引（FULLTEXT）</strong>：文本搜索（MyISAM &#x2F; InnoDB 支持）。</li>
+<li><strong>空间索引（R-tree）</strong>：GIS 类型。</li>
+<li><strong>倒排索引</strong>（内部实现 fulltext）。</li>
+</ul>
+<p><strong>索引设计原则</strong></p>
+<ul>
+<li>选择高选择性列建索引。</li>
+<li>组合索引遵循<strong>最左前缀原则</strong>（leftmost prefix）。</li>
+<li>索引覆盖（covering index）：查询列完全被索引包含，不需回表（<code>index-only</code>）。</li>
+<li>避免在索引列上做函数&#x2F;类型转换（会导致索引失效）。</li>
+<li>小心 <code>ORDER BY</code> 与 <code>GROUP BY</code> 使能索引排序。</li>
+<li>避免过多索引影响写入性能与空间。</li>
+</ul>
+<p><strong>索引访问类型（EXPLAIN 输出要熟悉）</strong></p>
+<ul>
+<li><code>index</code>, <code>range</code>, <code>ref</code>, <code>eq_ref</code>, <code>const</code>, <code>system</code>, <code>all</code>（全表扫描）。</li>
+<li><code>Using index</code>（覆盖索引，避免回表）、<code>Using where</code>、<code>Using temporary</code>、<code>Using filesort</code> 等。</li>
+</ul>
+<p><strong>常见误区</strong></p>
+<ul>
+<li>“索引越多越好”→ 写入成本与维护成本高。</li>
+<li><code>LIKE &#39;%abc&#39;</code> 无法使用 B+树前缀索引。</li>
+<li><code>OR</code> 语句可能导致索引失效（可用 UNION 或索引合并）。</li>
+</ul>
+<p><strong>面试问法：</strong></p>
+<ul>
+<li>B+树为什么适合数据库索引？B+树 vs B树 区别？</li>
+<li>说明最左前缀原则、覆盖索引、回表。</li>
+<li>EXPLAIN 看懂 <code>type=ref</code>、<code>Using filesort</code>、<code>Using temporary</code> 的含义和优化方法。</li>
+<li>为什么 ORDER BY 能用索引？</li>
+</ul>
+<p><strong>回答要点：</strong></p>
+<ul>
+<li>B+树所有值都在叶子节点，内节点仅为路由，叶子节点链表便于范围扫描；B树叶子与内节点都存值，分页 I&#x2F;O 不如 B+树高效。</li>
+<li>最左前缀：复合索引 (a,b,c) 可用于查询 a、a,b、a,b,c；不能用于单独 b 或 c。</li>
+<li><code>Using filesort</code> 表示需要额外排序（可能磁盘），优化：创建合适联合索引或调整查询以避免 filesort。</li>
+<li>ORDER BY 可以使用索引当查询顺序与索引顺序一致且没有 additional columns breaking coverage。</li>
+</ul>
+<hr>
+<h2 id="七、查询优化器（原理、成本模型、常见问题）"><a href="#七、查询优化器（原理、成本模型、常见问题）" class="headerlink" title="七、查询优化器（原理、成本模型、常见问题）"></a>七、查询优化器（原理、成本模型、常见问题）</h2><p><strong>Optimizer 任务</strong></p>
+<ul>
+<li>选择访问路径（索引或全表）</li>
+<li>选择 join 顺序与 join 算法（nested loop、hash join since 8.0）</li>
+<li>选择执行方法（index scan, range scan, index merge）</li>
+<li>统计信息驱动（histogram、cardinality）</li>
+</ul>
+<p><strong>常见优化点</strong></p>
+<ul>
+<li>使用 <code>EXPLAIN</code> &#x2F; <code>EXPLAIN ANALYZE</code>（8.0+）查看实际执行时间与行数。</li>
+<li>避免 SELECT *，优先列出需要列。</li>
+<li>使用合适的索引（联合索引、覆盖索引）。</li>
+<li>把常用的子查询改为 JOIN 或者使子查询可被下推（optimizer improvements）。</li>
+<li>避免不必要的排序、临时表：使用索引排序或 rewrite query。</li>
+<li>分页优化（大页码要用 ID 游标&#x2F;seek 方法代替 offset-limit）。</li>
+<li>使用 <code>ANALYZE TABLE</code> 更新统计信息。</li>
+</ul>
+<p><strong>面试问法：</strong></p>
+<ul>
+<li>EXPLAIN 的各字段含义：type、possible_keys、key、key_len、ref、rows、Extra？</li>
+<li>如何优化慢查询？举组件和流程（定位、索引、重写、缓存、架构）。</li>
+<li>Join 顺序与 join 算法的选择依据是什么？</li>
+<li>为什么有时索引没被使用？</li>
+</ul>
+<p><strong>回答要点：</strong></p>
+<ul>
+<li>解释每个 EXPLAIN 字段，<code>rows</code> 是估算行数，<code>key_len</code> 表示使用索引的字节数。</li>
+<li>优化流程：捕获慢 query -&gt; EXPLAIN -&gt; 建索引或重写 -&gt; 添加缓存 &#x2F; 读写分离 &#x2F; 分库分表 -&gt; 再做压力测试。</li>
+<li>Join 算法：nested loop 对小表驱动大表好，hash join（8.0+）对大表 join 有优势。代价模型由统计信息决定。</li>
+<li>索引不被使用：是因为类型转换、函数、low selectivity、ORDER BY mismatch、查询语法（OR）、统计信息过时等。</li>
+</ul>
+<hr>
+<h2 id="八、执行计划与-EXPLAIN-深入（实战）"><a href="#八、执行计划与-EXPLAIN-深入（实战）" class="headerlink" title="八、执行计划与 EXPLAIN 深入（实战）"></a>八、执行计划与 EXPLAIN 深入（实战）</h2><p><strong>要掌握的命令</strong></p>
+<ul>
+<li><code>EXPLAIN SELECT ...;</code></li>
+<li><code>EXPLAIN FORMAT=JSON SELECT ...;</code>（更详尽）</li>
+<li><code>EXPLAIN ANALYZE SELECT ...;</code>（8.0+，显示实际执行时间&#x2F;行）</li>
+<li><code>SHOW PROFILE</code>（旧，较少用）</li>
+<li><code>OPTIMIZER_TRACE</code>（诊断优化器决策）</li>
+</ul>
+<p><strong>看点与优化建议</strong></p>
+<ul>
+<li>关注 <code>rows</code>（估计） vs 实际扫描行数差异 → 更新统计或改写查询。</li>
+<li><code>Using filesort</code> 与 <code>Using temporary</code> 尽量通过索引避免。</li>
+<li><code>index_merge</code> 有时不是最优（对比实际执行时间）。</li>
+<li><code>ref</code> vs <code>eq_ref</code>：<code>eq_ref</code> 更好（唯一键匹配）。</li>
+</ul>
+<hr>
+<h2 id="九、复制（Replication）与高可用"><a href="#九、复制（Replication）与高可用" class="headerlink" title="九、复制（Replication）与高可用"></a>九、复制（Replication）与高可用</h2><p><strong>复制类型</strong></p>
+<ul>
+<li><strong>基于二进制日志的主从复制（Asynchronous）</strong>：主写 binlog、从读取并回放（可能延迟）。</li>
+<li><strong>半同步复制（Semi-synchronous）</strong>：主等待至少一个从确认接收（非完全提交确认），减少丢数据概率。</li>
+<li><strong>GTID（全局事务 ID）</strong>：事务唯一 ID，用于 failover 和自动恢复。</li>
+<li><strong>Group Replication &#x2F; InnoDB Cluster（基于 Group Replication）</strong>：多主 &#x2F; 可自动仲裁，提供一致性（Paxos&#x2F;Raft-like）。</li>
+<li><strong>MySQL NDB Cluster</strong>：真正分布式存储引擎。</li>
+<li><strong>主从拓扑</strong>：一主多从、多主（双主）——注意冲突解决和延迟。</li>
+</ul>
+<p><strong>binlog 格式</strong></p>
+<ul>
+<li><strong>STATEMENT</strong>：记录 SQL 语句（小，但可能不确定性）。</li>
+<li><strong>ROW</strong>：记录行变化（最安全，复制精确，但日志大）。</li>
+<li><strong>MIXED</strong>：两者混合，优化选择。</li>
+</ul>
+<p><strong>延迟和一致性</strong></p>
+<ul>
+<li>异步复制存在数据丢失窗口，半同步降低但不完全消除。</li>
+<li>GTID 便于切换主&#x2F;从、自动化 failover。</li>
+</ul>
+<p><strong>面试问法：</strong></p>
+<ul>
+<li>MySQL 复制原理（io thread &amp; sql thread）？</li>
+<li>binlog row vs statement 区别？</li>
+<li>GTID 如何工作？如何做主从切换？</li>
+<li>如何实现高可用（自动 failover）？</li>
+</ul>
+<p><strong>回答要点：</strong></p>
+<ul>
+<li>复制包括：主端写 binlog，slave 的 IO thread 拉 binlog 写 relay log，再由 SQL thread 执行 relay log。</li>
+<li>ROW 格式复制的是行级别事件，避免非确定性（如 <code>NOW()</code>），STATEMENT 小但风险高。</li>
+<li>GTID 是 <code>source_id:txn_id</code> 的全局唯一标识，切换时只要保证 GTID 同步即可减少手动操作。</li>
+<li>高可用方案：主从 + 心跳 + 自动 failover（MHA, Orchestrator + ProxySQL）或使用 Group Replication &#x2F; InnoDB Cluster。</li>
+</ul>
+<hr>
+<h2 id="十、备份与恢复（策略、工具）"><a href="#十、备份与恢复（策略、工具）" class="headerlink" title="十、备份与恢复（策略、工具）"></a>十、备份与恢复（策略、工具）</h2><p><strong>备份方式</strong></p>
+<ul>
+<li><strong>逻辑备份</strong>：<code>mysqldump</code>、<code>mysqlpump</code>（可移植，慢）。</li>
+<li><strong>物理备份</strong>：<code>xtrabackup</code>（Percona XtraBackup）做热备份（InnoDB），复制表空间文件快。</li>
+<li><strong>快照</strong>：文件系统或云磁盘快照（需要一致性处理）。</li>
+<li>Binlog-based point-in-time recovery（PITR）：物理备份 + replay binlog。</li>
+</ul>
+<p><strong>恢复考虑</strong></p>
+<ul>
+<li>恢复时间（RTO）与数据丢失容忍（RPO）。</li>
+<li>恢复测试必做（常被忽视）。</li>
+<li>冷备份 vs 热备份权衡。</li>
+</ul>
+<p><strong>面试问法：</strong></p>
+<ul>
+<li>如何设计备份方案？如何做 PITA（点时间恢复）？</li>
+<li>xtrabackup 的工作原理（innodb 物理拷贝 + apply-log）？</li>
+</ul>
+<p><strong>回答要点：</strong></p>
+<ul>
+<li>备份策略常用：全量周一次 + 增量&#x2F;差异 + binlog 每日归档。恢复流程需要明确演练。</li>
+<li>xtrabackup 做非阻塞拷贝，然后 apply log（redo）使备份一致；支持 streaming 增量。</li>
+</ul>
+<hr>
+<h2 id="十一、分区与分库分表（水平-垂直拆分）"><a href="#十一、分区与分库分表（水平-垂直拆分）" class="headerlink" title="十一、分区与分库分表（水平&#x2F;垂直拆分）"></a>十一、分区与分库分表（水平&#x2F;垂直拆分）</h2><p><strong>分区（Partitioning）</strong></p>
+<ul>
+<li>类型：RANGE, LIST, HASH, KEY, RANGE COLUMNS</li>
+<li>优点：管理大量数据（分区裁剪，便于删除旧数据）</li>
+<li>缺点：不能分散到多机器（仍在同一实例），复杂性高，索引限制（有时分区键必须在 where 子句中）</li>
+</ul>
+<p><strong>分库分表（Sharding）</strong></p>
+<ul>
+<li><strong>垂直拆分</strong>：按业务拆分表到不同 DB。</li>
+<li><strong>水平拆分</strong>：按某字段（用户 id）拆成多个分片。</li>
+<li>中间件：应用层路由、Sharding Sphere、ProxySQL + application logic。</li>
+<li>数据一致性与跨分片事务复杂（两阶段提交 &#x2F; XA &#x2F; distributed transaction），多数场景用 BASE + 事务补偿 或 可靠消息 + 最终一致性方案。</li>
+</ul>
+<p><strong>面试问法：</strong></p>
+<ul>
+<li>分库分表怎么做？如何保证跨分片事务一致性？</li>
+<li>分区和分库的对比？</li>
+</ul>
+<p><strong>回答要点：</strong></p>
+<ul>
+<li>分区适合单实例内数据管理；分库能扩展到多机器。跨分片事务代价高，常用两段提交&#x2F;分布式事务中间件或领域驱动设计避免跨分片事务，使用补偿事务和幂等设计。</li>
+</ul>
+<hr>
+<h2 id="十二、性能调优要点（参数、监控、瓶颈定位）"><a href="#十二、性能调优要点（参数、监控、瓶颈定位）" class="headerlink" title="十二、性能调优要点（参数、监控、瓶颈定位）"></a>十二、性能调优要点（参数、监控、瓶颈定位）</h2><p><strong>关键调参</strong></p>
+<ul>
+<li><code>innodb_buffer_pool_size</code>：最重要，通常 60-80% 的可用内存（只在 DB 专机上）。</li>
+<li><code>innodb_log_file_size</code>、<code>innodb_log_files_in_group</code>：影响 checkpoint 和写入性能。</li>
+<li><code>innodb_io_capacity</code> &#x2F; <code>innodb_io_capacity_max</code>：控制后台刷脏页速度。</li>
+<li><code>innodb_flush_log_at_trx_commit</code>：0&#x2F;1&#x2F;2 三档，权衡持久性与性能（1 最安全）。</li>
+<li><code>max_connections</code>、<code>thread_cache_size</code>、<code>table_open_cache</code>、<code>innodb_thread_concurrency</code>。</li>
+<li><code>query_cache</code>（已废弃，注意版本，MySQL8 已移除）——不要在写密集场景启用。</li>
+<li><code>tmp_table_size</code> &#x2F; <code>max_heap_table_size</code>：内存临时表限制。</li>
+</ul>
+<p><strong>监控指标</strong></p>
+<ul>
+<li>Buffer pool hit ratio（<code>Innodb_buffer_pool_read_requests</code> &#x2F; <code>Innodb_buffer_pool_reads</code>）</li>
+<li>Dirty pages、IO wait、transaction rate、row lock waits、slow queries.</li>
+<li><code>SHOW ENGINE INNODB STATUS</code>、<code>performance_schema</code>、<code>INFORMATION_SCHEMA.INNODB_*</code>。</li>
+</ul>
+<p><strong>瓶颈定位流程</strong></p>
+<ol>
+<li>监控&#x2F;报警识别问题（CPU&#x2F;IO&#x2F;Memory&#x2F;Network）。</li>
+<li>找到慢 SQL（慢查询日志）。</li>
+<li>EXPLAIN &#x2F; PROFILE &#x2F; ANALYZE 优化 SQL。</li>
+<li>索引 &#x2F; schema &#x2F; rewrite &#x2F; cache。</li>
+<li>架构优化：读写分离、缓存、分库分表、队列削峰。</li>
+</ol>
+<p><strong>面试问法：</strong></p>
+<ul>
+<li>当系统慢，你如何排查？举一步步流程与命令。</li>
+<li>Buffer pool 命中率低如何处理？</li>
+</ul>
+<p><strong>回答要点：</strong></p>
+<ul>
+<li>给出详细排查步骤（OS 层（iostat&#x2F;top）、MySQL 层（SHOW PROCESSLIST、SHOW ENGINE INNODB STATUS、慢查询日志、performance_schema）、EXPLAIN）。</li>
+<li>Buffer pool 命中率低：增大 buffer pool、检查大表扫描、索引缺失导致大量全表扫描。</li>
+</ul>
+<hr>
+<h2 id="十三、B-树、B树、哈希（理论与应用）"><a href="#十三、B-树、B树、哈希（理论与应用）" class="headerlink" title="十三、B+树、B树、哈希（理论与应用）"></a>十三、B+树、B树、哈希（理论与应用）</h2><p><strong>B+树 vs B树</strong></p>
+<ul>
+<li><strong>B-tree</strong>：每节点存键值和数据。查找时数据可能位于内、叶节点。</li>
+<li><strong>B+树</strong>：非叶子节点仅存键和指向子节点的指针，所有数据都在叶子节点。叶子节点通过链表连接，便于范围扫描。</li>
+<li><strong>为什么数据库用 B+树？</strong><ul>
+<li>叶子节点连续且链表便于范围查询与顺序访问。</li>
+<li>内节点小，能增加内存中一层索引效率（磁盘 I&#x2F;O 少）。</li>
+</ul>
+</li>
+<li><strong>哈希索引</strong>：适合等值查找，不能范围查找，碰撞处理，Memory 引擎用到。</li>
+</ul>
+<p><strong>面试问法：</strong></p>
+<ul>
+<li>B+树的插入&#x2F;删除对页分裂&#x2F;合并的影响？</li>
+<li>B+树为什么适合磁盘存储（IO 层考虑）？</li>
+</ul>
+<p><strong>回答要点：</strong></p>
+<ul>
+<li>插入：找到叶子插入；若溢出分裂并向上调整；删除可能导致合并或借位。页分裂导致写放大和更多 IO。</li>
+<li>B+树减少磁盘读：内节点驻留内存可快速导航到叶子；一次页读获取多个键&#x2F;值数据。</li>
+</ul>
+<hr>
+<h2 id="十四、进程-线程管理（mysqld-模型）"><a href="#十四、进程-线程管理（mysqld-模型）" class="headerlink" title="十四、进程&#x2F;线程管理（mysqld 模型）"></a>十四、进程&#x2F;线程管理（mysqld 模型）</h2><p><strong>线程模型</strong></p>
+<ul>
+<li>每个客户端连接默认一个线程（old model），现代可以使用线程池插件（thread_pool）处理大量连接。</li>
+<li><code>thread_cache_size</code> 缓存线程减少创建开销。</li>
+<li>使用 epoll&#x2F;kqueue 等 I&#x2F;O 多路复用机制在 OS 层。</li>
+</ul>
+<p><strong>重要参数</strong></p>
+<ul>
+<li><code>max_connections</code>：最大连接数（过高导致 OOM）</li>
+<li><code>thread_cache_size</code>：线程复用</li>
+<li><code>table_open_cache</code>、<code>open_files_limit</code></li>
+</ul>
+<p><strong>面试问法：</strong></p>
+<ul>
+<li>MySQL 如何处理并发连接？线程池有何优点？</li>
+<li><code>max_connections</code> 过大有什么风险？</li>
+</ul>
+<p><strong>回答要点：</strong></p>
+<ul>
+<li>线程池可以重用线程、控制并发执行线程数，避免大量线程竞争 CPU 和内存。<code>max_connections</code> 过大会导致内存和上下文切换开销。</li>
+</ul>
+<hr>
+<h2 id="十五、常见工具与命令（速查）"><a href="#十五、常见工具与命令（速查）" class="headerlink" title="十五、常见工具与命令（速查）"></a>十五、常见工具与命令（速查）</h2><p><strong>排查与监控</strong></p>
+<ul>
+<li><code>SHOW PROCESSLIST;</code></li>
+<li><code>SHOW GLOBAL STATUS;</code> &#x2F; <code>SHOW SESSION STATUS;</code></li>
+<li><code>SHOW VARIABLES;</code></li>
+<li><code>SHOW ENGINE INNODB STATUS;</code></li>
+<li><code>EXPLAIN / EXPLAIN ANALYZE</code></li>
+<li><code>INFORMATION_SCHEMA</code>（TABLES&#x2F;COLUMNS&#x2F;STATISTICS）</li>
+<li><code>performance_schema</code>（更细粒度）</li>
+<li><code>pt-query-digest</code>（Percona 工具）分析慢查询</li>
+<li><code>mysqlsla</code>, <code>mysqldumpslow</code></li>
+</ul>
+<p><strong>关键 SQL 示例</strong></p>
+<ul>
+<li>查看正在等待锁的事务：<code>SELECT * FROM INFORMATION_SCHEMA.INNODB_LOCKS;</code> &#x2F; <code>INNODB_LOCK_WAITS</code></li>
+<li>查看慢查询：<code>SET GLOBAL slow_query_log = ON;</code></li>
+<li>查看 buffer pool info：<code>SHOW ENGINE INNODB STATUS\G</code> -&gt; Buffer pool 统计</li>
+</ul>
+<hr>
+<h2 id="十六、常见面试题（题目-要点答案）"><a href="#十六、常见面试题（题目-要点答案）" class="headerlink" title="十六、常见面试题（题目+要点答案）"></a>十六、常见面试题（题目+要点答案）</h2><p>我把最常被问的题列出来——面试中能直接背答案并扩展即可。</p>
+<ol>
+<li><strong>MySQL 的事务隔离级别有哪些？分别会出现哪些并发问题？</strong><ul>
+<li>答：列出 4 个并说明脏读&#x2F;不可重复读&#x2F;幻读；解释 InnoDB 如何用 MVCC + gap lock 解决幻读。</li>
+</ul>
+</li>
+<li><strong>事务提交时都发生了什么？</strong><ul>
+<li>答：写 redo log（WAL），如果 <code>innodb_flush_log_at_trx_commit=1</code> 则 fsync；写 binlog（若 sync_binlog&#x3D;1 则也 fsync）；释放锁，更新状态。</li>
+</ul>
+</li>
+<li><strong>主键选择如何选择？</strong><ul>
+<li>答：尽量单调递增、短（INT 比 UUID 好）、唯一、稳定。若是 UUID，考虑使用有序 UUID 或使用 DB-generated autoinc + sharding id。</li>
+</ul>
+</li>
+<li><strong>聚簇索引的优缺点？</strong><ul>
+<li>答：优点：范围查找快、主键回表无额外开销；缺点：二级索引回表成本、主键变更代价大、插入可能导致页分裂。</li>
+</ul>
+</li>
+<li><strong>解释 InnoDB 的 MVCC 实现。</strong><ul>
+<li>答：undo log 保存历史版本，读创建 read view 只读可见版本，写操作链上并生成 undo，读不阻塞写（除非 current read）。</li>
+</ul>
+</li>
+<li><strong>如何解决慢查询（定性定量）？</strong><ul>
+<li>答：collect slow queries -&gt; EXPLAIN -&gt; add index &#x2F; rewrite &#x2F; cache &#x2F; change schema -&gt; measure -&gt; repeat。列出命令与举例。</li>
+</ul>
+</li>
+<li><strong>如何做主从切换（无缝或最小影响）？</strong><ul>
+<li>答：使用 GTID + 停写 + promote slave（或 Orchestrator 自动化），或使用半同步减少丢失窗口。演示步骤要点。</li>
+</ul>
+</li>
+<li><strong>为什么索引没起作用？</strong><ul>
+<li>答：函数在列上、隐式类型转换、使用 OR、LIKE 前缀、范围查询导致后续列失效、统计信息问题、低选择性、索引未被覆盖。</li>
+</ul>
+</li>
+<li><strong>如何避免死锁？</strong><ul>
+<li>答：短事务、固定加锁顺序、对热点行使用乐观锁或队列、索引优化避免范围锁、重试机制（捕获死锁后重试事务）。</li>
+</ul>
+</li>
+<li><strong>Explain 中的 type 字段代表什么？</strong><ul>
+<li>答：访问类型（system &lt; const &lt; eq_ref &lt; ref &lt; range &lt; index &lt; all），表示扫描效率，从 best 到 worst。</li>
+</ul>
+</li>
+<li><strong>如何设计大表的分页？</strong><ul>
+<li>答：避免 OFFSET+LIMIT 在大页码，使用主键范围查询（seek method）或保持上次最后 ID 的游标分页。</li>
+</ul>
+</li>
+<li><strong>innodb_buffer_pool_size 如何设置？</strong><ul>
+<li>答：一般设置为 60~80% 的可用内存（若只运行 MySQL），并留空间给 OS 缓存与其他进程。</li>
+</ul>
+</li>
+<li><strong>如何做在线模式变更（schema change）？</strong><ul>
+<li>答：使用 <code>pt-online-schema-change</code> 或 <code>gh-ost</code> 做无锁在线变更；MySQL 8 更多 DDL online 支持，但仍有限制。</li>
+</ul>
+</li>
+<li><strong>Explain JSON 输出怎么看？（实际执行计划）</strong><ul>
+<li>答：关注 <code>cost_info</code>、<code>table</code>、<code>access_type</code>、<code>used_indexes</code>、<code>rows_estimate</code>、<code>messages</code>。</li>
+</ul>
+</li>
+</ol>
+<p>（面试题远不止这些，关键是能根据问题把实现原理、常见问题、解决办法与命令结合起来说明。）</p>
+<hr>
+<h2 id="十七、常见错误、坑与注意事项（面试喜欢挖的地方）"><a href="#十七、常见错误、坑与注意事项（面试喜欢挖的地方）" class="headerlink" title="十七、常见错误、坑与注意事项（面试喜欢挖的地方）"></a>十七、常见错误、坑与注意事项（面试喜欢挖的地方）</h2><ul>
+<li><strong>误用 UUID</strong>：UUID 导致随机插入，严重碎片化，写放大。解决：使用有序 UUID 或使用前缀字段做哈希。</li>
+<li><strong>忘记索引覆盖回表成本</strong>：二级索引查出主键后回主键表查行，成本显著。</li>
+<li><strong>使用 <code>SELECT \*</code> 导致不必要 IO</strong>。</li>
+<li><strong>忽视长事务</strong>：长事务阻止 purge，导致 undo 文件增长与性能下降。</li>
+<li><strong>误用 <code>innodb_flush_log_at_trx_commit=2/0</code> 在需要强持久性的场景</strong>。</li>
+<li><strong>没有测试备份恢复流程</strong>——备份无用如果不能恢复。</li>
+<li><strong>过度索引</strong>：写性能下降、更多维护与磁盘。</li>
+</ul>
+<hr>
+<h2 id="十八、实战命令与示例（便于面试现场写-SQL-现场排错）"><a href="#十八、实战命令与示例（便于面试现场写-SQL-现场排错）" class="headerlink" title="十八、实战命令与示例（便于面试现场写 SQL &#x2F; 现场排错）"></a>十八、实战命令与示例（便于面试现场写 SQL &#x2F; 现场排错）</h2><p>查看慢查询设置并开启：</p>
+<figure class="highlight pgsql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs pgsql"><span class="hljs-keyword">SHOW</span> VARIABLES <span class="hljs-keyword">LIKE</span> <span class="hljs-string">&#x27;slow_query_log%&#x27;</span>;<br><span class="hljs-keyword">SET</span> <span class="hljs-keyword">GLOBAL</span> slow_query_log = <span class="hljs-keyword">ON</span>;<br><span class="hljs-keyword">SET</span> <span class="hljs-keyword">GLOBAL</span> long_query_time = <span class="hljs-number">1</span>;<br></code></pre></td></tr></table></figure>
+
+<p>查看当前连接与慢 SQL：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">SHOW</span> PROCESSLIST;<br><span class="hljs-keyword">SELECT</span> <span class="hljs-operator">*</span> <span class="hljs-keyword">FROM</span> INFORMATION_SCHEMA.PROCESSLIST <span class="hljs-keyword">WHERE</span> COMMAND <span class="hljs-operator">&lt;&gt;</span> <span class="hljs-string">&#x27;Sleep&#x27;</span>;<br></code></pre></td></tr></table></figure>
+
+<p>查看 InnoDB 状态（死锁、buffer pool）：</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs css">SHOW ENGINE INNODB STATUS\<span class="hljs-selector-tag">G</span><br></code></pre></td></tr></table></figure>
+
+<p>EXPLAIN 示例：</p>
+<figure class="highlight pgsql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs pgsql"><span class="hljs-keyword">EXPLAIN</span> <span class="hljs-keyword">FORMAT</span>=<span class="hljs-type">JSON</span><br><span class="hljs-keyword">SELECT</span> u.id, u.name<br><span class="hljs-keyword">FROM</span> <span class="hljs-keyword">user</span> u<br><span class="hljs-keyword">JOIN</span> orders o <span class="hljs-keyword">ON</span> o.user_id = u.id<br><span class="hljs-keyword">WHERE</span> u.status = <span class="hljs-string">&#x27;active&#x27;</span> <span class="hljs-keyword">AND</span> o.created_at &gt; <span class="hljs-string">&#x27;2025-01-01&#x27;</span>;<br></code></pre></td></tr></table></figure>
+
+<p>查看 buffer pool 使用：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">SHOW</span> <span class="hljs-keyword">GLOBAL</span> STATUS <span class="hljs-keyword">LIKE</span> <span class="hljs-string">&#x27;Innodb_buffer_pool%&#x27;</span>;<br></code></pre></td></tr></table></figure>
+
+<p>查找未提交事务时间长（可能阻塞 purge）：</p>
+<figure class="highlight n1ql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs n1ql"><span class="hljs-keyword">SELECT</span> trx_id, trx_started, trx_mysql_thread_id, trx_query<br><span class="hljs-keyword">FROM</span> INFORMATION_SCHEMA.INNODB_TRX<br><span class="hljs-keyword">ORDER</span> <span class="hljs-keyword">BY</span> trx_started;<br></code></pre></td></tr></table></figure>
+
+<p>定位锁等待：</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs css"><span class="hljs-selector-tag">SELECT</span> * <span class="hljs-selector-tag">FROM</span> INFORMATION_SCHEMA<span class="hljs-selector-class">.INNODB_LOCKS</span>;<br><span class="hljs-selector-tag">SELECT</span> * <span class="hljs-selector-tag">FROM</span> INFORMATION_SCHEMA<span class="hljs-selector-class">.INNODB_LOCK_WAITS</span>;<br></code></pre></td></tr></table></figure>
+
+<p>手动获取应用锁：</p>
+<figure class="highlight ada"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs ada"><span class="hljs-keyword">SELECT</span> GET_LOCK(<span class="hljs-symbol">&#x27;my_lock</span>&#x27;, <span class="hljs-number">10</span>);<br><span class="hljs-keyword">SELECT</span> RELEASE_LOCK(<span class="hljs-symbol">&#x27;my_lock</span>&#x27;);<br></code></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="十九、架构级别的可用性与扩展方案"><a href="#十九、架构级别的可用性与扩展方案" class="headerlink" title="十九、架构级别的可用性与扩展方案"></a>十九、架构级别的可用性与扩展方案</h2><p><strong>读写分离</strong></p>
+<ul>
+<li>Master 写、Slave 读，使用 ProxySQL &#x2F; HAProxy &#x2F; application routing。</li>
+<li>注意复制延迟导致读到旧数据（解决：读从优先级或事件时间线设计）。</li>
+</ul>
+<p><strong>负载均衡与故障转移</strong></p>
+<ul>
+<li>Orchestrator（自动化拓扑管理）、MHA、ProxySQL 与 Keepalived，配合心跳实现自动化 failover。</li>
+<li>使用 GTID 简化切换。</li>
+</ul>
+<p><strong>分布式事务与可靠消息</strong></p>
+<ul>
+<li>XA（两阶段提交）支持但复杂且性能差。</li>
+<li>常见设计是最终一致性：可靠消息 + 消息幂等 + 补偿事务。</li>
+</ul>
+<p><strong>缓存层</strong></p>
+<ul>
+<li>Redis &#x2F; Memcached 做热点缓存（注意缓存失效策略和缓存击穿 &#x2F; 穿透 &#x2F; 雪崩 防护）。</li>
+</ul>
+<hr>
+<h2 id="二十、面试高分答题技巧（方法论）"><a href="#二十、面试高分答题技巧（方法论）" class="headerlink" title="二十、面试高分答题技巧（方法论）"></a>二十、面试高分答题技巧（方法论）</h2><ol>
+<li><strong>先给结论，再解释原因，再给例子&#x2F;命令</strong>（面试官喜欢结构化回答）。</li>
+<li><strong>关注权衡</strong>：每种方案都有利弊，列出代价（性能&#x2F;一致性&#x2F;复杂度&#x2F;运维）。</li>
+<li><strong>用数据说话</strong>：给出常用参数与推荐值（如 buffer pool 设置策略）。</li>
+<li><strong>能写命令就写命令</strong>：在白板或远程面试中写出 EXPLAIN &#x2F; SHOW 命令。</li>
+<li><strong>演示排错流程</strong>：现场讲一个“系统变慢”的排查流程，具体到命令与指标。</li>
+<li><strong>提到版本差异</strong>：MySQL 8 对 optimizer、hash join、窗口函数、JSON、CTE 支持等增强，说明你注意版本变化。</li>
+</ol>
+<hr>
+<h2 id="二十一、快速记忆清单（面试速查）"><a href="#二十一、快速记忆清单（面试速查）" class="headerlink" title="二十一、快速记忆清单（面试速查）"></a>二十一、快速记忆清单（面试速查）</h2><ul>
+<li><strong>最重要的五个参数</strong>：<code>innodb_buffer_pool_size</code>, <code>innodb_log_file_size</code>, <code>innodb_flush_log_at_trx_commit</code>, <code>max_connections</code>, <code>innodb_io_capacity</code></li>
+<li><strong>EXPLAIN 常看字段</strong>：type、key、key_len、rows、Extra</li>
+<li><strong>InnoDB 日志</strong>：redo（重做） vs undo（回滚 + MVCC）</li>
+<li><strong>锁</strong>：record lock、gap lock、next-key lock、MDL、意向锁</li>
+<li><strong>索引要点</strong>：最左前缀、覆盖索引、避免函数&#x2F;类型转换、选择性高</li>
+<li><strong>复制线程</strong>：IO thread（拉 binlog） + SQL thread（执行 relay log）</li>
+<li><strong>备份</strong>：逻辑（mysqldump） vs 物理（xtrabackup） + binlog for PITR</li>
+</ul>
+<hr>
+<h2 id="二十二、进一步进阶阅读建议（面试后题外延伸）"><a href="#二十二、进一步进阶阅读建议（面试后题外延伸）" class="headerlink" title="二十二、进一步进阶阅读建议（面试后题外延伸）"></a>二十二、进一步进阶阅读建议（面试后题外延伸）</h2><ul>
+<li>InnoDB internals（页格式、redo&#x2F;undo、purge、doublewrite）</li>
+<li>MySQL 性能调优实战（Percona&#x2F;官方白皮书）</li>
+<li>Group Replication &#x2F; InnoDB Cluster 实战</li>
+<li>深入理解 EXPLAIN JSON &#x2F; EXPLAIN ANALYZE</li>
+</ul>
+<hr>
+<h2 id="最后-—-面试真题演练（3-个综合题）"><a href="#最后-—-面试真题演练（3-个综合题）" class="headerlink" title="最后 — 面试真题演练（3 个综合题）"></a>最后 — 面试真题演练（3 个综合题）</h2><ol>
+<li><strong>题目</strong>：系统突然出现大量 <code>LOCK WAIT</code>，影响写操作。请现场给出排查步骤与命令，并提出 3 种解决策略。<ul>
+<li><strong>答</strong>：列出：<code>SHOW ENGINE INNODB STATUS\G</code>（查看死锁&#x2F;等待），<code>SELECT * FROM INFORMATION_SCHEMA.INNODB_TRX</code>、<code>INNODB_LOCK_WAITS</code>、<code>SHOW PROCESSLIST</code>、定位长事务&#x2F;慢 SQL；解决：短事务&#x2F;添加索引避免 full scan&#x2F;杀掉阻塞事务并优化事务逻辑&#x2F;使用更低隔离（READ COMMITTED）或改写 SQL。</li>
+</ul>
+</li>
+<li><strong>题目</strong>：为什么 SELECT … LIMIT 1000 OFFSET 100000 很慢？如何优化？<ul>
+<li><strong>答</strong>：OFFSET 会扫描并跳过前 100k 行，I&#x2F;O 大。优化：使用索引 seek（<code>WHERE id &gt; last_id LIMIT 1000</code>），或按索引范围分页、按时间分片，或利用 keyset pagination。</li>
+</ul>
+</li>
+<li><strong>题目</strong>：如何做主从切换以保证最小数据丢失？<ul>
+<li><strong>答</strong>：开启半同步，等待从机接收并写 flush relay log（或确认），在切换时使用 GTID：stop writes -&gt; ensure slave caught up (SHOW SLAVE STATUS，Seconds_Behind_Master&#x3D;0) -&gt; promote slave -&gt; redirect writes，或使用 Orchestrator 自动 failover，并考虑 slave read-after-write consistency。</li>
+</ul>
+</li>
+</ol>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Database/" class="category-chain-item">Database</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/MySQL/" class="print-no-link">#MySQL</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>MySQL — 基础知识</div>
+      <div>http://by.ecel.top/Database/MySQL基础/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>刘笑笑</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2025年11月23日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/Microservices/RPC/" title="post">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">post</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/Messaging/Kafka%E5%9F%BA%E7%A1%80/" title="Kafka — 基础知识">
+                        <span class="hidden-mobile">Kafka — 基础知识</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

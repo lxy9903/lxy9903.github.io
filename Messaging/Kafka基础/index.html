@@ -1,0 +1,921 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="刘笑笑">
+  <meta name="keywords" content="java、go、操作系统、网络">
+  
+    <meta name="description" content="一、Kafka 基础与整体架构Kafka 是一个 高吞吐、分布式、可扩展、可持久化 的消息流平台，核心特性：  高吞吐：顺序写磁盘 + PageCache 零拷贝 分区并行：partition 并发处理 水平扩展：broker 任意扩容 高可用：基于 副本 + ISR + Controller 的复制机制 持久化：segment 文件顺序写 支持流处理：Kafka Streams 支持批处理与订阅">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Kafka — 基础知识">
+<meta property="og:url" content="http://by.ecel.top/Messaging/Kafka%E5%9F%BA%E7%A1%80/index.html">
+<meta property="og:site_name" content="title">
+<meta property="og:description" content="一、Kafka 基础与整体架构Kafka 是一个 高吞吐、分布式、可扩展、可持久化 的消息流平台，核心特性：  高吞吐：顺序写磁盘 + PageCache 零拷贝 分区并行：partition 并发处理 水平扩展：broker 任意扩容 高可用：基于 副本 + ISR + Controller 的复制机制 持久化：segment 文件顺序写 支持流处理：Kafka Streams 支持批处理与订阅">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2025-11-23T12:52:55.000Z">
+<meta property="article:modified_time" content="2025-11-23T13:03:40.932Z">
+<meta property="article:author" content="刘笑笑">
+<meta property="article:tag" content="Kafka">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>Kafka — 基础知识 - title</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"by.ecel.top","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Tech Notes</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="Kafka — 基础知识"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2025-11-23 20:52" pubdate>
+          2025年11月23日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          1.4k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          12 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">Kafka — 基础知识</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h2 id="一、Kafka-基础与整体架构"><a href="#一、Kafka-基础与整体架构" class="headerlink" title="一、Kafka 基础与整体架构"></a>一、Kafka 基础与整体架构</h2><p>Kafka 是一个 <strong>高吞吐、分布式、可扩展、可持久化</strong> 的消息流平台，核心特性：</p>
+<ul>
+<li><strong>高吞吐</strong>：顺序写磁盘 + PageCache 零拷贝</li>
+<li><strong>分区并行</strong>：partition 并发处理</li>
+<li><strong>水平扩展</strong>：broker 任意扩容</li>
+<li><strong>高可用</strong>：基于 <strong>副本 + ISR + Controller</strong> 的复制机制</li>
+<li><strong>持久化</strong>：segment 文件顺序写</li>
+<li><strong>支持流处理</strong>：Kafka Streams</li>
+<li><strong>支持批处理与订阅模型</strong>：consumer group</li>
+</ul>
+<p>Kafka 三大核心角色：</p>
+<h3 id="1-Producer（生产者）"><a href="#1-Producer（生产者）" class="headerlink" title="1. Producer（生产者）"></a>1. Producer（生产者）</h3><ul>
+<li>支持批量、压缩、异步发送</li>
+<li>参数：batch.size、linger.ms、compression.type 影响性能</li>
+</ul>
+<h3 id="2-Broker（服务器）"><a href="#2-Broker（服务器）" class="headerlink" title="2. Broker（服务器）"></a>2. Broker（服务器）</h3><ul>
+<li>Topic → Partition → Segment</li>
+<li>高效的 <strong>顺序写磁盘</strong></li>
+<li>Zero-copy 提升发送性能</li>
+</ul>
+<h3 id="3-Consumer（消费者）"><a href="#3-Consumer（消费者）" class="headerlink" title="3. Consumer（消费者）"></a>3. Consumer（消费者）</h3><ul>
+<li>通过 <strong>Consumer Group</strong> 实现水平扩展</li>
+<li>自动提交&#x2F;手动提交 offset</li>
+<li>支持多种订阅方式（range、round-robin、sticky）</li>
+</ul>
+<h3 id="4-Zookeeper（旧架构）-KRaft（新架构）"><a href="#4-Zookeeper（旧架构）-KRaft（新架构）" class="headerlink" title="4. Zookeeper（旧架构）&#x2F; KRaft（新架构）"></a>4. Zookeeper（旧架构）&#x2F; KRaft（新架构）</h3><ul>
+<li>存储元数据</li>
+<li>Leader 选举</li>
+<li>Partition 分配、Topic 创建、ISR 管理<br> Kafka 3.x 后进入 <strong>KRaft</strong> 时代：</li>
+<li>不再依赖 Zookeeper</li>
+<li>Kafka 自身存储元数据</li>
+<li>一组 Controller 选举</li>
+</ul>
+<p>Kafka 场景：</p>
+<ul>
+<li>数据采集（日志、行为）</li>
+<li>异步削峰解耦</li>
+<li>流式计算（Flink&#x2F;Spark）</li>
+<li>订单、支付、分布式事件</li>
+<li>CDC（MySQL → Kafka → Downstream）</li>
+</ul>
+<hr>
+<h2 id="二、Kafka-存储、分区、副本、ISR-深度原理"><a href="#二、Kafka-存储、分区、副本、ISR-深度原理" class="headerlink" title="二、Kafka 存储、分区、副本、ISR 深度原理"></a>二、Kafka 存储、分区、副本、ISR 深度原理</h2><p>Kafka 的核心就是 <strong>分区 + 顺序写 + 副本</strong>。</p>
+<hr>
+<h3 id="1-Topic-→-Partition-→-Segment-结构"><a href="#1-Topic-→-Partition-→-Segment-结构" class="headerlink" title="1. Topic → Partition → Segment 结构"></a>1. Topic → Partition → Segment 结构</h3><h4 id="Partition-是-Kafka-并行度单位"><a href="#Partition-是-Kafka-并行度单位" class="headerlink" title="Partition 是 Kafka 并行度单位"></a>Partition 是 Kafka 并行度单位</h4><ul>
+<li>每个 partition 是一个 <strong>有序、不可变</strong> 的消息队列</li>
+<li>只能追加写入</li>
+<li>可配置副本数（replication.factor）</li>
+</ul>
+<h4 id="Segment-是磁盘文件"><a href="#Segment-是磁盘文件" class="headerlink" title="Segment 是磁盘文件"></a>Segment 是磁盘文件</h4><p>一个 partition 会拆成多个 segment 文件：</p>
+<figure class="highlight excel"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs excel"><span class="hljs-number">00000000000000000000</span>.<span class="hljs-built_in">log</span><br><span class="hljs-number">00000000000000000000</span>.<span class="hljs-built_in">index</span><br><span class="hljs-number">00000000000000000000</span>.timeindex<br></code></pre></td></tr></table></figure>
+
+<p>好处：</p>
+<ul>
+<li>文件分段可快速删除</li>
+<li>避免文件过大难以管理</li>
+<li>高效顺序写</li>
+</ul>
+<hr>
+<h3 id="2-Zero-Copy-Page-Cache"><a href="#2-Zero-Copy-Page-Cache" class="headerlink" title="2. Zero Copy + Page Cache"></a>2. Zero Copy + Page Cache</h3><p>Kafka 默认不读取整个 log 文件，而是使用：</p>
+<ul>
+<li><strong>sendfile</strong> 系统调用</li>
+<li>PageCache 做文件系统缓存</li>
+<li>数据不需要在用户态和内核态之间来回复制</li>
+</ul>
+<p>Kafka 的高性能来源之一。</p>
+<hr>
+<h3 id="3-副本机制（Replication）"><a href="#3-副本机制（Replication）" class="headerlink" title="3. 副本机制（Replication）"></a>3. 副本机制（Replication）</h3><p>每个 partition 有：</p>
+<ul>
+<li>leader（负责读写）</li>
+<li>follower（复制 leader）</li>
+</ul>
+<hr>
+<h3 id="4-ISR-列表"><a href="#4-ISR-列表" class="headerlink" title="4. ISR 列表"></a>4. ISR 列表</h3><p>ISR（in-sync replica）：<br> <strong>与 leader 保持同步的副本集合</strong>。</p>
+<p>Kafka 认为只要 follower：</p>
+<ul>
+<li>延迟不超过 replica.lag.time.max.ms</li>
+<li>未落后太多</li>
+</ul>
+<p>就属于 ISR。</p>
+<p>ISR 不包括所有副本，这样可以保证：</p>
+<ul>
+<li>leader 切换快</li>
+<li>不拖慢整个集群</li>
+</ul>
+<hr>
+<h3 id="5-ack-机制与数据可靠性"><a href="#5-ack-机制与数据可靠性" class="headerlink" title="5. ack 机制与数据可靠性"></a>5. ack 机制与数据可靠性</h3><p>生产者发送消息时可设置：</p>
+<ul>
+<li><strong>acks&#x3D;0</strong>：最快，不可靠</li>
+<li><strong>acks&#x3D;1</strong>：leader 写入成功即可</li>
+<li><strong>acks&#x3D;all &#x2F; -1</strong>：leader + ISR 全部写入成功（最安全）</li>
+</ul>
+<p>配合 min.insync.replicas 可以确保数据不丢失：</p>
+<p>例：</p>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs ini"><span class="hljs-attr">replication.factor</span> = <span class="hljs-number">3</span><br><span class="hljs-attr">min.insync.replicas</span> = <span class="hljs-number">2</span><br><span class="hljs-attr">acks</span> = all<br></code></pre></td></tr></table></figure>
+
+<p>只要一个副本挂了，仍然能保证数据不丢。</p>
+<hr>
+<h3 id="6-Leader-选举与-Controller-原理"><a href="#6-Leader-选举与-Controller-原理" class="headerlink" title="6. Leader 选举与 Controller 原理"></a>6. Leader 选举与 Controller 原理</h3><p>Kafka 通过 Controller（集群元数据管理者）管理：</p>
+<ul>
+<li>partition leader 选举</li>
+<li>broker 上下线</li>
+<li>ISR 变化</li>
+<li>Topic 创建、分区扩容</li>
+</ul>
+<p>KRaft 时代后，元数据不再依赖 Zookeeper，而是：</p>
+<ul>
+<li>存储在内部 topic：__cluster_metadata</li>
+<li>使用 Raft 算法保证一致性</li>
+<li>由 Controller quorum 选主</li>
+</ul>
+<hr>
+<h2 id="三、Kafka-消费机制、Offset、重平衡、消费语义"><a href="#三、Kafka-消费机制、Offset、重平衡、消费语义" class="headerlink" title="三、Kafka 消费机制、Offset、重平衡、消费语义"></a>三、Kafka 消费机制、Offset、重平衡、消费语义</h2><p>Kafka 的消费机制是面试高频。</p>
+<hr>
+<h3 id="1-Consumer-Group"><a href="#1-Consumer-Group" class="headerlink" title="1. Consumer Group"></a>1. Consumer Group</h3><p>一个 group 里的消费者：</p>
+<ul>
+<li>共同消费一个 topic</li>
+<li>每个 partition 只会被一个 consumer 消费</li>
+<li>多个 consumer 才能并行处理</li>
+</ul>
+<p>典型扩展方式：</p>
+<figure class="highlight excel"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs excel">partition = <span class="hljs-number">10</span><br>consumer = <span class="hljs-number">5</span><br>=&gt; 每个消费者处理 <span class="hljs-number">2</span> 个 partition<br></code></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="2-Offset-存储机制"><a href="#2-Offset-存储机制" class="headerlink" title="2. Offset 存储机制"></a>2. Offset 存储机制</h3><p>新版本 Kafka 将 offset 存储在内部 topic：</p>
+<figure class="highlight sqf"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sqf"><span class="hljs-variable">__consumer_offsets</span><br></code></pre></td></tr></table></figure>
+
+<p>而不是 Zookeeper。</p>
+<p>offset 的提交方式：</p>
+<ul>
+<li><strong>自动提交</strong>：容易丢消息</li>
+<li><strong>手动提交</strong>：更安全<ul>
+<li>commitSync（阻塞）</li>
+<li>commitAsync（高性能）</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h3 id="3-Rebalance（再平衡）"><a href="#3-Rebalance（再平衡）" class="headerlink" title="3. Rebalance（再平衡）"></a>3. Rebalance（再平衡）</h3><p>触发条件：</p>
+<ul>
+<li>新 consumer 加入</li>
+<li>consumer 崩溃</li>
+<li>partition 数变化</li>
+<li>topic 增减</li>
+</ul>
+<p>问题：</p>
+<ul>
+<li>再平衡期间 partition 无法消费</li>
+<li>性能损耗</li>
+</ul>
+<p>解决方案：</p>
+<ul>
+<li><strong>StickyAssignor</strong>：最小化 repartition</li>
+<li><strong>Heartbeat + sessionTimeout</strong> 调优</li>
+<li><strong>增加 partition</strong> 让负载更均衡</li>
+<li><strong>Kafka Streams</strong> 有更优雅的协调逻辑</li>
+</ul>
+<hr>
+<h3 id="4-消费语义"><a href="#4-消费语义" class="headerlink" title="4. 消费语义"></a>4. 消费语义</h3><p>Kafka 理论上支持：</p>
+<ul>
+<li><strong>至少一次（默认）</strong><ul>
+<li>有可能重复消费</li>
+</ul>
+</li>
+<li><strong>至多一次</strong><ul>
+<li>有可能丢消息</li>
+</ul>
+</li>
+<li><strong>恰好一次（EOS）</strong><ul>
+<li>通过 Producer Id + Transaction 保证</li>
+<li>适合金融、支付场景</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h3 id="5-Exactly-Once-的底层原理（面试超爱问）"><a href="#5-Exactly-Once-的底层原理（面试超爱问）" class="headerlink" title="5. Exactly Once 的底层原理（面试超爱问）"></a>5. Exactly Once 的底层原理（面试超爱问）</h3><p>Kafka 0.11 引入 Transaction + idempotent producer：</p>
+<ul>
+<li>PID（唯一生产者 ID）</li>
+<li>Sequence number</li>
+<li>Transaction marker 写入特殊日志</li>
+</ul>
+<p>保证：</p>
+<ul>
+<li>多次重试不会产生重复消息</li>
+<li>消费到处理 + 写回 Kafka 也能做到 exactly once</li>
+</ul>
+<p>这是分布式系统里极难的能力。</p>
+<hr>
+<h2 id="四、Kafka-高级特性、调优、故障处理、面试核心"><a href="#四、Kafka-高级特性、调优、故障处理、面试核心" class="headerlink" title="四、Kafka 高级特性、调优、故障处理、面试核心"></a>四、Kafka 高级特性、调优、故障处理、面试核心</h2><hr>
+<h2 id="1-性能优化（Producer-Broker-Consumer）"><a href="#1-性能优化（Producer-Broker-Consumer）" class="headerlink" title="1. 性能优化（Producer &#x2F; Broker &#x2F; Consumer）"></a>1. 性能优化（Producer &#x2F; Broker &#x2F; Consumer）</h2><h3 id="Producer-优化"><a href="#Producer-优化" class="headerlink" title="Producer 优化"></a>Producer 优化</h3><ul>
+<li>linger.ms：延迟发送增大批次</li>
+<li>batch.size：增加批处理大小</li>
+<li>compression.type：snappy&#x2F;lz4&#x2F;zstd</li>
+<li>acks&#x3D;1：更快（低可靠）</li>
+<li>acks&#x3D;all：高可靠</li>
+</ul>
+<h3 id="Broker-调优"><a href="#Broker-调优" class="headerlink" title="Broker 调优"></a>Broker 调优</h3><ul>
+<li>合理分区数（不要太多）</li>
+<li>增大页缓存</li>
+<li>replica.lag.max.ms 调优避免 follower 脱 ISR</li>
+<li>适当开启 auto.create.topics</li>
+<li>调整 log.retention.ms 空间回收策略</li>
+</ul>
+<h3 id="Consumer-优化"><a href="#Consumer-优化" class="headerlink" title="Consumer 优化"></a>Consumer 优化</h3><ul>
+<li>max.poll.interval.ms → 防止触发 rebalance</li>
+<li>max.poll.records → 增加批消费</li>
+<li>手动提交 offset（更安全）</li>
+</ul>
+<hr>
+<h2 id="2-生产中的问题及解决方案"><a href="#2-生产中的问题及解决方案" class="headerlink" title="2. 生产中的问题及解决方案"></a>2. 生产中的问题及解决方案</h2><hr>
+<h3 id="⚠️-1-消息乱序"><a href="#⚠️-1-消息乱序" class="headerlink" title="⚠️ 1. 消息乱序"></a>⚠️ 1. 消息乱序</h3><p>发生原因：</p>
+<ul>
+<li>多 partition</li>
+<li>重试</li>
+<li>网络 timeout</li>
+<li>重平衡</li>
+</ul>
+<p>解决：</p>
+<ul>
+<li>使用 key 分区，同 key 发送到同 partition</li>
+<li>使用单 partition（牺牲吞吐）</li>
+<li>使用 Kafka Streams &#x2F; Flink 做窗口排序</li>
+</ul>
+<hr>
+<h3 id="⚠️-2-消息丢失"><a href="#⚠️-2-消息丢失" class="headerlink" title="⚠️ 2. 消息丢失"></a>⚠️ 2. 消息丢失</h3><p>可能原因：</p>
+<ul>
+<li>acks&#x3D;1</li>
+<li>ISR 不足</li>
+<li>未 commit offset</li>
+<li>主从切换</li>
+</ul>
+<p>解决：</p>
+<ul>
+<li>acks&#x3D;all</li>
+<li>min.insync.replicas&#x3D;2</li>
+<li>手动提交 offset</li>
+<li>开启事务（exactly once）</li>
+</ul>
+<hr>
+<h3 id="⚠️-3-消息重复"><a href="#⚠️-3-消息重复" class="headerlink" title="⚠️ 3. 消息重复"></a>⚠️ 3. 消息重复</h3><p>原因：</p>
+<ul>
+<li>Producer 重试</li>
+<li>Consumer 重复提交 offset</li>
+</ul>
+<p>解决：</p>
+<ul>
+<li>幂等生产者（enable.idempotence&#x3D;true）</li>
+<li>业务端做幂等（Redis、数据库唯一索引）</li>
+</ul>
+<hr>
+<h2 id="3-Kafka-在业务中的最佳实践"><a href="#3-Kafka-在业务中的最佳实践" class="headerlink" title="3. Kafka 在业务中的最佳实践"></a>3. Kafka 在业务中的最佳实践</h2><p>典型场景：</p>
+<h3 id="日志采集"><a href="#日志采集" class="headerlink" title="日志采集"></a>日志采集</h3><p>Kafka + Filebeat → ES &#x2F; Clickhouse</p>
+<h3 id="主站事件驱动"><a href="#主站事件驱动" class="headerlink" title="主站事件驱动"></a>主站事件驱动</h3><p>下单 → Kafka → 支付系统 &#x2F; 库存系统 &#x2F; 推荐系统</p>
+<h3 id="秒杀削峰填谷"><a href="#秒杀削峰填谷" class="headerlink" title="秒杀削峰填谷"></a>秒杀削峰填谷</h3><p>请求写入 Kafka → Worker 均匀消费</p>
+<h3 id="MySQL-Binlog-→-Kafka-→-Flink-→-Redis"><a href="#MySQL-Binlog-→-Kafka-→-Flink-→-Redis" class="headerlink" title="MySQL Binlog → Kafka → Flink → Redis"></a>MySQL Binlog → Kafka → Flink → Redis</h3><p>支持实时计算、投递、分布式缓存一致性</p>
+<hr>
+<h2 id="4-Kafka-源码理解（加分项）"><a href="#4-Kafka-源码理解（加分项）" class="headerlink" title="4. Kafka 源码理解（加分项）"></a>4. Kafka 源码理解（加分项）</h2><p>关键源码目录：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs bash">kafka/server<br>kafka/log<br>kafka/controller<br>kafka/clients<br></code></pre></td></tr></table></figure>
+
+<p>重点源码：</p>
+<ul>
+<li><strong>ReplicaManager</strong>：复制机制核心</li>
+<li><strong>LogSegment&#x2F;Log</strong>：消息文件管理</li>
+<li><strong>GroupCoordinator</strong>：消费组协调</li>
+<li><strong>Controller</strong>：集群元数据管理</li>
+<li><strong>FetcherThread</strong>：副本同步线程</li>
+</ul>
+<p>面试官会问的源码点：</p>
+<ul>
+<li>ISR shrink&#x2F;expand 机制</li>
+<li>Controller failover 逻辑</li>
+<li>offset commit 流程</li>
+<li>文件写入（mmap + zero copy）</li>
+</ul>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Messaging-Streaming/" class="category-chain-item">Messaging &amp; Streaming</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/Kafka/" class="print-no-link">#Kafka</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>Kafka — 基础知识</div>
+      <div>http://by.ecel.top/Messaging/Kafka基础/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>刘笑笑</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2025年11月23日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/Database/MySQL%E5%9F%BA%E7%A1%80/" title="MySQL — 基础知识">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">MySQL — 基础知识</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/Caching/Redis%E5%9F%BA%E7%A1%80/" title="Redis — 基础知识">
+                        <span class="hidden-mobile">Redis — 基础知识</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

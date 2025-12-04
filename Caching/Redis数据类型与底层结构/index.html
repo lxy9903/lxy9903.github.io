@@ -1,0 +1,893 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="刘笑笑">
+  <meta name="keywords" content="java、go、操作系统、网络">
+  
+    <meta name="description" content="数据类型与底层结构 — 详解  1) String（底层：SDS — Simple Dynamic String）内部实现（SDS）  SDS 不是 C 的 char*，它在内存前方保存长度&#x2F;分配容量信息（避免 strlen），并允许二进制数据（包含 \0）。 变种：embstr（短字符串优化）和 raw（标准分配）。 embstr：当字符串很短时，键和值会一起做一次小内存分配（节省指针">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Redis数据类型与底层结构">
+<meta property="og:url" content="http://by.ecel.top/Caching/Redis%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%E4%B8%8E%E5%BA%95%E5%B1%82%E7%BB%93%E6%9E%84/index.html">
+<meta property="og:site_name" content="title">
+<meta property="og:description" content="数据类型与底层结构 — 详解  1) String（底层：SDS — Simple Dynamic String）内部实现（SDS）  SDS 不是 C 的 char*，它在内存前方保存长度&#x2F;分配容量信息（避免 strlen），并允许二进制数据（包含 \0）。 变种：embstr（短字符串优化）和 raw（标准分配）。 embstr：当字符串很短时，键和值会一起做一次小内存分配（节省指针">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://by.ecel.top/Caching/Redis%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%E4%B8%8E%E5%BA%95%E5%B1%82%E7%BB%93%E6%9E%84/Redis%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%E4%B8%8E%E5%BA%95%E5%B1%82%E7%BB%93%E6%9E%84/image-20251124113015001.png">
+<meta property="article:published_time" content="2025-11-24T03:22:18.000Z">
+<meta property="article:modified_time" content="2025-11-24T03:33:26.959Z">
+<meta property="article:author" content="刘笑笑">
+<meta property="article:tag" content="Redis">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://by.ecel.top/Caching/Redis%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%E4%B8%8E%E5%BA%95%E5%B1%82%E7%BB%93%E6%9E%84/Redis%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%E4%B8%8E%E5%BA%95%E5%B1%82%E7%BB%93%E6%9E%84/image-20251124113015001.png">
+  
+  
+  
+  <title>Redis数据类型与底层结构 - title</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"by.ecel.top","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Tech Notes</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="Redis数据类型与底层结构"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2025-11-24 11:22" pubdate>
+          2025年11月24日 上午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          2.2k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          19 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">Redis数据类型与底层结构</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="数据类型与底层结构-—-详解"><a href="#数据类型与底层结构-—-详解" class="headerlink" title="数据类型与底层结构 — 详解"></a>数据类型与底层结构 — 详解</h1><img src="Redis数据类型与底层结构/image-20251124113015001.png" srcset="/img/loading.gif" lazyload alt="image-20251124113015001" style="zoom:50%;" />
+
+<h2 id="1-String（底层：SDS-—-Simple-Dynamic-String）"><a href="#1-String（底层：SDS-—-Simple-Dynamic-String）" class="headerlink" title="1) String（底层：SDS — Simple Dynamic String）"></a>1) String（底层：SDS — Simple Dynamic String）</h2><p><strong>内部实现（SDS）</strong></p>
+<ul>
+<li>SDS 不是 C 的 <code>char*</code>，它在内存前方保存长度&#x2F;分配容量信息（避免 <code>strlen</code>），并允许二进制数据（包含 <code>\0</code>）。</li>
+<li>变种：<code>embstr</code>（短字符串优化）和 <code>raw</code>（标准分配）。<ul>
+<li><code>embstr</code>：当字符串很短时，键和值会一起做一次小内存分配（节省指针与碎片）。</li>
+<li><code>raw</code>：普通字符串开销略大但灵活。</li>
+</ul>
+</li>
+</ul>
+<p><strong>复杂度</strong></p>
+<ul>
+<li>GET&#x2F;SET：O(1)</li>
+<li>CONCAT &#x2F; APPEND：amortized O(1)（SDS 会扩容）</li>
+<li>strlen：O(1)（因为 SDS 存储长度）</li>
+</ul>
+<p><strong>常见命令</strong></p>
+<ul>
+<li><code>GET</code>, <code>SET</code>, <code>INCR</code>, <code>APPEND</code>, <code>STRLEN</code>, <code>MGET</code>, <code>MSET</code></li>
+</ul>
+<p><strong>使用建议 &#x2F; 坑</strong></p>
+<ul>
+<li>大字符串会占用大量内存，避免把超大二进制对象当 String 存储（比如视频、整个 JSON）。</li>
+<li>对频繁变化的字符串，SDS 扩容策略会导致内存抖动，关注内存增长。</li>
+</ul>
+<hr>
+<h2 id="2-List（底层：quicklist）"><a href="#2-List（底层：quicklist）" class="headerlink" title="2) List（底层：quicklist）"></a>2) List（底层：quicklist）</h2><p><strong>quicklist 是什么</strong></p>
+<ul>
+<li>从 Redis 3.x 起，List 采用 <strong>quicklist</strong>：它把多个压缩的 ziplist 节点链接成双向链表（每个节点是 ziplist&#x2F;listpack）。</li>
+<li>设计初衷：同时兼顾内存效率（ziplist）和快速的头尾操作（linked list 特性）。</li>
+</ul>
+<p><strong>内部结构</strong></p>
+<ul>
+<li>quicklist 节点：每个节点包含一个 ziplist（紧凑存储若干元素）。</li>
+<li>节点之间双向链表，便于 O(1) 的头尾插入&#x2F;删除。</li>
+<li>节点内使用压缩（listpack），减少内存。</li>
+</ul>
+<p><strong>复杂度</strong></p>
+<ul>
+<li>LPUSH &#x2F; RPUSH &#x2F; LPOP &#x2F; RPOP：O(1)</li>
+<li>LINDEX：O(N)（需遍历，若索引靠近头或尾则快）</li>
+<li>LINSERT：O(N)（需要查找）</li>
+<li>LRANGE：O(N)（遍历范围）</li>
+</ul>
+<p><strong>常用命令</strong></p>
+<ul>
+<li><code>LPUSH</code>, <code>RPUSH</code>, <code>LPOP</code>, <code>RPOP</code>, <code>LINDEX</code>, <code>LRANGE</code>, <code>BLPOP</code>, <code>BRPOP</code></li>
+</ul>
+<p><strong>使用建议 &#x2F; 坑</strong></p>
+<ul>
+<li>用作消息队列&#x2F;任务队列非常普遍，但注意单个 list 的过长会导致遍历命令（如 LRANGE 大范围）阻塞。</li>
+<li>使用阻塞命令（BLPOP）时注意多个消费者竞争同 list 导致热点。</li>
+<li>big-list：拆分成多个 list 或使用 stream。</li>
+</ul>
+<hr>
+<h2 id="3-Hash（底层：ziplist-hashtable）"><a href="#3-Hash（底层：ziplist-hashtable）" class="headerlink" title="3) Hash（底层：ziplist &#x2F; hashtable）"></a>3) Hash（底层：ziplist &#x2F; hashtable）</h2><p><strong>编码切换</strong></p>
+<ul>
+<li>小 hash（字段数量少且 field&#x2F;value 都短）使用 <code>ziplist</code>（compact array-like）或 <code>listpack</code>（新），节省内存。</li>
+<li>达到阈值后（配置参数），切换到 <code>hashtable</code>（O(1) 访问）。</li>
+</ul>
+<p><strong>内部实现</strong></p>
+<ul>
+<li><code>ziplist</code>：连续内存存储的序列，每个 entry 存储前一项长度与 data（节省指针）。</li>
+<li><code>hashtable</code>：为大量 field 提供 O(1) 查找。</li>
+</ul>
+<p><strong>复杂度</strong></p>
+<ul>
+<li>HGET&#x2F;HSET&#x2F;HDEL：O(1)（hashtable），ziplist 下 HGET 是 O(N)（扫描）</li>
+</ul>
+<p><strong>常用命令</strong></p>
+<ul>
+<li><code>HSET</code>, <code>HGET</code>, <code>HMSET</code>, <code>HGETALL</code>, <code>HDEL</code>, <code>HEXISTS</code>, <code>HINCRBY</code></li>
+</ul>
+<p><strong>使用建议 &#x2F; 坑</strong></p>
+<ul>
+<li>Hash 常用于对象存储（user:100 -&gt; hash of fields），比多个键更节省空间（共享 key 的 overhead）。</li>
+<li>使用 <code>HGETALL</code> 在大 hash 上会把大量数据一次性拉出，注意内存与网络带宽。</li>
+<li>如果你经常只访问单个 field，hash 很合适；若经常遍历全部 field，注意切换到合适编码或拆表。</li>
+</ul>
+<hr>
+<h2 id="4-Set（底层：intset-hashtable）"><a href="#4-Set（底层：intset-hashtable）" class="headerlink" title="4) Set（底层：intset &#x2F; hashtable）"></a>4) Set（底层：intset &#x2F; hashtable）</h2><p><strong>编码</strong></p>
+<ul>
+<li>小的只包含整数的集合使用 <code>intset</code>（紧凑数组）；</li>
+<li>否则使用 <code>hashtable</code>（常规集合实现）。</li>
+</ul>
+<p><strong>内部实现</strong></p>
+<ul>
+<li><code>intset</code>：连续的有序整数数组（紧凑）；查询用二分查找或线性。</li>
+<li><code>hashtable</code>：普通哈希表，支持 O(1) 插入&#x2F;删除&#x2F;查找。</li>
+</ul>
+<p><strong>复杂度</strong></p>
+<ul>
+<li>SADD&#x2F;SREM&#x2F;SISMEMBER：O(1)（hashtable）</li>
+<li>SMEMBERS：O(N)</li>
+</ul>
+<p><strong>常用命令</strong></p>
+<ul>
+<li><code>SADD</code>, <code>SREM</code>, <code>SMEMBERS</code>, <code>SISMEMBER</code>, <code>SPOP</code>, <code>SCARD</code>, <code>SINTER</code>, <code>SUNION</code>, <code>SDIFF</code></li>
+</ul>
+<p><strong>使用建议 &#x2F; 坑</strong></p>
+<ul>
+<li>集合交集&#x2F;并集的时间与集合大小相关：<code>SINTER</code> 会把小集合优先作为筛选条件。</li>
+<li>避免在非常大的 set 上执行 <code>SMEMBERS</code>（会返回整表）。</li>
+</ul>
+<hr>
+<h2 id="5-Sorted-Set（ZSet-—-底层：skiplist-dict）"><a href="#5-Sorted-Set（ZSet-—-底层：skiplist-dict）" class="headerlink" title="5) Sorted Set（ZSet — 底层：skiplist + dict）"></a>5) Sorted Set（ZSet — 底层：skiplist + dict）</h2><p><strong>为什么用跳表 + 哈希表？</strong></p>
+<ul>
+<li>跳表（skiplist）支持有序集合的 <strong>按 score 范围检索、按 index 排序、范围扫描</strong>，而哈希表提供从 member 到 score 的快速映射（回查）。</li>
+<li>两结构配合：跳表用于按 score 排序，dict 用于按 member 快速查找。</li>
+</ul>
+<p><strong>复杂度</strong></p>
+<ul>
+<li>ZADD &#x2F; ZREM：O(log N)（跳表插入&#x2F;删除）</li>
+<li>ZRANGE by index：O(log N + M)（定位 + 扫描 M 个）</li>
+<li>ZRANGEBYSCORE：O(log N + M)</li>
+</ul>
+<p><strong>内部实现</strong></p>
+<ul>
+<li>跳表节点包含 member、score、forward 指针（多层），随机 level（概率性平衡）。</li>
+<li>dict 映射 member → score，便于检查重复 &amp; 更新。</li>
+</ul>
+<p><strong>常用命令</strong></p>
+<ul>
+<li><code>ZADD</code>, <code>ZREM</code>, <code>ZRANGE</code>, <code>ZRANGEBYSCORE</code>, <code>ZPOPMIN</code>, <code>ZINCRBY</code>, <code>ZCARD</code>, <code>ZRANK</code>, <code>ZREVRANGE</code></li>
+</ul>
+<p><strong>使用建议 &#x2F; 坑</strong></p>
+<ul>
+<li>排行榜、延迟队列（score&#x3D;timestamp）是典型用例。</li>
+<li>特别注意：大量更新排名（频繁 ZADD 改 score）会导致跳表频繁重排，影响 CPU。</li>
+<li>big ZSet 的 <code>ZRANGE 0 -1</code> 会返回所有元素 — 小心内存&#x2F;网络。</li>
+</ul>
+<hr>
+<h2 id="6-Bitmap（位图）"><a href="#6-Bitmap（位图）" class="headerlink" title="6) Bitmap（位图）"></a>6) Bitmap（位图）</h2><p><strong>实现原理</strong></p>
+<ul>
+<li>把位域映射到字符串（String）的某些 offset（bit），底层仍然是 String（SDS），但通过位操作实现高效存储。</li>
+</ul>
+<p><strong>常用操作 &amp; 复杂度</strong></p>
+<ul>
+<li><code>SETBIT key offset value</code>：O(1)</li>
+<li><code>GETBIT key offset</code>：O(1)</li>
+<li><code>BITCOUNT key [start end]</code>：O(N)（按字节扫描）</li>
+<li><code>BITOP</code>（AND&#x2F;OR&#x2F;XOR&#x2F;NOT）对多个 String 做按位操作</li>
+</ul>
+<p><strong>典型场景</strong></p>
+<ul>
+<li>用户签到&#x2F;活跃标识（每天一个 offset）</li>
+<li>大规模去重 &#x2F; 标志位统计</li>
+<li>按位压缩存储大量 boolean 值</li>
+</ul>
+<p><strong>坑</strong></p>
+<ul>
+<li>offset 非常大时会产生稀疏大字符串（内存占用大），要评估最大 offset。</li>
+</ul>
+<hr>
+<h2 id="7-HyperLogLog（概率性算法用于基数估算）"><a href="#7-HyperLogLog（概率性算法用于基数估算）" class="headerlink" title="7) HyperLogLog（概率性算法用于基数估算）"></a>7) HyperLogLog（概率性算法用于基数估算）</h2><p><strong>原理</strong></p>
+<ul>
+<li>使用概率算法估算基数（去重后的 count），核心是<strong>基于前导零计数的哈希桶</strong>。Redis 的实现基于 HyperLogLog 论文（Flajolet 等）。</li>
+</ul>
+<p><strong>特性</strong></p>
+<ul>
+<li>单个 HyperLogLog 占用极小内存（大约 12KB），适合海量 UV（独立用户）统计。</li>
+<li>误差约 0.81%（典型实现）。</li>
+</ul>
+<p><strong>常用命令</strong></p>
+<ul>
+<li><code>PFADD key element [element ...]</code>：添加</li>
+<li><code>PFCOUNT key [key ...]</code>：估算基数（支持合并多个 HLL）</li>
+<li><code>PFMERGE destkey sourcekey [sourcekey ...]</code>：合并</li>
+</ul>
+<p><strong>使用建议 &#x2F; 坑</strong></p>
+<ul>
+<li>不能用于确切计数；只用于需要空间换精度的大规模统计。</li>
+<li>PFMERGE 是近似合并——误差依旧存在，但仍可用于聚合人群统计。</li>
+</ul>
+<hr>
+<h2 id="8-GEO（geohash-sorted-set）"><a href="#8-GEO（geohash-sorted-set）" class="headerlink" title="8) GEO（geohash + sorted set）"></a>8) GEO（geohash + sorted set）</h2><p><strong>实现思想</strong></p>
+<ul>
+<li>Redis 用 geohash 将经纬度映射成字符串表示（geohash），并把 geohash 或距离映射到 <code>Sorted Set</code> 的 score（或以 geohash 作为 member 存储元信息），从而利用 ZSet 的范围检索能力实现地理范围查询与半径查找。</li>
+</ul>
+<p><strong>常用命令</strong></p>
+<ul>
+<li><code>GEOADD key longitude latitude member</code></li>
+<li><code>GEORADIUS key longitude latitude radius m|km</code>（已废弃，推荐 <code>GEOSEARCH</code>）</li>
+<li><code>GEOSEARCH</code>, <code>GEOHASH</code>, <code>GEOPOS</code>, <code>GEODIST</code></li>
+</ul>
+<p><strong>复杂度</strong></p>
+<ul>
+<li>基于排序与区间查找，性能与集合大小和所选择的 geohash 精度有关。</li>
+</ul>
+<p><strong>使用建议 &#x2F; 坑</strong></p>
+<ul>
+<li>对大范围精确计算要借助外部计算（因为 geohash 是近似网格）。</li>
+<li>使用 <code>GEOSEARCH</code> 新 API 更灵活高效。</li>
+</ul>
+<hr>
+<h2 id="9-Stream（Redis-Streams-—-底层：radix-tree-listpack-stream-groups）"><a href="#9-Stream（Redis-Streams-—-底层：radix-tree-listpack-stream-groups）" class="headerlink" title="9) Stream（Redis Streams — 底层：radix-tree + listpack + stream groups）"></a>9) Stream（Redis Streams — 底层：radix-tree + listpack + stream groups）</h2><p>Streams 是 Redis 5.0 引入的日志流数据结构，功能类似 Kafka（但轻量嵌入式），支持持久化、消费组、ACK、PENDING、trim 等。</p>
+<h3 id="9-1-核心数据结构"><a href="#9-1-核心数据结构" class="headerlink" title="9.1 核心数据结构"></a>9.1 核心数据结构</h3><ul>
+<li><strong>Radix-tree（压缩前缀树）</strong>：用于索引 stream 的各个节点（ID -&gt; entry），便于快速查找与范围扫描。</li>
+<li><strong>Listpack</strong>（或旧 ziplist）：紧凑数组结构，用来存储 entry 的 field&#x2F;value（以节省空间）。多个 entry 被打包成块（chunk），每个 chunk 存磁盘 segment。</li>
+<li><strong>Stream entries</strong>：每条 entry 有一个自增的 ID（格式：milliseconds-sequence），和若干 field&#x2F;value。</li>
+</ul>
+<h3 id="9-2-消费模型"><a href="#9-2-消费模型" class="headerlink" title="9.2 消费模型"></a>9.2 消费模型</h3><ul>
+<li><strong>Consumer Group</strong>：类似 Kafka consumer group，支持多消费者分担消费任务。</li>
+<li><strong>Pending Entries List (PEL)<strong>：每个消费组为每个分区（stream）维护的</strong>未确认消息列表</strong>，记录被分配但未 ACK 的消息（用于重试&#x2F;重分配）。</li>
+<li><strong>XREADGROUP &#x2F; XREAD &#x2F; XACK &#x2F; XCLAIM &#x2F; XPENDING</strong>：常用消费组命令。</li>
+<li><strong>自动 ID 分配</strong>：<code>XADD key * field value</code> 会自动生成 ID（基于时间戳+序列）。</li>
+</ul>
+<h3 id="9-3-复杂度与性能"><a href="#9-3-复杂度与性能" class="headerlink" title="9.3 复杂度与性能"></a>9.3 复杂度与性能</h3><ul>
+<li>写入（XADD）：顺序追加，效率高，COW &amp; persistence依赖 Redis 的持久化设置。</li>
+<li>读取（XREADGROUP）：可做阻塞或非阻塞，消费组会分配给活跃 consumer。</li>
+<li>stream 在高吞吐场景下比 List 更具优势（支持消费组、ACK、pending），但内部 PEL 可能占内存（需管理 pending）。</li>
+</ul>
+<h3 id="9-4-常见命令-场景"><a href="#9-4-常见命令-场景" class="headerlink" title="9.4 常见命令 &amp; 场景"></a>9.4 常见命令 &amp; 场景</h3><ul>
+<li><code>XADD</code>, <code>XGROUP CREATE</code>, <code>XREADGROUP</code>, <code>XACK</code>, <code>XCLAIM</code>, <code>XPENDING</code>, <code>XRANGE</code>, <code>XREVRANGE</code>, <code>XTRIM</code></li>
+<li>场景：任务队列、事件溯源、轻量级消息流、CDC 缓冲</li>
+</ul>
+<h3 id="9-5-重要细节与坑"><a href="#9-5-重要细节与坑" class="headerlink" title="9.5 重要细节与坑"></a>9.5 重要细节与坑</h3><ul>
+<li><strong>消费组导致的内存</strong>：如果消费者不 ack，PEL 会增长，导致内存占用增加；需要监控并通过 <code>XACK</code> 或 <code>XCLAIM</code> 恢复。</li>
+<li><strong>ID 单调性</strong>：ID 基于时间戳，跨实例时间不一致会影响顺序；XADD 支持显式 ID。</li>
+<li><strong>trim 策略</strong>：<code>XTRIM</code> 用于限长，避免流无限增长。</li>
+<li><strong>延迟重试</strong>：使用 <code>XCLAIM</code> 或 <code>XPENDING</code> 来重分配僵尸 consumer 的 pending 消息。</li>
+</ul>
+<hr>
+<h1 id="速记清单"><a href="#速记清单" class="headerlink" title="速记清单"></a>速记清单</h1><ul>
+<li><strong>SDS 优点</strong>：O(1) length，二进制安全，预分配</li>
+<li><strong>quicklist &#x3D; ziplist chunks + linked list</strong>：头尾 O(1)，内遍历 O(N)</li>
+<li><strong>hash 小用 ziplist，大用 hashtable</strong>（阈值可配置）</li>
+<li><strong>Set 小整数用 intset，大用 hashtable</strong></li>
+<li><strong>ZSet &#x3D; skiplist + dict</strong>：skiplist for range, dict for O(1) member lookup</li>
+<li><strong>Bitmap 基于 String 的 bit 操作</strong>：适合大规模 boolean 标志</li>
+<li><strong>HLL</strong>：12KB 估算基数，误差 ≈ 0.81%</li>
+<li><strong>GEO</strong>：geohash + zset 实现经纬度查询</li>
+<li><strong>Stream</strong>：radix-tree (index) + listpack (entry store) + consumer-group（PEL）</li>
+</ul>
+<hr>
+<h1 id="实战建议"><a href="#实战建议" class="headerlink" title="实战建议"></a>实战建议</h1><ol>
+<li><strong>避免 big key</strong>（过长 list&#x2F;zset&#x2F;hash）——拆分或分页</li>
+<li><strong>关注编码切换阈值</strong>（redis.conf 中相关参数）以控制何时从 ziplist 切换到 hashtable</li>
+<li><strong>监控 memory fragmentation、used_memory、rss</strong>（listpack&#x2F;ziplist 对内存友好，但会增加 CPU）</li>
+<li><strong>流（Stream）适合需要 ACK&#x2F;重试的场景</strong>，但注意 PEL 管理与 trim</li>
+<li><strong>使用合适的数据结构</strong>：频繁按 score 范围查询用 ZSet；频繁随机访问 field 用 Hash；高并发布尔标识用 Bitmap；大规模去重用 HyperLogLog</li>
+<li><strong>时间序列 &#x2F; 队列</strong>：考虑 Stream（消费组）优于 List（单消费者或少量消费者）</li>
+</ol>
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1>
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Caching-NoSQL/" class="category-chain-item">Caching &amp; NoSQL</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/Redis/" class="print-no-link">#Redis</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>Redis数据类型与底层结构</div>
+      <div>http://by.ecel.top/Caching/Redis数据类型与底层结构/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>刘笑笑</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2025年11月24日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/Database/Oracle%E4%B8%BB%E4%BB%8E%E5%A4%87%E4%BB%BD/" title="Oracle主从备份">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Oracle主从备份</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/Caching/Redis-%E9%AB%98%E6%80%A7%E8%83%BD/" title="Redis的高性能">
+                        <span class="hidden-mobile">Redis的高性能</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

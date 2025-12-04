@@ -90,7 +90,7 @@
   <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
   <div class="container">
     <a class="navbar-brand" href="/">
-      <strong>刘笑笑的个人博客</strong>
+      <strong>Tech Notes</strong>
     </a>
 
     <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
@@ -192,7 +192,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="An elegant Material-Design theme for Hexo"></span>
+            <span id="subtitle" data-typed-text="Daily Learnings &amp; Tech Insights"></span>
           
         </div>
 
@@ -230,15 +230,15 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h2 class="index-header">
         
-        <a href="/Algorithm/Storage%20of%20negative%20numbers/" target="_self">
-          计算机中负数的存储
+        <a href="/Database/Elasticsearch%E8%AF%A6%E8%A7%A3/" target="_self">
+          Elasticsearch详解
         </a>
       </h2>
 
       
-      <a class="index-excerpt index-excerpt__noimg" href="/Algorithm/Storage%20of%20negative%20numbers/" target="_self">
+      <a class="index-excerpt index-excerpt__noimg" href="/Database/Elasticsearch%E8%AF%A6%E8%A7%A3/" target="_self">
         <div>
-          详情在计算机中，存储一个数的时候，都是以补码的形式存储的。 反码再加一（符号位不变） 如short x &#x3D; -2; 原码：1000 0000 0000 0010 反码：1111 1111 1111 1101 补码：1111 1111 1111 1110 -2+4 &#x3D; 2 1111 1111 1111 1110 0000 0000 0000 0100 &#x3D; &#x3D;》
+          [TOC] 1. ES 是什么？适用场景是什么？Elasticsearch &#x3D; 分布式搜索引擎 + 分布式文档数据库。 核心特点：  全文检索（倒排索引） 支持结构化 + 非结构化数据 可横向扩容（天然分布式） 高性能写入（日志、监控） 实时性近似（默认 1s 刷盘）  最适合场景：  日志（ELK） 监控（Prometheus → ES） 搜索服务（商品搜索、文本检索） 用户画像、埋点
         </div>
       </a>
 
@@ -246,8 +246,8 @@
         
           <div class="post-meta mr-3">
             <i class="iconfont icon-date"></i>
-            <time datetime="2022-12-01 10:43" pubdate>
-              2022-12-01
+            <time datetime="2025-12-03 11:38" pubdate>
+              2025-12-03
             </time>
           </div>
         
@@ -262,7 +262,7 @@
     
       <span class="category-chain">
         
-  <a href="/categories/Algorithm/" class="category-chain-item">Algorithm</a>
+  <a href="/categories/Database/" class="category-chain-item">Database</a>
   
   
 
@@ -277,7 +277,7 @@
           <div class="post-meta">
             <i class="iconfont icon-tags"></i>
             
-              <a href="/tags/%E7%AE%97%E6%B3%95/">#算法</a>
+              <a href="/tags/Elasticsearch/">#Elasticsearch</a>
             
           </div>
         
@@ -291,15 +291,15 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h2 class="index-header">
         
-        <a href="/Algorithm/Double%20to%20Binary%20Number/" target="_self">
-          用二进制表示double
+        <a href="/Database/MySQL%E5%88%86%E5%BA%93%E5%88%86%E8%A1%A8%E6%96%B9%E6%A1%88/" target="_self">
+          MySQL 分库分表方案
         </a>
       </h2>
 
       
-      <a class="index-excerpt index-excerpt__noimg" href="/Algorithm/Double%20to%20Binary%20Number/" target="_self">
+      <a class="index-excerpt index-excerpt__noimg" href="/Database/MySQL%E5%88%86%E5%BA%93%E5%88%86%E8%A1%A8%E6%96%B9%E6%A1%88/" target="_self">
         <div>
-          概述无论是单精度还是双精度在存储中都分为三个部分：  符号位(Sign) : 0代表正，1代表为负 指数位（Exponent）:用于存储科学计数法中的指数数据，并且采用移位存储 尾数部分（Mantissa）：尾数部分    取法eg：2.625 1. 小数部分二进制表示：取小数部分乘二再取结果整数部分，直至重复or为0 ​	0.625 —— start ​	0.625 —— 1.250 —— 1
+          [TOC] 一、为什么要分库分表？当出现以下问题 → 必须分库分表：    痛点 现象    单表太大 DML 慢、索引失效、备份恢复慢   单库 QPS 太高 主库扛不住，连接耗尽   热点数据量巨大 单机 CPU、IO、网络瓶颈   单机存储不足 数据持续增长   一般的数据量吞吐阈值（经验值）  单表行数 &gt; 2000 万 → 建议分表 单库 QPS &gt; 5000 → 建议分库
         </div>
       </a>
 
@@ -307,8 +307,8 @@
         
           <div class="post-meta mr-3">
             <i class="iconfont icon-date"></i>
-            <time datetime="2022-11-30 09:31" pubdate>
-              2022-11-30
+            <time datetime="2025-12-03 11:04" pubdate>
+              2025-12-03
             </time>
           </div>
         
@@ -323,7 +323,7 @@
     
       <span class="category-chain">
         
-  <a href="/categories/Algorithm/" class="category-chain-item">Algorithm</a>
+  <a href="/categories/Database/" class="category-chain-item">Database</a>
   
   
 
@@ -338,7 +338,7 @@
           <div class="post-meta">
             <i class="iconfont icon-tags"></i>
             
-              <a href="/tags/%E7%AE%97%E6%B3%95/">#算法</a>
+              <a href="/tags/MySQL/">#MySQL</a>
             
           </div>
         
@@ -352,15 +352,15 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h2 class="index-header">
         
-        <a href="/Algorithm/selling-pieces-of-wood/" target="_self">
-          力扣2312. 卖木头块
+        <a href="/Messaging/RabbitMQ%E7%9A%84%E5%8F%AF%E9%9D%A0%E6%80%A7%E8%AE%BE%E8%AE%A1/" target="_self">
+          RabbitMQ的可靠性设计
         </a>
       </h2>
 
       
-      <a class="index-excerpt index-excerpt__noimg" href="/Algorithm/selling-pieces-of-wood/" target="_self">
+      <a class="index-excerpt index-excerpt__noimg" href="/Messaging/RabbitMQ%E7%9A%84%E5%8F%AF%E9%9D%A0%E6%80%A7%E8%AE%BE%E8%AE%A1/" target="_self">
         <div>
-          https://leetcode.cn/problems/selling-pieces-of-wood/description/
+          一、生产端（Producer）可靠性RabbitMQ 要保证消息一定进入 Broker，主要依赖三个机制：  1）Publisher Confirms（发布确认机制）开启： 1publisher-confirms: true  原理：  Producer 每发送一条消息都会记录其序列号(sequence number) Broker 写入磁盘后，异步返回 ack 若写入失败，返回 nack，Pro
         </div>
       </a>
 
@@ -368,8 +368,8 @@
         
           <div class="post-meta mr-3">
             <i class="iconfont icon-date"></i>
-            <time datetime="2022-10-14 16:04" pubdate>
-              2022-10-14
+            <time datetime="2025-12-02 17:45" pubdate>
+              2025-12-02
             </time>
           </div>
         
@@ -384,7 +384,7 @@
     
       <span class="category-chain">
         
-  <a href="/categories/Algorithm/" class="category-chain-item">Algorithm</a>
+  <a href="/categories/Messaging-Streaming/" class="category-chain-item">Messaging &amp; Streaming</a>
   
   
 
@@ -399,9 +399,7 @@
           <div class="post-meta">
             <i class="iconfont icon-tags"></i>
             
-              <a href="/tags/%E7%AE%97%E6%B3%95/">#算法</a>
-            
-              <a href="/tags/%E5%88%B7%E9%A2%98/">#刷题</a>
+              <a href="/tags/RabbitMQ/">#RabbitMQ</a>
             
           </div>
         
@@ -415,15 +413,15 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h2 class="index-header">
         
-        <a href="/Algorithm/KMP/" target="_self">
-          KMP
+        <a href="/Messaging/Kafka%E7%9A%84%E5%8F%AF%E9%9D%A0%E6%80%A7%E8%AE%BE%E8%AE%A1/" target="_self">
+          Kafka的可靠性设计
         </a>
       </h2>
 
       
-      <a class="index-excerpt index-excerpt__noimg" href="/Algorithm/KMP/" target="_self">
+      <a class="index-excerpt index-excerpt__noimg" href="/Messaging/Kafka%E7%9A%84%E5%8F%AF%E9%9D%A0%E6%80%A7%E8%AE%BE%E8%AE%A1/" target="_self">
         <div>
-          描述基本思路代码例题
+          一、Kafka 的可靠性设计（Exactly once 的基础）Kafka 的可靠性由 Broker、Producer、Consumer 三侧共同保证。  1. Broker（服务端）可靠性设计1）多副本机制（Replication）每个 Partition 有：  Leader（负责读写） Follower（同步 Leader 数据）  Follower 通过 pull 方式 拉取 log，确保
         </div>
       </a>
 
@@ -431,8 +429,8 @@
         
           <div class="post-meta mr-3">
             <i class="iconfont icon-date"></i>
-            <time datetime="2022-10-11 16:41" pubdate>
-              2022-10-11
+            <time datetime="2025-12-02 17:39" pubdate>
+              2025-12-02
             </time>
           </div>
         
@@ -447,7 +445,7 @@
     
       <span class="category-chain">
         
-  <a href="/categories/Algorithm/" class="category-chain-item">Algorithm</a>
+  <a href="/categories/Messaging-Streaming/" class="category-chain-item">Messaging &amp; Streaming</a>
   
   
 
@@ -462,9 +460,7 @@
           <div class="post-meta">
             <i class="iconfont icon-tags"></i>
             
-              <a href="/tags/%E7%AE%97%E6%B3%95/">#算法</a>
-            
-              <a href="/tags/%E5%AD%97%E7%AC%A6%E4%B8%B2%E5%8C%B9%E9%85%8D/">#字符串匹配</a>
+              <a href="/tags/Kafka/">#Kafka</a>
             
           </div>
         
@@ -478,15 +474,15 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h2 class="index-header">
         
-        <a href="/Algorithm/Knapsack%20problem/" target="_self">
-          背包问题
+        <a href="/Messaging/Kafka-RabbitMQ%E5%AF%B9%E6%AF%94/" target="_self">
+          Kafka VS RabbitMQ
         </a>
       </h2>
 
       
-      <a class="index-excerpt index-excerpt__noimg" href="/Algorithm/Knapsack%20problem/" target="_self">
+      <a class="index-excerpt index-excerpt__noimg" href="/Messaging/Kafka-RabbitMQ%E5%AF%B9%E6%AF%94/" target="_self">
         <div>
-          01背包问题描述有N件物品和一个容量为V的背包。第i件物品的费用是c[i]，价值是w[i]。求解将哪些物品装入背包可使这些物品的费用总和不超过背包容量，且价值总和最大。 基本思路可转换为取或者不取第i个物品的问题，递推公式为：dp[i][v]&#x3D; Max(dp[i-1][v], dp[i-1][v-c[i]] + w[i])，其中dp[i][v]为对于前i个物品有一个容量为v的背包，此时能
+          一、Kafka vs MQ 的核心区别（本质差异） Kafka 是“分区日志（Partition Log）系统” 传统 MQ（RabbitMQ &#x2F; RocketMQ）是典型的 队列模型（Queue）。     特性 Kafka RabbitMQ &#x2F; RocketMQ 等 MQ    存储结构 分区日志（append-only log） 队列   消费方式 消费者自己维护 off
         </div>
       </a>
 
@@ -494,8 +490,8 @@
         
           <div class="post-meta mr-3">
             <i class="iconfont icon-date"></i>
-            <time datetime="2022-10-07 15:17" pubdate>
-              2022-10-07
+            <time datetime="2025-12-02 17:31" pubdate>
+              2025-12-02
             </time>
           </div>
         
@@ -510,7 +506,7 @@
     
       <span class="category-chain">
         
-  <a href="/categories/Algorithm/" class="category-chain-item">Algorithm</a>
+  <a href="/categories/Messaging-Streaming/" class="category-chain-item">Messaging &amp; Streaming</a>
   
   
 
@@ -525,9 +521,9 @@
           <div class="post-meta">
             <i class="iconfont icon-tags"></i>
             
-              <a href="/tags/%E7%AE%97%E6%B3%95/">#算法</a>
+              <a href="/tags/Kafka/">#Kafka</a>
             
-              <a href="/tags/dp/">#dp</a>
+              <a href="/tags/RabbitMQ/">#RabbitMQ</a>
             
           </div>
         
@@ -535,7 +531,292 @@
     </article>
   </div>
 
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
+        <a href="/Others/%E7%9F%A5%E8%AF%86%E7%82%B9%E6%80%BB%E7%BB%93/" target="_self">
+          知识点总结
+        </a>
+      </h2>
 
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/Others/%E7%9F%A5%E8%AF%86%E7%82%B9%E6%80%BB%E7%BB%93/" target="_self">
+        <div>
+          [TOC]  一、知识点总结1. Java &#x2F; 运行时与框架1.1 反射（Reflection） 是什么：Java 运行时检查&#x2F;操作类的方法、字段、构造器、注解的能力（Class, Method, Field, Constructor）。 原理：编译期产生 .class（字节码） -&gt; JVM 装载类 -&gt; Class 对象代表类元数据。反射 API 操作 Clas
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2025-11-26 17:28" pubdate>
+              2025-11-26
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Others/" class="category-chain-item">Others</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/%E7%9F%A5%E8%AF%86%E7%82%B9%E6%80%BB%E7%BB%93/">#知识点总结</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
+        <a href="/Database/Oracle%E4%B8%BB%E4%BB%8E%E5%A4%87%E4%BB%BD/" target="_self">
+          Oracle主从备份
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/Database/Oracle%E4%B8%BB%E4%BB%8E%E5%A4%87%E4%BB%BD/" target="_self">
+        <div>
+          Oracle Data Guard（物理备库） + 最大可用模式 + Fast-Start Failover（FSFO） 一、Data Guard 是什么？Data Guard 用于：  实时传输主库 redo log 到备库 备库将 redo 实时 apply 保持两个数据库一致  重点：备库不能自主写数据，只能回放主库的 redo。 ✔ 主库：能读能写 ✔ 备库：只写（redo apply），
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2025-11-26 16:44" pubdate>
+              2025-11-26
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Database/" class="category-chain-item">Database</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/Oracle/">#Oracle</a>
+            
+              <a href="/tags/%E5%A4%87%E4%BB%BD/">#备份</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
+        <a href="/Caching/Redis%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%E4%B8%8E%E5%BA%95%E5%B1%82%E7%BB%93%E6%9E%84/" target="_self">
+          Redis数据类型与底层结构
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/Caching/Redis%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%E4%B8%8E%E5%BA%95%E5%B1%82%E7%BB%93%E6%9E%84/" target="_self">
+        <div>
+          数据类型与底层结构 — 详解  1) String（底层：SDS — Simple Dynamic String）内部实现（SDS）  SDS 不是 C 的 char*，它在内存前方保存长度&#x2F;分配容量信息（避免 strlen），并允许二进制数据（包含 \0）。 变种：embstr（短字符串优化）和 raw（标准分配）。 embstr：当字符串很短时，键和值会一起做一次小内存分配（节省指针
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2025-11-24 11:22" pubdate>
+              2025-11-24
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Caching-NoSQL/" class="category-chain-item">Caching &amp; NoSQL</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/Redis/">#Redis</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
+        <a href="/Caching/Redis-%E9%AB%98%E6%80%A7%E8%83%BD/" target="_self">
+          Redis的高性能
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/Caching/Redis-%E9%AB%98%E6%80%A7%E8%83%BD/" target="_self">
+        <div>
+          一、Redis 为什么单线程却这么快？Redis 的高性能并不是因为“单线程快”，而是因为： 1. 所有操作都在内存中完成（In-Memory） 无磁盘随机 I&#x2F;O  内存访问延迟只有 100ns 级别 远比磁盘快 数万倍  内存速度本身就快到爆。  2. 单线程模型避免了线程切换开销其他数据库（如 MySQL）使用多线程，每次处理都要：  上下文切换 线程竞争资源 CPU 缓存失效
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2025-11-23 21:57" pubdate>
+              2025-11-23
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Caching-NoSQL/" class="category-chain-item">Caching &amp; NoSQL</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/Redis/">#Redis</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
+        <a href="/Microservices/RPC/" target="_self">
+          post
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/Microservices/RPC/" target="_self">
+        <div>
+          
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2025-11-23 20:54" pubdate>
+              2025-11-23
+            </time>
+          </div>
+        
+        
+        
+      </div>
+    </article>
+  </div>
+
+
+
+  <nav aria-label="navigation">
+    <span class="pagination" id="pagination">
+      <span class="page-number current">1</span><a class="page-number" href="/page/2/#board">2</a><a class="extend next" rel="next" href="/page/2/#board"><i class="iconfont icon-arrowright"></i></a>
+    </span>
+  </nav>
 
 
 

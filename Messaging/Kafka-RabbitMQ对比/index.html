@@ -1,0 +1,798 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="刘笑笑">
+  <meta name="keywords" content="java、go、操作系统、网络">
+  
+    <meta name="description" content="一、Kafka vs MQ 的核心区别（本质差异） Kafka 是“分区日志（Partition Log）系统” 传统 MQ（RabbitMQ &#x2F; RocketMQ）是典型的 队列模型（Queue）。     特性 Kafka RabbitMQ &#x2F; RocketMQ 等 MQ    存储结构 分区日志（append-only log） 队列   消费方式 消费者自己维护 off">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Kafka VS RabbitMQ">
+<meta property="og:url" content="http://by.ecel.top/Messaging/Kafka-RabbitMQ%E5%AF%B9%E6%AF%94/index.html">
+<meta property="og:site_name" content="title">
+<meta property="og:description" content="一、Kafka vs MQ 的核心区别（本质差异） Kafka 是“分区日志（Partition Log）系统” 传统 MQ（RabbitMQ &#x2F; RocketMQ）是典型的 队列模型（Queue）。     特性 Kafka RabbitMQ &#x2F; RocketMQ 等 MQ    存储结构 分区日志（append-only log） 队列   消费方式 消费者自己维护 off">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2025-12-02T09:31:55.000Z">
+<meta property="article:modified_time" content="2025-12-02T09:37:46.006Z">
+<meta property="article:author" content="刘笑笑">
+<meta property="article:tag" content="Kafka">
+<meta property="article:tag" content="RabbitMQ">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>Kafka VS RabbitMQ - title</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"by.ecel.top","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Tech Notes</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="Kafka VS RabbitMQ"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2025-12-02 17:31" pubdate>
+          2025年12月2日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          876 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          8 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">Kafka VS RabbitMQ</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="一、Kafka-vs-MQ-的核心区别（本质差异）"><a href="#一、Kafka-vs-MQ-的核心区别（本质差异）" class="headerlink" title="一、Kafka vs MQ 的核心区别（本质差异）"></a>一、Kafka vs MQ 的核心区别（本质差异）</h1><blockquote>
+<p><strong>Kafka 是“分区日志（Partition Log）系统”</strong></p>
+<p><strong>传统 MQ（RabbitMQ &#x2F; RocketMQ）是典型的 队列模型（Queue）。</strong></p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>特性</th>
+<th>Kafka</th>
+<th>RabbitMQ &#x2F; RocketMQ 等 MQ</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>存储结构</td>
+<td>分区日志（append-only log）</td>
+<td>队列</td>
+</tr>
+<tr>
+<td>消费方式</td>
+<td><strong>消费者自己维护 offset</strong></td>
+<td>MQ 维护 ack&#x2F;offset</td>
+</tr>
+<tr>
+<td>高并发能力</td>
+<td>极高（靠分区）</td>
+<td>较强 &#x2F; 中等</td>
+</tr>
+<tr>
+<td>顺序性</td>
+<td><strong>每分区强顺序</strong></td>
+<td>队列天然保持顺序</td>
+</tr>
+<tr>
+<td>延迟</td>
+<td>可做到 &lt; 5ms</td>
+<td>因路由 &#x2F; broker 处理较高</td>
+</tr>
+<tr>
+<td>扩展性</td>
+<td>水平扩展更容易</td>
+<td>需要多队列、多 exchange</td>
+</tr>
+</tbody></table>
+<hr>
+<h1 id="二、为什么-MQ-能保证顺序性？"><a href="#二、为什么-MQ-能保证顺序性？" class="headerlink" title="二、为什么 MQ 能保证顺序性？"></a>二、为什么 MQ 能保证顺序性？</h1><hr>
+<h2 id="1）Kafka-为什么能保证顺序？"><a href="#1）Kafka-为什么能保证顺序？" class="headerlink" title="1）Kafka 为什么能保证顺序？"></a>1）Kafka 为什么能保证顺序？</h2><p><strong>因为 Kafka 的单个 Partition 是 append-only 的日志文件：</strong></p>
+<ul>
+<li>同一 Partition 内的消息按写入顺序追加（单线程写入）</li>
+<li>消费时也按 offset 顺序读取</li>
+<li>所以 Partition 内天然保持<strong>强顺序性</strong></li>
+</ul>
+<p><strong>但多分区就无法保证全局顺序</strong></p>
+<hr>
+<h2 id="2）RabbitMQ-RocketMQ-为什么能保证顺序？"><a href="#2）RabbitMQ-RocketMQ-为什么能保证顺序？" class="headerlink" title="2）RabbitMQ &#x2F; RocketMQ 为什么能保证顺序？"></a>2）RabbitMQ &#x2F; RocketMQ 为什么能保证顺序？</h2><p>它们的设计是传统“队列”模型：</p>
+<ol>
+<li>对同一个 Queue，消息都是 FIFO</li>
+<li>使用单个 consumer 或消费端按顺序 ack</li>
+<li>Queue 本身就是一个单链表&#x2F;双端队列结构</li>
+</ol>
+<p>只要：</p>
+<ul>
+<li><strong>生产端按顺序发送</strong></li>
+<li><strong>不使用多消费者并行消费</strong></li>
+</ul>
+<p>那顺序就是天然的。</p>
+<hr>
+<h1 id="三、确保消息顺序的设计（生产者需要做什么？）"><a href="#三、确保消息顺序的设计（生产者需要做什么？）" class="headerlink" title="三、确保消息顺序的设计（生产者需要做什么？）"></a>三、确保消息顺序的设计（生产者需要做什么？）</h1><hr>
+<h2 id="1-Kafka-中的顺序策略"><a href="#1-Kafka-中的顺序策略" class="headerlink" title="1. Kafka 中的顺序策略"></a>1. Kafka 中的顺序策略</h2><p><strong>必须保证同一业务 Key 落到同一 Partition</strong></p>
+<p>例如订单：</p>
+<figure class="highlight gml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs gml"><span class="hljs-keyword">new</span> ProducerRecord&lt;&gt;(<span class="hljs-string">&quot;order-topic&quot;</span>, orderId, <span class="hljs-variable language_">message</span>)<br></code></pre></td></tr></table></figure>
+
+<p>Kafka 会根据 key 做 hash：</p>
+<figure class="highlight abnf"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs abnf"><span class="hljs-attribute">partition</span> <span class="hljs-operator">=</span> hash(orderId) % partition_count<br></code></pre></td></tr></table></figure>
+
+<p>→ <strong>同一个 orderId 永远落到同一 Partition</strong><br>→ 消费就按顺序</p>
+<hr>
+<h2 id="2-生产者必须保证“发送顺序-写入顺序”"><a href="#2-生产者必须保证“发送顺序-写入顺序”" class="headerlink" title="2. 生产者必须保证“发送顺序 &#x3D; 写入顺序”"></a>2. 生产者必须保证“发送顺序 &#x3D; 写入顺序”</h2><p>Kafka Producer 默认是<strong>异步批量发送</strong>，可能导致乱序：</p>
+<p><strong>关键配置：</strong></p>
+<table>
+<thead>
+<tr>
+<th>配置</th>
+<th>意义</th>
+<th>顺序性影响</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>max.in.flight.requests.per.connection = 1</code></td>
+<td>禁止并发发包</td>
+<td>强顺序</td>
+</tr>
+<tr>
+<td><code>acks=all</code></td>
+<td>Leader + ISR 全写成功</td>
+<td>避免乱序</td>
+</tr>
+<tr>
+<td><code>retries</code></td>
+<td>重试次数</td>
+<td>必须设置</td>
+</tr>
+<tr>
+<td><code>enable.idempotence=true</code></td>
+<td>开启幂等写</td>
+<td>避免重试导致乱序</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="3-MQ-中如何保证顺序？"><a href="#3-MQ-中如何保证顺序？" class="headerlink" title="3. MQ 中如何保证顺序？"></a>3. MQ 中如何保证顺序？</h2><p>RabbitMQ &#x2F; RocketMQ：</p>
+<p><strong>关键设计：</strong></p>
+<ol>
+<li><strong>一个 Queue 只被一个 Consumer 消费</strong></li>
+<li>消费端不要并发处理同一个 Queue</li>
+<li>Producer 不要异步乱序发送（同一个 key 必须串行发送）</li>
+</ol>
+<p>RocketMQ：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-type">SendResult</span> <span class="hljs-variable">result</span> <span class="hljs-operator">=</span> producer.send(msg, <span class="hljs-keyword">new</span> <span class="hljs-title class_">MessageQueueSelector</span>() &#123;<br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-keyword">public</span> MessageQueue <span class="hljs-title function_">select</span><span class="hljs-params">(List&lt;MessageQueue&gt; mqs, Message msg, Object arg)</span> &#123;<br>        <span class="hljs-type">int</span> <span class="hljs-variable">orderId</span> <span class="hljs-operator">=</span> (<span class="hljs-type">int</span>) arg;<br>        <span class="hljs-keyword">return</span> mqs.get(orderId % mqs.size());<br>    &#125;<br>&#125;, orderId);<br></code></pre></td></tr></table></figure>
+
+<p>👉 同一个 orderId 总是发送到同一个 MessageQueue（同一个 broker queue）<br> 👉 从而保证顺序</p>
+<hr>
+<h1 id="四、为什么顺序会被破坏？"><a href="#四、为什么顺序会被破坏？" class="headerlink" title="四、为什么顺序会被破坏？"></a>四、为什么顺序会被破坏？</h1><p><strong>Kafka 乱序常见原因：</strong></p>
+<ol>
+<li>多分区（orderId 不落同分区）</li>
+<li>producer 开启并发发送（in-flight &gt; 1）</li>
+<li>producer 重试导致消息插队</li>
+<li>consumer 并发消费</li>
+</ol>
+<p><strong>RabbitMQ &#x2F; RocketMQ 乱序原因：</strong></p>
+<ol>
+<li>多 consumer 并发同 queue</li>
+<li>broker 内的 requeue &#x2F; nack 导致消息重新排队</li>
+<li>多 queue，却没有保证同 key 的路由策略</li>
+</ol>
+<hr>
+<h1 id="五、最终如何在项目里保证顺序性"><a href="#五、最终如何在项目里保证顺序性" class="headerlink" title="五、最终如何在项目里保证顺序性"></a>五、最终如何在项目里保证顺序性</h1><blockquote>
+<p>同一业务 Key（如订单号、用户 ID）始终映射到同一个队列 &#x2F; 分区，生产端串行发送，消费端单线程按顺序消费，保证提交和处理逻辑是幂等的。</p>
+</blockquote>
+<p>简述如下：</p>
+<ul>
+<li><strong>生产端保证同 Key 分区 &#x2F; 队列一致性</strong></li>
+<li><strong>生产端保证顺序发送（in-flight&#x3D;1，幂等开启）</strong></li>
+<li><strong>队列维度只用单消费者（或业务 Key 分片消费）</strong></li>
+<li><strong>消费端处理幂等，防止重试打乱顺序</strong></li>
+</ul>
+<hr>
+<h1 id="六、用一句话总结"><a href="#六、用一句话总结" class="headerlink" title="六、用一句话总结"></a>六、用一句话总结</h1><blockquote>
+<p>Kafka 的顺序性依赖 Partition；MQ 的顺序性依赖 Queue。要实现顺序性，核心是确保同一业务 Key 落到同一 Partition&#x2F;Queue，并保持发送端和消费端的串行化，加上幂等避免重试乱序。</p>
+</blockquote>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Messaging-Streaming/" class="category-chain-item">Messaging &amp; Streaming</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/Kafka/" class="print-no-link">#Kafka</a>
+      
+        <a href="/tags/RabbitMQ/" class="print-no-link">#RabbitMQ</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>Kafka VS RabbitMQ</div>
+      <div>http://by.ecel.top/Messaging/Kafka-RabbitMQ对比/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>刘笑笑</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2025年12月2日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/Messaging/Kafka%E7%9A%84%E5%8F%AF%E9%9D%A0%E6%80%A7%E8%AE%BE%E8%AE%A1/" title="Kafka的可靠性设计">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Kafka的可靠性设计</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/Others/%E7%9F%A5%E8%AF%86%E7%82%B9%E6%80%BB%E7%BB%93/" title="知识点总结">
+                        <span class="hidden-mobile">知识点总结</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
