@@ -19,22 +19,30 @@
   <meta name="author" content="刘笑笑">
   <meta name="keywords" content="java、go、操作系统、网络">
   
-    <meta name="description" content="一、Kafka 基础与整体架构Kafka 是一个 高吞吐、分布式、可扩展、可持久化 的消息流平台，核心特性：  高吞吐：顺序写磁盘 + PageCache 零拷贝 分区并行：partition 并发处理 水平扩展：broker 任意扩容 高可用：基于 副本 + ISR + Controller 的复制机制 持久化：segment 文件顺序写 支持流处理：Kafka Streams 支持批处理与订阅">
+    <meta name="description" content="[TOC] 一、Kafka 基础与整体架构Kafka 是分布式的、支持 高吞吐 + 可持久化 + 副本高可用 的消息系统。  1. 三大核心角色Producer  批量发送、压缩、异步&#x2F;同步发送 支持 重试 + 幂等 + 事务  Broker  存储数据：Topic → Partition → Segment 顺序写磁盘 + 零拷贝  Consumer  使用 Consumer Grou">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Kafka — 基础知识">
+<meta property="og:title" content="Kafka — 基础知识与核心原理">
 <meta property="og:url" content="http://by.ecel.top/Messaging/Kafka%E5%9F%BA%E7%A1%80/index.html">
 <meta property="og:site_name" content="title">
-<meta property="og:description" content="一、Kafka 基础与整体架构Kafka 是一个 高吞吐、分布式、可扩展、可持久化 的消息流平台，核心特性：  高吞吐：顺序写磁盘 + PageCache 零拷贝 分区并行：partition 并发处理 水平扩展：broker 任意扩容 高可用：基于 副本 + ISR + Controller 的复制机制 持久化：segment 文件顺序写 支持流处理：Kafka Streams 支持批处理与订阅">
+<meta property="og:description" content="[TOC] 一、Kafka 基础与整体架构Kafka 是分布式的、支持 高吞吐 + 可持久化 + 副本高可用 的消息系统。  1. 三大核心角色Producer  批量发送、压缩、异步&#x2F;同步发送 支持 重试 + 幂等 + 事务  Broker  存储数据：Topic → Partition → Segment 顺序写磁盘 + 零拷贝  Consumer  使用 Consumer Grou">
 <meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://by.ecel.top/Messaging/Kafka%E5%9F%BA%E7%A1%80/Kafka%E5%9F%BA%E7%A1%80/image-20251206220122413.png">
+<meta property="og:image" content="http://by.ecel.top/Messaging/Kafka%E5%9F%BA%E7%A1%80/Kafka%E5%9F%BA%E7%A1%80/image-20251206221238632.png">
+<meta property="og:image" content="http://by.ecel.top/Messaging/Kafka%E5%9F%BA%E7%A1%80/Kafka%E5%9F%BA%E7%A1%80/image-20251206220218711.png">
+<meta property="og:image" content="http://by.ecel.top/Messaging/Kafka%E5%9F%BA%E7%A1%80/Kafka%E5%9F%BA%E7%A1%80/image-20251206220322092.png">
+<meta property="og:image" content="http://by.ecel.top/Messaging/Kafka%E5%9F%BA%E7%A1%80/Kafka%E5%9F%BA%E7%A1%80/image-20251206220349858.png">
+<meta property="og:image" content="http://by.ecel.top/Messaging/Kafka%E5%9F%BA%E7%A1%80/Kafka%E5%9F%BA%E7%A1%80/image-20251206214953498.png">
+<meta property="og:image" content="http://by.ecel.top/Messaging/Kafka%E5%9F%BA%E7%A1%80/Kafka%E5%9F%BA%E7%A1%80/image-20251206225928528.png">
 <meta property="article:published_time" content="2025-11-23T12:52:55.000Z">
-<meta property="article:modified_time" content="2025-11-23T13:03:40.932Z">
+<meta property="article:modified_time" content="2025-12-06T15:00:51.921Z">
 <meta property="article:author" content="刘笑笑">
 <meta property="article:tag" content="Kafka">
 <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://by.ecel.top/Messaging/Kafka%E5%9F%BA%E7%A1%80/Kafka%E5%9F%BA%E7%A1%80/image-20251206220122413.png">
   
   
   
-  <title>Kafka — 基础知识 - title</title>
+  <title>Kafka — 基础知识与核心原理 - title</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -200,7 +208,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="Kafka — 基础知识"></span>
+            <span id="subtitle" data-typed-text="Kafka — 基础知识与核心原理"></span>
           
         </div>
 
@@ -223,7 +231,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          1.4k 字
+          1.3k 字
         
       </span>
     
@@ -234,7 +242,7 @@
         
         
         
-          12 分钟
+          11 分钟
         
       </span>
     
@@ -271,286 +279,296 @@
       <div class="container nopadding-x-md" id="board-ctn">
         <div id="board">
           <article class="post-content mx-auto">
-            <h1 id="seo-header">Kafka — 基础知识</h1>
+            <h1 id="seo-header">Kafka — 基础知识与核心原理</h1>
             
             
               <div class="markdown-body">
                 
-                <h2 id="一、Kafka-基础与整体架构"><a href="#一、Kafka-基础与整体架构" class="headerlink" title="一、Kafka 基础与整体架构"></a>一、Kafka 基础与整体架构</h2><p>Kafka 是一个 <strong>高吞吐、分布式、可扩展、可持久化</strong> 的消息流平台，核心特性：</p>
+                <p>[TOC]</p>
+<h1 id="一、Kafka-基础与整体架构"><a href="#一、Kafka-基础与整体架构" class="headerlink" title="一、Kafka 基础与整体架构"></a>一、Kafka 基础与整体架构</h1><p>Kafka 是分布式的、支持 <strong>高吞吐 + 可持久化 + 副本高可用</strong> 的消息系统。</p>
+<hr>
+<h2 id="1-三大核心角色"><a href="#1-三大核心角色" class="headerlink" title="1. 三大核心角色"></a>1. 三大核心角色</h2><p><strong>Producer</strong></p>
 <ul>
-<li><strong>高吞吐</strong>：顺序写磁盘 + PageCache 零拷贝</li>
-<li><strong>分区并行</strong>：partition 并发处理</li>
-<li><strong>水平扩展</strong>：broker 任意扩容</li>
-<li><strong>高可用</strong>：基于 <strong>副本 + ISR + Controller</strong> 的复制机制</li>
-<li><strong>持久化</strong>：segment 文件顺序写</li>
-<li><strong>支持流处理</strong>：Kafka Streams</li>
-<li><strong>支持批处理与订阅模型</strong>：consumer group</li>
+<li>批量发送、压缩、异步&#x2F;同步发送</li>
+<li>支持 <strong>重试 + 幂等 + 事务</strong></li>
 </ul>
-<p>Kafka 三大核心角色：</p>
-<h3 id="1-Producer（生产者）"><a href="#1-Producer（生产者）" class="headerlink" title="1. Producer（生产者）"></a>1. Producer（生产者）</h3><ul>
-<li>支持批量、压缩、异步发送</li>
-<li>参数：batch.size、linger.ms、compression.type 影响性能</li>
-</ul>
-<h3 id="2-Broker（服务器）"><a href="#2-Broker（服务器）" class="headerlink" title="2. Broker（服务器）"></a>2. Broker（服务器）</h3><ul>
-<li>Topic → Partition → Segment</li>
-<li>高效的 <strong>顺序写磁盘</strong></li>
-<li>Zero-copy 提升发送性能</li>
-</ul>
-<h3 id="3-Consumer（消费者）"><a href="#3-Consumer（消费者）" class="headerlink" title="3. Consumer（消费者）"></a>3. Consumer（消费者）</h3><ul>
-<li>通过 <strong>Consumer Group</strong> 实现水平扩展</li>
-<li>自动提交&#x2F;手动提交 offset</li>
-<li>支持多种订阅方式（range、round-robin、sticky）</li>
-</ul>
-<h3 id="4-Zookeeper（旧架构）-KRaft（新架构）"><a href="#4-Zookeeper（旧架构）-KRaft（新架构）" class="headerlink" title="4. Zookeeper（旧架构）&#x2F; KRaft（新架构）"></a>4. Zookeeper（旧架构）&#x2F; KRaft（新架构）</h3><ul>
-<li>存储元数据</li>
-<li>Leader 选举</li>
-<li>Partition 分配、Topic 创建、ISR 管理<br> Kafka 3.x 后进入 <strong>KRaft</strong> 时代：</li>
-<li>不再依赖 Zookeeper</li>
-<li>Kafka 自身存储元数据</li>
-<li>一组 Controller 选举</li>
-</ul>
-<p>Kafka 场景：</p>
+<p><strong>Broker</strong></p>
 <ul>
-<li>数据采集（日志、行为）</li>
-<li>异步削峰解耦</li>
-<li>流式计算（Flink&#x2F;Spark）</li>
-<li>订单、支付、分布式事件</li>
-<li>CDC（MySQL → Kafka → Downstream）</li>
+<li>存储数据：Topic → Partition → Segment</li>
+<li>顺序写磁盘 + 零拷贝</li>
+</ul>
+<p><strong>Consumer</strong></p>
+<ul>
+<li>使用 <strong>Consumer Group</strong> 提升消费能力</li>
+<li>offset 存于内部 topic <code>__consumer_offsets</code></li>
 </ul>
 <hr>
-<h2 id="二、Kafka-存储、分区、副本、ISR-深度原理"><a href="#二、Kafka-存储、分区、副本、ISR-深度原理" class="headerlink" title="二、Kafka 存储、分区、副本、ISR 深度原理"></a>二、Kafka 存储、分区、副本、ISR 深度原理</h2><p>Kafka 的核心就是 <strong>分区 + 顺序写 + 副本</strong>。</p>
-<hr>
-<h3 id="1-Topic-→-Partition-→-Segment-结构"><a href="#1-Topic-→-Partition-→-Segment-结构" class="headerlink" title="1. Topic → Partition → Segment 结构"></a>1. Topic → Partition → Segment 结构</h3><h4 id="Partition-是-Kafka-并行度单位"><a href="#Partition-是-Kafka-并行度单位" class="headerlink" title="Partition 是 Kafka 并行度单位"></a>Partition 是 Kafka 并行度单位</h4><ul>
-<li>每个 partition 是一个 <strong>有序、不可变</strong> 的消息队列</li>
-<li>只能追加写入</li>
-<li>可配置副本数（replication.factor）</li>
-</ul>
-<h4 id="Segment-是磁盘文件"><a href="#Segment-是磁盘文件" class="headerlink" title="Segment 是磁盘文件"></a>Segment 是磁盘文件</h4><p>一个 partition 会拆成多个 segment 文件：</p>
-<figure class="highlight excel"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs excel"><span class="hljs-number">00000000000000000000</span>.<span class="hljs-built_in">log</span><br><span class="hljs-number">00000000000000000000</span>.<span class="hljs-built_in">index</span><br><span class="hljs-number">00000000000000000000</span>.timeindex<br></code></pre></td></tr></table></figure>
+<h2 id="2-Kafka-架构图"><a href="#2-Kafka-架构图" class="headerlink" title="2. Kafka 架构图"></a>2. Kafka 架构图</h2><img src="Kafka基础/image-20251206220122413.png" srcset="/img/loading.gif" lazyload alt="image-20251206220122413" style="zoom: 50%;" />
 
+<hr>
+<h1 id="二、Kafka-数据存储结构"><a href="#二、Kafka-数据存储结构" class="headerlink" title="二、Kafka 数据存储结构"></a>二、Kafka 数据存储结构</h1><p>Kafka 的核心：<strong>追加写入 + 分区存储 + 分段文件</strong>。</p>
+<hr>
+<h2 id="1-Topic-Partition-Segment"><a href="#1-Topic-Partition-Segment" class="headerlink" title="1. Topic &#x2F; Partition &#x2F; Segment"></a>1. Topic &#x2F; Partition &#x2F; Segment</h2><figure class="highlight lasso"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs lasso">Topic<br> └── Partition <span class="hljs-number">0</span><br>       ├── <span class="hljs-number">000000000000.</span><span class="hljs-keyword">log</span><br>       ├── <span class="hljs-number">000000000000.</span>index<br>       ├── <span class="hljs-number">000000000000.</span>timeindex<br>       ├── <span class="hljs-params">...</span><br> └── Partition <span class="hljs-number">1</span><br>       ├── <span class="hljs-params">...</span><br></code></pre></td></tr></table></figure>
+
+<p>特点：</p>
+<ul>
+<li><strong>Partition &#x3D; 有序、不可变的消息队列</strong></li>
+<li>每次写入都是顺序 append</li>
+<li>Partition 会被切分成多个 segment（默认 1GB）</li>
+</ul>
+<hr>
+<h2 id="2-顺序写提升吞吐的原因"><a href="#2-顺序写提升吞吐的原因" class="headerlink" title="2. 顺序写提升吞吐的原因"></a>2. 顺序写提升吞吐的原因</h2><p>随机写：磁盘寻道能力差<br>顺序写：磁盘每秒可写上百 MB</p>
+<p>Kafka 通过顺序写实现：</p>
+<ul>
+<li>吞吐比传统消息队列高 10～30 倍</li>
+</ul>
+<hr>
+<h2 id="3-Segment-的具体存储内容与文件结构"><a href="#3-Segment-的具体存储内容与文件结构" class="headerlink" title="3. Segment 的具体存储内容与文件结构"></a>3. Segment 的具体存储内容与文件结构</h2><blockquote>
+<p>Kafka 每个 segment 实际包含 3 种文件（同一前缀）：</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>文件</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>xxx.log</strong></td>
+<td>真正存放消息数据，顺序追加</td>
+</tr>
+<tr>
+<td><strong>xxx.index</strong></td>
+<td>offset → 物理位置映射（稀疏索引）</td>
+</tr>
+<tr>
+<td><strong>xxx.timeindex</strong></td>
+<td>timestamp → offset 映射，用于按时间查找</td>
+</tr>
+</tbody></table>
+<p>示例（partition&#x3D;0）：</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs stylus"><span class="hljs-number">00000000000000000000</span><span class="hljs-selector-class">.log</span><br><span class="hljs-number">00000000000000000000</span><span class="hljs-selector-class">.index</span><br><span class="hljs-number">00000000000000000000</span><span class="hljs-selector-class">.timeindex</span><br><span class="hljs-number">00000000000012345678</span><span class="hljs-selector-class">.log</span><br>...<br></code></pre></td></tr></table></figure>
+
+<p><strong>index 是稀疏的</strong>，不是每条消息都索引，只存每隔 N 条，减少内存占用。</p>
+<hr>
+<h2 id="4-Segment-放在哪里？磁盘目录结构"><a href="#4-Segment-放在哪里？磁盘目录结构" class="headerlink" title="4. Segment 放在哪里？磁盘目录结构"></a>4. Segment 放在哪里？磁盘目录结构</h2><p>Kafka 默认数据目录（log.dir）：</p>
+<figure class="highlight nix"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs nix"><span class="hljs-operator">/</span>kafka-logs<span class="hljs-symbol">/</span><br>    └── topicA-<span class="hljs-number">0</span><span class="hljs-symbol">/</span><br>        ├── <span class="hljs-number">00000000000000000000</span>.log<br>        ├── <span class="hljs-number">00000000000000000000</span>.index<br>        ├── ...<br>    └── topicA-<span class="hljs-number">1</span><span class="hljs-symbol">/</span><br>    └── topicB-<span class="hljs-number">0</span><span class="hljs-operator">/</span><br></code></pre></td></tr></table></figure>
+
+<p><strong>一个 partition 对应一个文件夹</strong>，便于分布式扩展。<br> Broker 扩容时 partition 会均匀分布在新机器。</p>
+<hr>
+<h2 id="5-顺序写为何快"><a href="#5-顺序写为何快" class="headerlink" title="5. 顺序写为何快"></a><strong>5. 顺序写为何快</strong></h2><ul>
+<li>Kafka 写入磁盘不是随机写，而是 <strong>append-only log</strong></li>
+<li>Linux 对顺序写进行 <strong>预读&#x2F;预写优化</strong></li>
+<li>HDD 顺序写 &gt; 随机写 <strong>几十倍</strong></li>
+<li>SSD 也有顺序写优势：更少 FTL 映射冲突</li>
+</ul>
+<h2 id="6-PageCache-与-mmap"><a href="#6-PageCache-与-mmap" class="headerlink" title="6. PageCache 与 mmap"></a>6. PageCache 与 mmap</h2><p>Kafka 同时使用：</p>
+<p><strong>✔ Broker → 磁盘写入：mmap（内存映射）</strong></p>
+<ul>
+<li>写 log 文件时，Kafka 使用 <strong>FileChannel + mmap</strong></li>
+<li>优势：减少一次拷贝（用户态 → 内核态）</li>
+</ul>
+<p><strong>✔ Broker → Client 发送：sendfile（真正的零拷贝）</strong></p>
+<ul>
+<li>避免将磁盘文件读到用户态发送</li>
+<li>网络直接从 PageCache 发出去</li>
+</ul>
+<p>📌 结论：</p>
+<table>
+<thead>
+<tr>
+<th>场景</th>
+<th>技术</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>写入磁盘</td>
+<td><strong>mmap</strong></td>
+</tr>
+<tr>
+<td>发送给消费者</td>
+<td><strong>sendfile（零拷贝）</strong></td>
+</tr>
+</tbody></table>
+<p>Kafka <strong>二者都用</strong>，所以非常快。</p>
+<hr>
+<h1 id="三、Zero-Copy（零拷贝）-Sendfile"><a href="#三、Zero-Copy（零拷贝）-Sendfile" class="headerlink" title="三、Zero Copy（零拷贝） &amp; Sendfile"></a>三、Zero Copy（零拷贝） &amp; Sendfile</h1><p>Kafka 的高性能另一个核心：<strong>不拷贝数据</strong>。</p>
+<hr>
+<blockquote>
+<p><strong>❌ 普通 IO</strong></p>
+<p>用户态 ⇄ 内核态 四次 copy</p>
+<p><strong>✅ sendfile()</strong></p>
+<p>只需一次 copy（DMA → NIC），用户态不参与</p>
+</blockquote>
+<hr>
+<p><strong>零拷贝架构图</strong></p>
+<img src="Kafka基础/image-20251206221238632.png" srcset="/img/loading.gif" lazyload alt="image-20251206221238632" style="zoom:50%;" />
+
+<p>效果：</p>
+<ul>
+<li>吞吐提升 2～3 倍</li>
+<li>CPU 使用降低 50%+</li>
+<li><strong>Kafka 不需要 read() → write()</strong></li>
+<li>sendfile 让<strong>内核直接把 PageCache 内容写入 Socket</strong></li>
+<li>数据从未进入用户态内存</li>
+</ul>
+<hr>
+<h1 id="四、副本机制：Leader-Follower-ISR"><a href="#四、副本机制：Leader-Follower-ISR" class="headerlink" title="四、副本机制：Leader&#x2F;Follower + ISR"></a>四、副本机制：Leader&#x2F;Follower + ISR</h1><p>Kafka 每个 partition 有多个副本：</p>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs ini"><span class="hljs-attr">replication.factor</span> = <span class="hljs-number">3</span><br></code></pre></td></tr></table></figure>
+
+<p>结构：</p>
+<ul>
+<li>1 个 leader（读写）</li>
+<li>N 个 follower（复制 leader）</li>
+</ul>
+<hr>
+<h2 id="1-ISR（In-Sync-Replicas）"><a href="#1-ISR（In-Sync-Replicas）" class="headerlink" title="1. ISR（In-Sync Replicas）"></a>1. ISR（In-Sync Replicas）</h2><p>ISR &#x3D; 所有 <strong>跟上 leader 最新进度</strong> 的 follower</p>
 <p>好处：</p>
 <ul>
-<li>文件分段可快速删除</li>
-<li>避免文件过大难以管理</li>
-<li>高效顺序写</li>
+<li>Leader 切换速度快</li>
+<li>不拖慢整体性能</li>
+<li>保证数据不丢失</li>
 </ul>
 <hr>
-<h3 id="2-Zero-Copy-Page-Cache"><a href="#2-Zero-Copy-Page-Cache" class="headerlink" title="2. Zero Copy + Page Cache"></a>2. Zero Copy + Page Cache</h3><p>Kafka 默认不读取整个 log 文件，而是使用：</p>
-<ul>
-<li><strong>sendfile</strong> 系统调用</li>
-<li>PageCache 做文件系统缓存</li>
-<li>数据不需要在用户态和内核态之间来回复制</li>
-</ul>
-<p>Kafka 的高性能来源之一。</p>
-<hr>
-<h3 id="3-副本机制（Replication）"><a href="#3-副本机制（Replication）" class="headerlink" title="3. 副本机制（Replication）"></a>3. 副本机制（Replication）</h3><p>每个 partition 有：</p>
-<ul>
-<li>leader（负责读写）</li>
-<li>follower（复制 leader）</li>
-</ul>
-<hr>
-<h3 id="4-ISR-列表"><a href="#4-ISR-列表" class="headerlink" title="4. ISR 列表"></a>4. ISR 列表</h3><p>ISR（in-sync replica）：<br> <strong>与 leader 保持同步的副本集合</strong>。</p>
-<p>Kafka 认为只要 follower：</p>
-<ul>
-<li>延迟不超过 replica.lag.time.max.ms</li>
-<li>未落后太多</li>
-</ul>
-<p>就属于 ISR。</p>
-<p>ISR 不包括所有副本，这样可以保证：</p>
-<ul>
-<li>leader 切换快</li>
-<li>不拖慢整个集群</li>
-</ul>
-<hr>
-<h3 id="5-ack-机制与数据可靠性"><a href="#5-ack-机制与数据可靠性" class="headerlink" title="5. ack 机制与数据可靠性"></a>5. ack 机制与数据可靠性</h3><p>生产者发送消息时可设置：</p>
-<ul>
-<li><strong>acks&#x3D;0</strong>：最快，不可靠</li>
-<li><strong>acks&#x3D;1</strong>：leader 写入成功即可</li>
-<li><strong>acks&#x3D;all &#x2F; -1</strong>：leader + ISR 全部写入成功（最安全）</li>
-</ul>
-<p>配合 min.insync.replicas 可以确保数据不丢失：</p>
-<p>例：</p>
-<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs ini"><span class="hljs-attr">replication.factor</span> = <span class="hljs-number">3</span><br><span class="hljs-attr">min.insync.replicas</span> = <span class="hljs-number">2</span><br><span class="hljs-attr">acks</span> = all<br></code></pre></td></tr></table></figure>
-
-<p>只要一个副本挂了，仍然能保证数据不丢。</p>
-<hr>
-<h3 id="6-Leader-选举与-Controller-原理"><a href="#6-Leader-选举与-Controller-原理" class="headerlink" title="6. Leader 选举与 Controller 原理"></a>6. Leader 选举与 Controller 原理</h3><p>Kafka 通过 Controller（集群元数据管理者）管理：</p>
-<ul>
-<li>partition leader 选举</li>
-<li>broker 上下线</li>
-<li>ISR 变化</li>
-<li>Topic 创建、分区扩容</li>
-</ul>
-<p>KRaft 时代后，元数据不再依赖 Zookeeper，而是：</p>
-<ul>
-<li>存储在内部 topic：__cluster_metadata</li>
-<li>使用 Raft 算法保证一致性</li>
-<li>由 Controller quorum 选主</li>
-</ul>
-<hr>
-<h2 id="三、Kafka-消费机制、Offset、重平衡、消费语义"><a href="#三、Kafka-消费机制、Offset、重平衡、消费语义" class="headerlink" title="三、Kafka 消费机制、Offset、重平衡、消费语义"></a>三、Kafka 消费机制、Offset、重平衡、消费语义</h2><p>Kafka 的消费机制是面试高频。</p>
-<hr>
-<h3 id="1-Consumer-Group"><a href="#1-Consumer-Group" class="headerlink" title="1. Consumer Group"></a>1. Consumer Group</h3><p>一个 group 里的消费者：</p>
-<ul>
-<li>共同消费一个 topic</li>
-<li>每个 partition 只会被一个 consumer 消费</li>
-<li>多个 consumer 才能并行处理</li>
-</ul>
-<p>典型扩展方式：</p>
-<figure class="highlight excel"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs excel">partition = <span class="hljs-number">10</span><br>consumer = <span class="hljs-number">5</span><br>=&gt; 每个消费者处理 <span class="hljs-number">2</span> 个 partition<br></code></pre></td></tr></table></figure>
+<h2 id="2-副本同步架构图"><a href="#2-副本同步架构图" class="headerlink" title="2. 副本同步架构图"></a>2. 副本同步架构图</h2><img src="Kafka基础/image-20251206220218711.png" srcset="/img/loading.gif" lazyload alt="image-20251206220218711" style="zoom:50%;" />
 
 <hr>
-<h3 id="2-Offset-存储机制"><a href="#2-Offset-存储机制" class="headerlink" title="2. Offset 存储机制"></a>2. Offset 存储机制</h3><p>新版本 Kafka 将 offset 存储在内部 topic：</p>
-<figure class="highlight sqf"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sqf"><span class="hljs-variable">__consumer_offsets</span><br></code></pre></td></tr></table></figure>
+<h1 id="五、可靠性：ACK、重试、幂等、事务"><a href="#五、可靠性：ACK、重试、幂等、事务" class="headerlink" title="五、可靠性：ACK、重试、幂等、事务"></a>五、可靠性：ACK、重试、幂等、事务</h1><hr>
+<h2 id="1-ACK"><a href="#1-ACK" class="headerlink" title="1. ACK"></a>1. ACK</h2><table>
+<thead>
+<tr>
+<th>acks</th>
+<th>含义</th>
+<th>是否可能丢消息</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>0</td>
+<td>不等待响应</td>
+<td>可能丢</td>
+</tr>
+<tr>
+<td>1</td>
+<td>Leader 写入即成功</td>
+<td>Leader 掉可能丢</td>
+</tr>
+<tr>
+<td>all &#x2F; -1</td>
+<td>ISR 全写入才成功</td>
+<td>不丢</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="2-重试机制完整说明（Producer-Broker）"><a href="#2-重试机制完整说明（Producer-Broker）" class="headerlink" title="2. 重试机制完整说明（Producer &#x2F; Broker）"></a><strong>2. 重试机制完整说明（Producer &#x2F; Broker）</strong></h2><p><strong>Producer 的重试：</strong></p>
+<ul>
+<li>参数：<code>retries</code>、<code>retry.backoff.ms</code></li>
+<li>如果网络闪断、leader 不可用，则自动重试</li>
+<li>若未开启幂等：可能产生重复消息</li>
+</ul>
+<p><strong>Broker 的重试（副本同步失败）</strong></p>
+<ul>
+<li>follower 落后太多会被踢出 ISR</li>
+<li>leader 写失败会触发：<ul>
+<li>partition leader 重新选举</li>
+<li>producer 端重新发送</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2 id="3-幂等性-Producer（idempotent）"><a href="#3-幂等性-Producer（idempotent）" class="headerlink" title="3. 幂等性 Producer（idempotent）"></a>3. 幂等性 Producer（idempotent）</h2><p>开启后：</p>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs ini"><span class="hljs-attr">enable.idempotence</span> = <span class="hljs-literal">true</span><br></code></pre></td></tr></table></figure>
 
-<p>而不是 Zookeeper。</p>
-<p>offset 的提交方式：</p>
+<p>Kafka 给每个 producer 分配：</p>
 <ul>
-<li><strong>自动提交</strong>：容易丢消息</li>
-<li><strong>手动提交</strong>：更安全<ul>
-<li>commitSync（阻塞）</li>
-<li>commitAsync（高性能）</li>
+<li>PID（唯一标识）</li>
 </ul>
-</li>
-</ul>
-<hr>
-<h3 id="3-Rebalance（再平衡）"><a href="#3-Rebalance（再平衡）" class="headerlink" title="3. Rebalance（再平衡）"></a>3. Rebalance（再平衡）</h3><p>触发条件：</p>
+<p>Kafka 给每个 partition 的发送序列号:</p>
 <ul>
-<li>新 consumer 加入</li>
-<li>consumer 崩溃</li>
-<li>partition 数变化</li>
-<li>topic 增减</li>
+<li>sequence number（消息序号）</li>
 </ul>
-<p>问题：</p>
-<ul>
-<li>再平衡期间 partition 无法消费</li>
-<li>性能损耗</li>
-</ul>
-<p>解决方案：</p>
-<ul>
-<li><strong>StickyAssignor</strong>：最小化 repartition</li>
-<li><strong>Heartbeat + sessionTimeout</strong> 调优</li>
-<li><strong>增加 partition</strong> 让负载更均衡</li>
-<li><strong>Kafka Streams</strong> 有更优雅的协调逻辑</li>
-</ul>
-<hr>
-<h3 id="4-消费语义"><a href="#4-消费语义" class="headerlink" title="4. 消费语义"></a>4. 消费语义</h3><p>Kafka 理论上支持：</p>
-<ul>
-<li><strong>至少一次（默认）</strong><ul>
-<li>有可能重复消费</li>
-</ul>
-</li>
-<li><strong>至多一次</strong><ul>
-<li>有可能丢消息</li>
-</ul>
-</li>
-<li><strong>恰好一次（EOS）</strong><ul>
-<li>通过 Producer Id + Transaction 保证</li>
-<li>适合金融、支付场景</li>
-</ul>
-</li>
-</ul>
-<hr>
-<h3 id="5-Exactly-Once-的底层原理（面试超爱问）"><a href="#5-Exactly-Once-的底层原理（面试超爱问）" class="headerlink" title="5. Exactly Once 的底层原理（面试超爱问）"></a>5. Exactly Once 的底层原理（面试超爱问）</h3><p>Kafka 0.11 引入 Transaction + idempotent producer：</p>
-<ul>
-<li>PID（唯一生产者 ID）</li>
-<li>Sequence number</li>
-<li>Transaction marker 写入特殊日志</li>
-</ul>
+<p>Broker 对每个 <code>(PID, Partition)</code> 维护 last sequence</p>
 <p>保证：</p>
 <ul>
-<li>多次重试不会产生重复消息</li>
-<li>消费到处理 + 写回 Kafka 也能做到 exactly once</li>
-</ul>
-<p>这是分布式系统里极难的能力。</p>
-<hr>
-<h2 id="四、Kafka-高级特性、调优、故障处理、面试核心"><a href="#四、Kafka-高级特性、调优、故障处理、面试核心" class="headerlink" title="四、Kafka 高级特性、调优、故障处理、面试核心"></a>四、Kafka 高级特性、调优、故障处理、面试核心</h2><hr>
-<h2 id="1-性能优化（Producer-Broker-Consumer）"><a href="#1-性能优化（Producer-Broker-Consumer）" class="headerlink" title="1. 性能优化（Producer &#x2F; Broker &#x2F; Consumer）"></a>1. 性能优化（Producer &#x2F; Broker &#x2F; Consumer）</h2><h3 id="Producer-优化"><a href="#Producer-优化" class="headerlink" title="Producer 优化"></a>Producer 优化</h3><ul>
-<li>linger.ms：延迟发送增大批次</li>
-<li>batch.size：增加批处理大小</li>
-<li>compression.type：snappy&#x2F;lz4&#x2F;zstd</li>
-<li>acks&#x3D;1：更快（低可靠）</li>
-<li>acks&#x3D;all：高可靠</li>
-</ul>
-<h3 id="Broker-调优"><a href="#Broker-调优" class="headerlink" title="Broker 调优"></a>Broker 调优</h3><ul>
-<li>合理分区数（不要太多）</li>
-<li>增大页缓存</li>
-<li>replica.lag.max.ms 调优避免 follower 脱 ISR</li>
-<li>适当开启 auto.create.topics</li>
-<li>调整 log.retention.ms 空间回收策略</li>
-</ul>
-<h3 id="Consumer-优化"><a href="#Consumer-优化" class="headerlink" title="Consumer 优化"></a>Consumer 优化</h3><ul>
-<li>max.poll.interval.ms → 防止触发 rebalance</li>
-<li>max.poll.records → 增加批消费</li>
-<li>手动提交 offset（更安全）</li>
+<li>重试不会产生重复消息</li>
 </ul>
 <hr>
-<h2 id="2-生产中的问题及解决方案"><a href="#2-生产中的问题及解决方案" class="headerlink" title="2. 生产中的问题及解决方案"></a>2. 生产中的问题及解决方案</h2><hr>
-<h3 id="⚠️-1-消息乱序"><a href="#⚠️-1-消息乱序" class="headerlink" title="⚠️ 1. 消息乱序"></a>⚠️ 1. 消息乱序</h3><p>发生原因：</p>
+<h2 id="4-事务（Exactly-Once）"><a href="#4-事务（Exactly-Once）" class="headerlink" title="4.事务（Exactly Once）"></a>4.事务（Exactly Once）</h2><p>Producer 事务包括：</p>
 <ul>
-<li>多 partition</li>
-<li>重试</li>
-<li>网络 timeout</li>
-<li>重平衡</li>
+<li><strong>beginTransaction</strong></li>
+<li><strong>send</strong></li>
+<li><strong>commitTransaction</strong></li>
 </ul>
-<p>解决：</p>
+<p>Kafka 内部写入：</p>
 <ul>
-<li>使用 key 分区，同 key 发送到同 partition</li>
-<li>使用单 partition（牺牲吞吐）</li>
-<li>使用 Kafka Streams &#x2F; Flink 做窗口排序</li>
+<li>事务记录写入内部日志：<code>__transaction_state</code></li>
+<li>Consumer 必须使用 <code>read_committed</code> 才能屏蔽未提交消息</li>
 </ul>
+<p><strong>两阶段提交（2PC）+ 幂等 + 内部事务日志</strong> 是 Kafka 实现 EOS 的根本。</p>
 <hr>
-<h3 id="⚠️-2-消息丢失"><a href="#⚠️-2-消息丢失" class="headerlink" title="⚠️ 2. 消息丢失"></a>⚠️ 2. 消息丢失</h3><p>可能原因：</p>
-<ul>
-<li>acks&#x3D;1</li>
-<li>ISR 不足</li>
-<li>未 commit offset</li>
-<li>主从切换</li>
-</ul>
-<p>解决：</p>
-<ul>
-<li>acks&#x3D;all</li>
-<li>min.insync.replicas&#x3D;2</li>
-<li>手动提交 offset</li>
-<li>开启事务（exactly once）</li>
-</ul>
-<hr>
-<h3 id="⚠️-3-消息重复"><a href="#⚠️-3-消息重复" class="headerlink" title="⚠️ 3. 消息重复"></a>⚠️ 3. 消息重复</h3><p>原因：</p>
-<ul>
-<li>Producer 重试</li>
-<li>Consumer 重复提交 offset</li>
-</ul>
-<p>解决：</p>
-<ul>
-<li>幂等生产者（enable.idempotence&#x3D;true）</li>
-<li>业务端做幂等（Redis、数据库唯一索引）</li>
-</ul>
-<hr>
-<h2 id="3-Kafka-在业务中的最佳实践"><a href="#3-Kafka-在业务中的最佳实践" class="headerlink" title="3. Kafka 在业务中的最佳实践"></a>3. Kafka 在业务中的最佳实践</h2><p>典型场景：</p>
-<h3 id="日志采集"><a href="#日志采集" class="headerlink" title="日志采集"></a>日志采集</h3><p>Kafka + Filebeat → ES &#x2F; Clickhouse</p>
-<h3 id="主站事件驱动"><a href="#主站事件驱动" class="headerlink" title="主站事件驱动"></a>主站事件驱动</h3><p>下单 → Kafka → 支付系统 &#x2F; 库存系统 &#x2F; 推荐系统</p>
-<h3 id="秒杀削峰填谷"><a href="#秒杀削峰填谷" class="headerlink" title="秒杀削峰填谷"></a>秒杀削峰填谷</h3><p>请求写入 Kafka → Worker 均匀消费</p>
-<h3 id="MySQL-Binlog-→-Kafka-→-Flink-→-Redis"><a href="#MySQL-Binlog-→-Kafka-→-Flink-→-Redis" class="headerlink" title="MySQL Binlog → Kafka → Flink → Redis"></a>MySQL Binlog → Kafka → Flink → Redis</h3><p>支持实时计算、投递、分布式缓存一致性</p>
-<hr>
-<h2 id="4-Kafka-源码理解（加分项）"><a href="#4-Kafka-源码理解（加分项）" class="headerlink" title="4. Kafka 源码理解（加分项）"></a>4. Kafka 源码理解（加分项）</h2><p>关键源码目录：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs bash">kafka/server<br>kafka/log<br>kafka/controller<br>kafka/clients<br></code></pre></td></tr></table></figure>
+<h1 id="六、Producer-Broker-Consumer-工作原理"><a href="#六、Producer-Broker-Consumer-工作原理" class="headerlink" title="六、Producer &#x2F; Broker &#x2F; Consumer 工作原理"></a>六、Producer &#x2F; Broker &#x2F; Consumer 工作原理</h1><hr>
+<h2 id="1-Producer-流程图"><a href="#1-Producer-流程图" class="headerlink" title="1. Producer 流程图"></a>1. Producer 流程图</h2><img src="Kafka基础/image-20251206220322092.png" srcset="/img/loading.gif" lazyload alt="image-20251206220322092" style="zoom:50%;" />
 
-<p>重点源码：</p>
-<ul>
-<li><strong>ReplicaManager</strong>：复制机制核心</li>
-<li><strong>LogSegment&#x2F;Log</strong>：消息文件管理</li>
-<li><strong>GroupCoordinator</strong>：消费组协调</li>
-<li><strong>Controller</strong>：集群元数据管理</li>
-<li><strong>FetcherThread</strong>：副本同步线程</li>
-</ul>
-<p>面试官会问的源码点：</p>
-<ul>
-<li>ISR shrink&#x2F;expand 机制</li>
-<li>Controller failover 逻辑</li>
-<li>offset commit 流程</li>
-<li>文件写入（mmap + zero copy）</li>
-</ul>
+<hr>
+<h2 id="2-Broker-写入流程"><a href="#2-Broker-写入流程" class="headerlink" title="2. Broker 写入流程"></a>2. Broker 写入流程</h2><blockquote>
+<p>接收到消息后写入 page cache</p>
+<p>当 pagecache 刷盘策略（flush）触发时写入 segment.log</p>
+<p>写入使用 mmap，减少用户态拷贝</p>
+</blockquote>
+<img src="Kafka基础/image-20251206220349858.png" srcset="/img/loading.gif" lazyload alt="image-20251206220349858" style="zoom:50%;" />
 
+<hr>
+<h2 id="3-Consumer-流程"><a href="#3-Consumer-流程" class="headerlink" title="3. Consumer 流程"></a>3. Consumer 流程</h2><ul>
+<li>拉模式（poll）</li>
+<li>从 PageCache 读取数据</li>
+<li>offset 保存在 <code>__consumer_offsets</code></li>
+<li>Rebalance 触发条件补充：<ul>
+<li>group 成员变化</li>
+<li>topic partition 扩容</li>
+<li>consumer 长时间无法心跳</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h1 id="七、顺序投递问题与解决方案"><a href="#七、顺序投递问题与解决方案" class="headerlink" title="七、顺序投递问题与解决方案"></a>七、顺序投递问题与解决方案</h1><p>Kafka 只有：</p>
+<ul>
+<li>单 partition 内保证顺序</li>
+<li>多 partition 不保证顺序</li>
+</ul>
+<p>解决：</p>
+<ul>
+<li>同 key 同 partition（如 userId）</li>
+<li>只使用一个 partition（牺牲吞吐）</li>
+<li>Flink&#x2F;Kafka Streams 做窗口重排序</li>
+</ul>
+<hr>
+<h1 id="八、错误处理机制"><a href="#八、错误处理机制" class="headerlink" title="八、错误处理机制"></a>八、错误处理机制</h1><h2 id="1-消息重复"><a href="#1-消息重复" class="headerlink" title="1. 消息重复"></a>1. 消息重复</h2><p>原因：重试<br>解决：幂等 + 业务幂等（唯一索引&#x2F;Redis）</p>
+<h2 id="2-消息丢失"><a href="#2-消息丢失" class="headerlink" title="2. 消息丢失"></a>2. 消息丢失</h2><p>原因：acks&#x3D;1、ISR 小<br>解决：acks&#x3D;all + min.insync.replicas≥2</p>
+<h2 id="3-消费阻塞"><a href="#3-消费阻塞" class="headerlink" title="3. 消费阻塞"></a>3. 消费阻塞</h2><p>原因：</p>
+<ul>
+<li>消费速度 &lt; 生产速度</li>
+<li>大批量消息反序列化耗时</li>
+<li>单 partition 的 consumer 处理过慢（无法并行）</li>
+<li>Rebalance 频繁导致阻塞</li>
+</ul>
+<p>解决：</p>
+<ul>
+<li>增加 partition（提高并行）</li>
+<li>调大 <code>max.poll.interval.ms</code></li>
+<li>使用异步批处理</li>
+</ul>
+<hr>
+<h1 id="九、Kafka-3-x：KRaft-架构（无-Zookeeper）"><a href="#九、Kafka-3-x：KRaft-架构（无-Zookeeper）" class="headerlink" title="九、Kafka 3.x：KRaft 架构（无 Zookeeper）"></a>九、Kafka 3.x：KRaft 架构（无 Zookeeper）</h1><p>Kafka 3.x 开始：</p>
+<ul>
+<li>不需要 Zookeeper</li>
+<li>使用 Raft 算法</li>
+<li>存储元数据于内部 topic <code>__cluster_metadata</code></li>
+</ul>
+<hr>
+<p><strong>KRaft 架构图</strong></p>
+<img src="Kafka基础/image-20251206214953498.png" srcset="/img/loading.gif" lazyload alt="image-20251206214953498" style="zoom:50%;" />
+
+<hr>
+<h1 id="十、Kafka-最终完整架构图"><a href="#十、Kafka-最终完整架构图" class="headerlink" title="十、Kafka 最终完整架构图"></a>十、Kafka 最终完整架构图</h1><img src="Kafka基础/image-20251206225928528.png" srcset="/img/loading.gif" lazyload alt="image-20251206225928528" style="zoom:50%;" />
                 
               </div>
             
@@ -595,7 +613,7 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>Kafka — 基础知识</div>
+      <div>Kafka — 基础知识与核心原理</div>
       <div>http://by.ecel.top/Messaging/Kafka基础/</div>
     </div>
     <div class="license-meta">

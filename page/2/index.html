@@ -292,14 +292,14 @@
       <h2 class="index-header">
         
         <a href="/Messaging/Kafka%E5%9F%BA%E7%A1%80/" target="_self">
-          Kafka — 基础知识
+          Kafka — 基础知识与核心原理
         </a>
       </h2>
 
       
       <a class="index-excerpt index-excerpt__noimg" href="/Messaging/Kafka%E5%9F%BA%E7%A1%80/" target="_self">
         <div>
-          一、Kafka 基础与整体架构Kafka 是一个 高吞吐、分布式、可扩展、可持久化 的消息流平台，核心特性：  高吞吐：顺序写磁盘 + PageCache 零拷贝 分区并行：partition 并发处理 水平扩展：broker 任意扩容 高可用：基于 副本 + ISR + Controller 的复制机制 持久化：segment 文件顺序写 支持流处理：Kafka Streams 支持批处理与订阅
+          [TOC] 一、Kafka 基础与整体架构Kafka 是分布式的、支持 高吞吐 + 可持久化 + 副本高可用 的消息系统。  1. 三大核心角色Producer  批量发送、压缩、异步&#x2F;同步发送 支持 重试 + 幂等 + 事务  Broker  存储数据：Topic → Partition → Segment 顺序写磁盘 + 零拷贝  Consumer  使用 Consumer Grou
         </div>
       </a>
 
