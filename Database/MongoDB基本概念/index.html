@@ -1,0 +1,789 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="刘笑笑">
+  <meta name="keywords" content="java、go、操作系统、网络">
+  
+    <meta name="description" content="1️⃣ MongoDB 基本概念 MongoDB 是一个面向文档的 NoSQL 数据库，使用 BSON（Binary JSON） 存储数据。 支持： 灵活的 schema：文档结构可变，不像关系型数据库固定表结构。 高可用性：通过 Replica Set 实现主从复制。 可扩展性：通过 Sharding 实现水平扩展。   核心特点： 文档存储（Document-oriented） 键值对数据模型">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MongoDB基本概念">
+<meta property="og:url" content="http://by.ecel.top/Database/MongoDB%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5/index.html">
+<meta property="og:site_name" content="title">
+<meta property="og:description" content="1️⃣ MongoDB 基本概念 MongoDB 是一个面向文档的 NoSQL 数据库，使用 BSON（Binary JSON） 存储数据。 支持： 灵活的 schema：文档结构可变，不像关系型数据库固定表结构。 高可用性：通过 Replica Set 实现主从复制。 可扩展性：通过 Sharding 实现水平扩展。   核心特点： 文档存储（Document-oriented） 键值对数据模型">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-08-17T13:26:33.000Z">
+<meta property="article:modified_time" content="2025-12-07T10:31:43.700Z">
+<meta property="article:author" content="刘笑笑">
+<meta property="article:tag" content="MongoDB">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>MongoDB基本概念 - title</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"by.ecel.top","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Tech Notes</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="MongoDB基本概念"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2022-08-17 21:26" pubdate>
+          2022年8月17日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          834 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          7 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">MongoDB基本概念</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h2 id="1️⃣-MongoDB-基本概念"><a href="#1️⃣-MongoDB-基本概念" class="headerlink" title="1️⃣ MongoDB 基本概念"></a>1️⃣ MongoDB 基本概念</h2><ul>
+<li><strong>MongoDB</strong> 是一个面向文档的 NoSQL 数据库，使用 <strong>BSON（Binary JSON）</strong> 存储数据。</li>
+<li>支持：<ul>
+<li><strong>灵活的 schema</strong>：文档结构可变，不像关系型数据库固定表结构。</li>
+<li><strong>高可用性</strong>：通过 Replica Set 实现主从复制。</li>
+<li><strong>可扩展性</strong>：通过 Sharding 实现水平扩展。</li>
+</ul>
+</li>
+<li>核心特点：<ul>
+<li>文档存储（Document-oriented）</li>
+<li>键值对数据模型</li>
+<li>内置索引和聚合功能</li>
+<li>强大的查询和统计能力</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2 id="2️⃣-数据结构"><a href="#2️⃣-数据结构" class="headerlink" title="2️⃣ 数据结构"></a>2️⃣ 数据结构</h2><h3 id="2-1-数据库（Database）"><a href="#2-1-数据库（Database）" class="headerlink" title="2.1 数据库（Database）"></a>2.1 数据库（Database）</h3><ul>
+<li>MongoDB 可以有多个数据库，每个数据库独立。</li>
+<li>命令：</li>
+</ul>
+<figure class="highlight gauss"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs gauss"><span class="hljs-keyword">show</span> dbs        <span class="hljs-comment">// 查看所有数据库</span><br><span class="hljs-keyword">use</span> testDB      <span class="hljs-comment">// 切换/创建数据库</span><br>db               <span class="hljs-comment">// 查看当前数据库</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="2-2-集合（Collection）"><a href="#2-2-集合（Collection）" class="headerlink" title="2.2 集合（Collection）"></a>2.2 集合（Collection）</h3><ul>
+<li>类似关系型数据库的表。</li>
+<li>不需要预定义 schema，文档可以不完全一致。</li>
+<li>命令：</li>
+</ul>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs dart"><span class="hljs-keyword">show</span> collections       <span class="hljs-comment">// 查看集合</span><br>db.createCollection(<span class="hljs-string">&quot;users&quot;</span>)  <span class="hljs-comment">// 创建集合</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="2-3-文档（Document）"><a href="#2-3-文档（Document）" class="headerlink" title="2.3 文档（Document）"></a>2.3 文档（Document）</h3><ul>
+<li>基本存储单位，类似 JSON 对象，内部用 BSON 存储。</li>
+<li>例：</li>
+</ul>
+<figure class="highlight nix"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs nix">&#123;<br>  <span class="hljs-params">_id:</span> ObjectId(<span class="hljs-string">&quot;64abc123...&quot;</span>),  <span class="hljs-operator">//</span> 默认主键<br>  <span class="hljs-params">name:</span> <span class="hljs-string">&quot;Alice&quot;</span>,<br>  <span class="hljs-params">age:</span> <span class="hljs-number">25</span>,<br>  <span class="hljs-params">address:</span> &#123; <span class="hljs-params">city:</span> <span class="hljs-string">&quot;Shanghai&quot;</span>, <span class="hljs-params">zip:</span> <span class="hljs-string">&quot;200000&quot;</span> &#125;,<br>  <span class="hljs-params">tags:</span> [<span class="hljs-string">&quot;dev&quot;</span>, <span class="hljs-string">&quot;java&quot;</span>]<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="3️⃣-数据类型"><a href="#3️⃣-数据类型" class="headerlink" title="3️⃣ 数据类型"></a>3️⃣ 数据类型</h2><ul>
+<li><strong>基本类型</strong>：String, Number, Boolean, Date, Null</li>
+<li><strong>复合类型</strong>：<ul>
+<li>Array（数组）</li>
+<li>Object（嵌套文档）</li>
+<li>Binary data</li>
+</ul>
+</li>
+<li><strong>特殊类型</strong>：<ul>
+<li>ObjectId（默认 _id 类型）</li>
+<li>Timestamp</li>
+<li>Decimal128（高精度数字）</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2 id="4️⃣-CRUD-操作"><a href="#4️⃣-CRUD-操作" class="headerlink" title="4️⃣ CRUD 操作"></a>4️⃣ CRUD 操作</h2><h3 id="4-1-插入文档"><a href="#4-1-插入文档" class="headerlink" title="4.1 插入文档"></a>4.1 插入文档</h3><figure class="highlight nix"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs nix">db.users.insertOne(&#123; <span class="hljs-params">name:</span> <span class="hljs-string">&quot;Bob&quot;</span>, <span class="hljs-params">age:</span> <span class="hljs-number">30</span> &#125;)<br>db.users.insertMany([<br>  &#123; <span class="hljs-params">name:</span> <span class="hljs-string">&quot;Alice&quot;</span>, <span class="hljs-params">age:</span> <span class="hljs-number">25</span> &#125;,<br>  &#123; <span class="hljs-params">name:</span> <span class="hljs-string">&quot;Tom&quot;</span>, <span class="hljs-params">age:</span> <span class="hljs-number">28</span> &#125;<br>])<br></code></pre></td></tr></table></figure>
+
+<h3 id="4-2-查询文档"><a href="#4-2-查询文档" class="headerlink" title="4.2 查询文档"></a>4.2 查询文档</h3><figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs stylus">db<span class="hljs-selector-class">.users</span><span class="hljs-selector-class">.find</span>(&#123; age: &#123; <span class="hljs-variable">$gt</span>: <span class="hljs-number">25</span> &#125; &#125;)  <span class="hljs-comment">// 条件查询</span><br>db<span class="hljs-selector-class">.users</span><span class="hljs-selector-class">.findOne</span>(&#123; name: <span class="hljs-string">&quot;Alice&quot;</span> &#125;) <span class="hljs-comment">// 查单条</span><br>db<span class="hljs-selector-class">.users</span><span class="hljs-selector-class">.find</span>()<span class="hljs-selector-class">.sort</span>(&#123; age: -<span class="hljs-number">1</span> &#125;)   <span class="hljs-comment">// 排序</span><br>db<span class="hljs-selector-class">.users</span><span class="hljs-selector-class">.find</span>(&#123;&#125;, &#123; name: <span class="hljs-number">1</span>, _id: <span class="hljs-number">0</span> &#125;) <span class="hljs-comment">// 投影字段</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="4-3-更新文档"><a href="#4-3-更新文档" class="headerlink" title="4.3 更新文档"></a>4.3 更新文档</h3><figure class="highlight nix"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs nix">db.users.updateOne(&#123; <span class="hljs-params">name:</span> <span class="hljs-string">&quot;Bob&quot;</span> &#125;, &#123; $<span class="hljs-params">set:</span> &#123; <span class="hljs-params">age:</span> <span class="hljs-number">31</span> &#125; &#125;)<br>db.users.updateMany(&#123; <span class="hljs-params">age:</span> &#123; $<span class="hljs-params">lt:</span> <span class="hljs-number">30</span> &#125; &#125;, &#123; $<span class="hljs-params">inc:</span> &#123; <span class="hljs-params">age:</span> <span class="hljs-number">1</span> &#125; &#125;)<br>db.users.replaceOne(&#123; <span class="hljs-params">name:</span> <span class="hljs-string">&quot;Alice&quot;</span> &#125;, &#123; <span class="hljs-params">name:</span> <span class="hljs-string">&quot;Alice&quot;</span>, <span class="hljs-params">age:</span> <span class="hljs-number">26</span> &#125;)<br></code></pre></td></tr></table></figure>
+
+<h3 id="4-4-删除文档"><a href="#4-4-删除文档" class="headerlink" title="4.4 删除文档"></a>4.4 删除文档</h3><figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs stylus">db<span class="hljs-selector-class">.users</span><span class="hljs-selector-class">.deleteOne</span>(&#123; name: <span class="hljs-string">&quot;Bob&quot;</span> &#125;)<br>db<span class="hljs-selector-class">.users</span><span class="hljs-selector-class">.deleteMany</span>(&#123; age: &#123; <span class="hljs-variable">$gt</span>: <span class="hljs-number">30</span> &#125; &#125;)<br></code></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="5️⃣-索引（Index）"><a href="#5️⃣-索引（Index）" class="headerlink" title="5️⃣ 索引（Index）"></a>5️⃣ 索引（Index）</h2><ul>
+<li><p>用于加速查询。</p>
+</li>
+<li><p>常见类型：</p>
+<ul>
+<li><p>单字段索引：</p>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">db</span>.users.createIndex(&#123; name: <span class="hljs-number">1</span> &#125;)  // <span class="hljs-number">1</span>升序，-<span class="hljs-number">1</span>降序<br></code></pre></td></tr></table></figure>
+</li>
+<li><p>复合索引：</p>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">db</span>.users.createIndex(&#123; age: <span class="hljs-number">1</span>, name: -<span class="hljs-number">1</span> &#125;)<br></code></pre></td></tr></table></figure>
+</li>
+<li><p>唯一索引：</p>
+<figure class="highlight nix"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs nix">db.users.createIndex(&#123; <span class="hljs-params">email:</span> <span class="hljs-number">1</span> &#125;, &#123; <span class="hljs-params">unique:</span> <span class="hljs-literal">true</span> &#125;)<br></code></pre></td></tr></table></figure>
+</li>
+<li><p>文本索引：</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs stylus">db<span class="hljs-selector-class">.articles</span><span class="hljs-selector-class">.createIndex</span>(&#123; <span class="hljs-attribute">content</span>: <span class="hljs-string">&quot;text&quot;</span> &#125;)<br></code></pre></td></tr></table></figure></li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2 id="6️⃣-聚合（Aggregation）"><a href="#6️⃣-聚合（Aggregation）" class="headerlink" title="6️⃣ 聚合（Aggregation）"></a>6️⃣ 聚合（Aggregation）</h2><ul>
+<li>类似 SQL 的 <code>GROUP BY</code> 和复杂查询。</li>
+<li>管道（Pipeline）方式：</li>
+</ul>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs php">db.orders.<span class="hljs-title function_ invoke__">aggregate</span>([<br>  &#123; <span class="hljs-variable">$match</span>: &#123; <span class="hljs-attr">status</span>: <span class="hljs-string">&quot;A&quot;</span> &#125; &#125;,<br>  &#123; <span class="hljs-variable">$group</span>: &#123; <span class="hljs-attr">_id</span>: <span class="hljs-string">&quot;<span class="hljs-subst">$cust_id</span>&quot;</span>, <span class="hljs-attr">total</span>: &#123; <span class="hljs-variable">$sum</span>: <span class="hljs-string">&quot;<span class="hljs-subst">$amount</span>&quot;</span> &#125; &#125; &#125;,<br>  &#123; <span class="hljs-variable">$sort</span>: &#123; <span class="hljs-attr">total</span>: -<span class="hljs-number">1</span> &#125; &#125;<br>])<br></code></pre></td></tr></table></figure>
+
+<ul>
+<li>常用操作符：<ul>
+<li><code>$match</code>、<code>$group</code>、<code>$project</code>、<code>$sort</code>、<code>$limit</code>、<code>$lookup</code>（左连接）</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2 id="7️⃣-数据库设计要点"><a href="#7️⃣-数据库设计要点" class="headerlink" title="7️⃣ 数据库设计要点"></a>7️⃣ 数据库设计要点</h2><ol>
+<li><strong>合理使用嵌套文档 vs 引用</strong>：<ul>
+<li>小量数据嵌套，减少 join。</li>
+<li>大量或多对多关系用引用。</li>
+</ul>
+</li>
+<li><strong>索引优化</strong>：<ul>
+<li>常用查询字段建立索引。</li>
+<li>避免过多索引影响写入性能。</li>
+</ul>
+</li>
+<li><strong>文档大小限制</strong>：<ul>
+<li>单文档最大 16MB。</li>
+</ul>
+</li>
+<li><strong>分片设计</strong>：<ul>
+<li>数据量大时考虑 Sharding。</li>
+<li>选择高基数字段作为分片键。</li>
+</ul>
+</li>
+</ol>
+<hr>
+<h2 id="8️⃣-副本集与高可用"><a href="#8️⃣-副本集与高可用" class="headerlink" title="8️⃣ 副本集与高可用"></a>8️⃣ 副本集与高可用</h2><ul>
+<li><strong>Replica Set</strong>：一个主节点 + 多个从节点。</li>
+<li>特点：<ul>
+<li>自动选举主节点。</li>
+<li>主节点写入，副本节点同步。</li>
+<li>保证数据高可用。</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2 id="9️⃣-Sharding（水平扩展）"><a href="#9️⃣-Sharding（水平扩展）" class="headerlink" title="9️⃣ Sharding（水平扩展）"></a>9️⃣ Sharding（水平扩展）</h2><ul>
+<li>将集合的数据分布在多个节点。</li>
+<li>组成：<ul>
+<li><strong>Shard</strong>：存储数据</li>
+<li><strong>Config Server</strong>：存储元数据</li>
+<li><strong>Mongos</strong>：路由查询请求</li>
+</ul>
+</li>
+<li>选择分片键要注意：<ul>
+<li>高基数</li>
+<li>查询常用字段</li>
+<li>均匀分布</li>
+</ul>
+</li>
+</ul>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Database/" class="category-chain-item">Database</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/MongoDB/" class="print-no-link">#MongoDB</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>MongoDB基本概念</div>
+      <div>http://by.ecel.top/Database/MongoDB基本概念/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>刘笑笑</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2022年8月17日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/Database/MongoDB%E5%85%A8%E6%99%AF%E7%9F%A5%E8%AF%86%E6%80%BB%E7%BB%93/" title="MongoDB全景知识总结">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">MongoDB全景知识总结</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/Database/%E5%80%92%E6%8E%92%E7%B4%A2%E5%BC%95/" title="倒排索引">
+                        <span class="hidden-mobile">倒排索引</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

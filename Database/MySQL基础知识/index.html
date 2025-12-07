@@ -19,15 +19,15 @@
   <meta name="author" content="刘笑笑">
   <meta name="keywords" content="java、go、操作系统、网络">
   
-    <meta name="description" content="一、MySQL 整体架构（高层与实现细节）核心组件  客户端 &#x2F; 协议层：解析客户端协议、权限校验。 连接管理：连接池&#x2F;线程管理、认证、SSL。 解析器（Parser）&#x2F;预处理器（Preprocessor）&#x2F;优化器（Optimizer）：SQL -&gt; AST -&gt; 重写 -&gt; 查询计划（cost-based）。 执行器（Executor）：">
+    <meta name="description" content="[TOC] 一、MySQL 整体架构核心组件  客户端 &#x2F; 协议层：解析客户端协议、权限校验。 连接管理：连接池&#x2F;线程管理、认证、SSL。 解析器（Parser）&#x2F;预处理器（Preprocessor）&#x2F;优化器（Optimizer）：SQL -&gt; AST -&gt; 重写 -&gt; 查询计划（cost-based）。 执行器（Executor）：按计划">
 <meta property="og:type" content="article">
 <meta property="og:title" content="MySQL — 基础知识">
 <meta property="og:url" content="http://by.ecel.top/Database/MySQL%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/index.html">
 <meta property="og:site_name" content="title">
-<meta property="og:description" content="一、MySQL 整体架构（高层与实现细节）核心组件  客户端 &#x2F; 协议层：解析客户端协议、权限校验。 连接管理：连接池&#x2F;线程管理、认证、SSL。 解析器（Parser）&#x2F;预处理器（Preprocessor）&#x2F;优化器（Optimizer）：SQL -&gt; AST -&gt; 重写 -&gt; 查询计划（cost-based）。 执行器（Executor）：">
+<meta property="og:description" content="[TOC] 一、MySQL 整体架构核心组件  客户端 &#x2F; 协议层：解析客户端协议、权限校验。 连接管理：连接池&#x2F;线程管理、认证、SSL。 解析器（Parser）&#x2F;预处理器（Preprocessor）&#x2F;优化器（Optimizer）：SQL -&gt; AST -&gt; 重写 -&gt; 查询计划（cost-based）。 执行器（Executor）：按计划">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2025-11-23T12:52:55.000Z">
-<meta property="article:modified_time" content="2025-12-07T08:04:16.763Z">
+<meta property="article:modified_time" content="2025-12-07T12:57:45.275Z">
 <meta property="article:author" content="刘笑笑">
 <meta property="article:tag" content="MySQL">
 <meta name="twitter:card" content="summary_large_image">
@@ -223,7 +223,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          5.8k 字
+          5.4k 字
         
       </span>
     
@@ -234,7 +234,7 @@
         
         
         
-          49 分钟
+          45 分钟
         
       </span>
     
@@ -276,7 +276,8 @@
             
               <div class="markdown-body">
                 
-                <h2 id="一、MySQL-整体架构（高层与实现细节）"><a href="#一、MySQL-整体架构（高层与实现细节）" class="headerlink" title="一、MySQL 整体架构（高层与实现细节）"></a>一、MySQL 整体架构（高层与实现细节）</h2><p><strong>核心组件</strong></p>
+                <p>[TOC]</p>
+<h2 id="一、MySQL-整体架构"><a href="#一、MySQL-整体架构" class="headerlink" title="一、MySQL 整体架构"></a>一、MySQL 整体架构</h2><p><strong>核心组件</strong></p>
 <ul>
 <li><strong>客户端 &#x2F; 协议层</strong>：解析客户端协议、权限校验。</li>
 <li><strong>连接管理</strong>：连接池&#x2F;线程管理、认证、SSL。</li>
@@ -312,21 +313,21 @@
 <li><strong>行级锁：记录锁、间隙锁（gap lock）、next-key lock</strong>。</li>
 <li><strong>崩溃恢复</strong>：基于 redo log + doublewrite + undo 进行恢复。</li>
 </ul>
-<p><strong>面试可能问：</strong></p>
+<p><strong>问题：</strong></p>
 <ul>
 <li>InnoDB 和 MyISAM 的主要区别？</li>
 <li>InnoDB 怎么保证事务的持久性？（redo + doublewrite + fsync）</li>
 <li>InnoDB 的聚簇索引如何影响二级索引？</li>
 <li>MVCC 的实现细节（读视图、undo log、事务隔离）？</li>
 </ul>
-<p><strong>高质量回答要点：</strong></p>
+<p><strong>分析：</strong></p>
 <ul>
 <li>MyISAM 无事务，表级锁，支持 FULLTEXT（旧版本），恢复能力弱；InnoDB 支持事务、外键、行级锁，崩溃恢复严格。</li>
 <li>InnoDB durabilty：事务 commit 写 redo log（预写），并最终刷写到磁盘；双写缓冲保护页完整性；checkpoint 控制脏页刷新；binlog 用于复制与持久化操作序列（注意 binlog_format 区别）。</li>
 <li>聚簇索引：主键是叶子节点包含整行。二级索引用主键回表（因此主键选择影响性能和空间）。</li>
 </ul>
 <hr>
-<h2 id="三、存储格式、页、表空间（细节）"><a href="#三、存储格式、页、表空间（细节）" class="headerlink" title="三、存储格式、页、表空间（细节）"></a>三、存储格式、页、表空间（细节）</h2><p><strong>页与行</strong></p>
+<h2 id="三、存储格式、页、表空间"><a href="#三、存储格式、页、表空间" class="headerlink" title="三、存储格式、页、表空间"></a>三、存储格式、页、表空间</h2><p><strong>页与行</strong></p>
 <ul>
 <li>InnoDB 页大小默认 16KB（可配置），页是 I&#x2F;O 单位。</li>
 <li>页包含行记录、插入缓冲、空闲空间等。</li>
@@ -340,20 +341,20 @@
 <li>Undo tablespaces（8.0+）单独管理 undo 数据。</li>
 <li><strong>doublewrite buffer</strong>：写入 doublewrite 区域再写入表空间。</li>
 </ul>
-<p><strong>面试可能问：</strong></p>
+<p><strong>问题：</strong></p>
 <ul>
 <li>页结构、行的存储格式、BLOB 如何存储？</li>
 <li>innodb_file_per_table 的利弊？</li>
 <li>redo&#x2F;undo 在磁盘上的存储与作用？</li>
 </ul>
-<p><strong>回答要点：</strong></p>
+<p><strong>分析：</strong></p>
 <ul>
 <li>页是 16KB，行存储有记录 header + data。BLOB 在溢出页，只在行里存指针。</li>
 <li><code>innodb_file_per_table=ON</code> 好处：空间释放、独立表迁移、备份灵活；坏处：可能管理复杂、表空间碎片。</li>
 <li>redo 用于重做 committed 事务；undo 用于回滚与构建 MVCC 快照。</li>
 </ul>
 <hr>
-<h2 id="四、事务与隔离（MVCC、隔离级别、异常）"><a href="#四、事务与隔离（MVCC、隔离级别、异常）" class="headerlink" title="四、事务与隔离（MVCC、隔离级别、异常）"></a>四、事务与隔离（MVCC、隔离级别、异常）</h2><p><strong>事务特性（ACID）</strong></p>
+<h2 id="四、事务与隔离"><a href="#四、事务与隔离" class="headerlink" title="四、事务与隔离"></a>四、事务与隔离</h2><p><strong>事务特性（ACID）</strong></p>
 <ul>
 <li>Atomicity、Consistency、Isolation、Durability。</li>
 </ul>
@@ -371,14 +372,14 @@
 <li><strong>Read View（读视图）</strong>：记录哪些事务是可见的（undo 被保留直到没有事务需要它）。</li>
 <li><strong>幻读</strong>：REPEATABLE READ + InnoDB 的 next-key lock + gap lock 可以防止幻读（在可重复读实现中）。</li>
 </ul>
-<p><strong>面试问法：</strong></p>
+<p><strong>问题：</strong></p>
 <ul>
 <li>MVCC 是如何实现的？read view 是什么？</li>
 <li>各隔离级别带来的并发问题（脏读、不可重复读、幻读）举例。</li>
 <li>为何 InnoDB 默认为 REPEATABLE READ 而不是 Serializable？</li>
 <li>如何避免幻读？什么时候会发生死锁？</li>
 </ul>
-<p><strong>回答要点：</strong></p>
+<p><strong>分析</strong></p>
 <ul>
 <li>描述 undo log、read view、version chain 的交互：写操作在 undo 中保留旧版本；读操作通过 read view 确定可见版本。</li>
 <li>举例说明脏读&#x2F;不可重复读&#x2F;幻读。</li>
@@ -386,7 +387,7 @@
 <li>幻读可通过加锁（SELECT … FOR UPDATE）、使用 SERIALIZABLE，或使用 gap locks 来应对。</li>
 </ul>
 <hr>
-<h2 id="五、锁机制（行锁、表锁、意向锁、MDL、死锁）"><a href="#五、锁机制（行锁、表锁、意向锁、MDL、死锁）" class="headerlink" title="五、锁机制（行锁、表锁、意向锁、MDL、死锁）"></a>五、锁机制（行锁、表锁、意向锁、MDL、死锁）</h2><p><strong>锁种类</strong></p>
+<h2 id="五、锁机制"><a href="#五、锁机制" class="headerlink" title="五、锁机制"></a>五、锁机制</h2><p><strong>锁种类</strong></p>
 <ul>
 <li><strong>表级锁（MyISAM &#x2F; explicit LOCK TABLES）</strong></li>
 <li><strong>行级锁（InnoDB）</strong>：记录锁（record lock）、间隙锁（gap lock）、next-key lock（记录+gap）。</li>
@@ -400,20 +401,20 @@
 <li>InnoDB 使用死锁检测（等待图）并回滚代价较小事务；SHOW ENGINE INNODB STATUS 能看到死锁信息。</li>
 <li>预防死锁：保证加锁顺序、使用较短事务、避免用户交互中的长事务。</li>
 </ul>
-<p><strong>面试问法：</strong></p>
+<p><strong>问题：</strong></p>
 <ul>
 <li>解释 next-key lock、gap lock、record lock 的用途与区别。</li>
 <li>为什么会出现死锁？如何诊断和优化？</li>
 <li>意向锁的作用是什么？</li>
 </ul>
-<p><strong>回答要点：</strong></p>
+<p><strong>分析：</strong></p>
 <ul>
 <li>next-key lock &#x3D; record lock + gap lock，用于防止幻读（阻止插入到某个间隙）。</li>
 <li>意向锁是表级的锁标志（在事务要加行锁时表上会设置 IX&#x2F;IS），帮助存储引擎快速判断表级锁冲突。</li>
 <li>通过 <code>innodb_print_all_deadlocks=ON</code>、<code>SHOW ENGINE INNODB STATUS</code>、performance_schema 查看死锁原因；解决策略：短事务、合理索引、固定加锁顺序、升降隔离级别等。</li>
 </ul>
 <hr>
-<h2 id="六、索引（种类、原理、优化、常见误区）"><a href="#六、索引（种类、原理、优化、常见误区）" class="headerlink" title="六、索引（种类、原理、优化、常见误区）"></a>六、索引（种类、原理、优化、常见误区）</h2><p><strong>索引类型</strong></p>
+<h2 id="六、索引"><a href="#六、索引" class="headerlink" title="六、索引"></a>六、索引</h2><p><strong>索引类型</strong></p>
 <ul>
 <li><strong>B+树索引（默认）</strong>：主键（聚簇）&#x2F;非主键（辅助）索引，范围&#x2F;排序良好。</li>
 <li><strong>哈希索引</strong>：Memory 引擎的哈希、InnoDB adaptive hash（内存结构），只用于等值查找。</li>
@@ -441,14 +442,14 @@
 <li><code>LIKE &#39;%abc&#39;</code> 无法使用 B+树前缀索引。</li>
 <li><code>OR</code> 语句可能导致索引失效（可用 UNION 或索引合并）。</li>
 </ul>
-<p><strong>面试问法：</strong></p>
+<p><strong>问题：</strong></p>
 <ul>
 <li>B+树为什么适合数据库索引？B+树 vs B树 区别？</li>
 <li>说明最左前缀原则、覆盖索引、回表。</li>
 <li>EXPLAIN 看懂 <code>type=ref</code>、<code>Using filesort</code>、<code>Using temporary</code> 的含义和优化方法。</li>
 <li>为什么 ORDER BY 能用索引？</li>
 </ul>
-<p><strong>回答要点：</strong></p>
+<p><strong>分析：</strong></p>
 <ul>
 <li>B+树所有值都在叶子节点，内节点仅为路由，叶子节点链表便于范围扫描；B树叶子与内节点都存值，分页 I&#x2F;O 不如 B+树高效。</li>
 <li>最左前缀：复合索引 (a,b,c) 可用于查询 a、a,b、a,b,c；不能用于单独 b 或 c。</li>
@@ -456,7 +457,7 @@
 <li>ORDER BY 可以使用索引当查询顺序与索引顺序一致且没有 additional columns breaking coverage。</li>
 </ul>
 <hr>
-<h2 id="七、查询优化器（原理、成本模型、常见问题）"><a href="#七、查询优化器（原理、成本模型、常见问题）" class="headerlink" title="七、查询优化器（原理、成本模型、常见问题）"></a>七、查询优化器（原理、成本模型、常见问题）</h2><p><strong>Optimizer 任务</strong></p>
+<h2 id="七、查询优化器"><a href="#七、查询优化器" class="headerlink" title="七、查询优化器"></a>七、查询优化器</h2><p><strong>Optimizer 任务</strong></p>
 <ul>
 <li>选择访问路径（索引或全表）</li>
 <li>选择 join 顺序与 join 算法（nested loop、hash join since 8.0）</li>
@@ -473,14 +474,14 @@
 <li>分页优化（大页码要用 ID 游标&#x2F;seek 方法代替 offset-limit）。</li>
 <li>使用 <code>ANALYZE TABLE</code> 更新统计信息。</li>
 </ul>
-<p><strong>面试问法：</strong></p>
+<p><strong>问题：</strong></p>
 <ul>
 <li>EXPLAIN 的各字段含义：type、possible_keys、key、key_len、ref、rows、Extra？</li>
 <li>如何优化慢查询？举组件和流程（定位、索引、重写、缓存、架构）。</li>
 <li>Join 顺序与 join 算法的选择依据是什么？</li>
 <li>为什么有时索引没被使用？</li>
 </ul>
-<p><strong>回答要点：</strong></p>
+<p><strong>分析：</strong></p>
 <ul>
 <li>解释每个 EXPLAIN 字段，<code>rows</code> 是估算行数，<code>key_len</code> 表示使用索引的字节数。</li>
 <li>优化流程：捕获慢 query -&gt; EXPLAIN -&gt; 建索引或重写 -&gt; 添加缓存 &#x2F; 读写分离 &#x2F; 分库分表 -&gt; 再做压力测试。</li>
@@ -488,7 +489,7 @@
 <li>索引不被使用：是因为类型转换、函数、low selectivity、ORDER BY mismatch、查询语法（OR）、统计信息过时等。</li>
 </ul>
 <hr>
-<h2 id="八、执行计划与-EXPLAIN-深入（实战）"><a href="#八、执行计划与-EXPLAIN-深入（实战）" class="headerlink" title="八、执行计划与 EXPLAIN 深入（实战）"></a>八、执行计划与 EXPLAIN 深入（实战）</h2><p><strong>要掌握的命令</strong></p>
+<h2 id="八、执行计划与-EXPLAIN-深入"><a href="#八、执行计划与-EXPLAIN-深入" class="headerlink" title="八、执行计划与 EXPLAIN 深入"></a>八、执行计划与 EXPLAIN 深入</h2><p><strong>要掌握的命令</strong></p>
 <ul>
 <li><code>EXPLAIN SELECT ...;</code></li>
 <li><code>EXPLAIN FORMAT=JSON SELECT ...;</code>（更详尽）</li>
@@ -524,14 +525,14 @@
 <li>异步复制存在数据丢失窗口，半同步降低但不完全消除。</li>
 <li>GTID 便于切换主&#x2F;从、自动化 failover。</li>
 </ul>
-<p><strong>面试问法：</strong></p>
+<p><strong>问题：</strong></p>
 <ul>
 <li>MySQL 复制原理（io thread &amp; sql thread）？</li>
 <li>binlog row vs statement 区别？</li>
 <li>GTID 如何工作？如何做主从切换？</li>
 <li>如何实现高可用（自动 failover）？</li>
 </ul>
-<p><strong>回答要点：</strong></p>
+<p><strong>分析：</strong></p>
 <ul>
 <li>复制包括：主端写 binlog，slave 的 IO thread 拉 binlog 写 relay log，再由 SQL thread 执行 relay log。</li>
 <li>ROW 格式复制的是行级别事件，避免非确定性（如 <code>NOW()</code>），STATEMENT 小但风险高。</li>
@@ -539,7 +540,7 @@
 <li>高可用方案：主从 + 心跳 + 自动 failover（MHA, Orchestrator + ProxySQL）或使用 Group Replication &#x2F; InnoDB Cluster。</li>
 </ul>
 <hr>
-<h2 id="十、备份与恢复（策略、工具）"><a href="#十、备份与恢复（策略、工具）" class="headerlink" title="十、备份与恢复（策略、工具）"></a>十、备份与恢复（策略、工具）</h2><p><strong>备份方式</strong></p>
+<h2 id="十、备份与恢复"><a href="#十、备份与恢复" class="headerlink" title="十、备份与恢复"></a>十、备份与恢复</h2><p><strong>备份方式</strong></p>
 <ul>
 <li><strong>逻辑备份</strong>：<code>mysqldump</code>、<code>mysqlpump</code>（可移植，慢）。</li>
 <li><strong>物理备份</strong>：<code>xtrabackup</code>（Percona XtraBackup）做热备份（InnoDB），复制表空间文件快。</li>
@@ -552,18 +553,18 @@
 <li>恢复测试必做（常被忽视）。</li>
 <li>冷备份 vs 热备份权衡。</li>
 </ul>
-<p><strong>面试问法：</strong></p>
+<p><strong>问题：</strong></p>
 <ul>
 <li>如何设计备份方案？如何做 PITA（点时间恢复）？</li>
 <li>xtrabackup 的工作原理（innodb 物理拷贝 + apply-log）？</li>
 </ul>
-<p><strong>回答要点：</strong></p>
+<p><strong>分析：</strong></p>
 <ul>
 <li>备份策略常用：全量周一次 + 增量&#x2F;差异 + binlog 每日归档。恢复流程需要明确演练。</li>
 <li>xtrabackup 做非阻塞拷贝，然后 apply log（redo）使备份一致；支持 streaming 增量。</li>
 </ul>
 <hr>
-<h2 id="十一、分区与分库分表（水平-垂直拆分）"><a href="#十一、分区与分库分表（水平-垂直拆分）" class="headerlink" title="十一、分区与分库分表（水平&#x2F;垂直拆分）"></a>十一、分区与分库分表（水平&#x2F;垂直拆分）</h2><p><strong>分区（Partitioning）</strong></p>
+<h2 id="十一、分区与分库分表"><a href="#十一、分区与分库分表" class="headerlink" title="十一、分区与分库分表"></a>十一、分区与分库分表</h2><p><strong>分区（Partitioning）</strong></p>
 <ul>
 <li>类型：RANGE, LIST, HASH, KEY, RANGE COLUMNS</li>
 <li>优点：管理大量数据（分区裁剪，便于删除旧数据）</li>
@@ -576,17 +577,17 @@
 <li>中间件：应用层路由、Sharding Sphere、ProxySQL + application logic。</li>
 <li>数据一致性与跨分片事务复杂（两阶段提交 &#x2F; XA &#x2F; distributed transaction），多数场景用 BASE + 事务补偿 或 可靠消息 + 最终一致性方案。</li>
 </ul>
-<p><strong>面试问法：</strong></p>
+<p><strong>问题：</strong></p>
 <ul>
 <li>分库分表怎么做？如何保证跨分片事务一致性？</li>
 <li>分区和分库的对比？</li>
 </ul>
-<p><strong>回答要点：</strong></p>
+<p><strong>分析：</strong></p>
 <ul>
 <li>分区适合单实例内数据管理；分库能扩展到多机器。跨分片事务代价高，常用两段提交&#x2F;分布式事务中间件或领域驱动设计避免跨分片事务，使用补偿事务和幂等设计。</li>
 </ul>
 <hr>
-<h2 id="十二、性能调优要点（参数、监控、瓶颈定位）"><a href="#十二、性能调优要点（参数、监控、瓶颈定位）" class="headerlink" title="十二、性能调优要点（参数、监控、瓶颈定位）"></a>十二、性能调优要点（参数、监控、瓶颈定位）</h2><p><strong>关键调参</strong></p>
+<h2 id="十二、性能调优要点"><a href="#十二、性能调优要点" class="headerlink" title="十二、性能调优要点"></a>十二、性能调优要点</h2><p><strong>关键调参</strong></p>
 <ul>
 <li><code>innodb_buffer_pool_size</code>：最重要，通常 60-80% 的可用内存（只在 DB 专机上）。</li>
 <li><code>innodb_log_file_size</code>、<code>innodb_log_files_in_group</code>：影响 checkpoint 和写入性能。</li>
@@ -610,18 +611,18 @@
 <li>索引 &#x2F; schema &#x2F; rewrite &#x2F; cache。</li>
 <li>架构优化：读写分离、缓存、分库分表、队列削峰。</li>
 </ol>
-<p><strong>面试问法：</strong></p>
+<p><strong>问题：</strong></p>
 <ul>
 <li>当系统慢，你如何排查？举一步步流程与命令。</li>
 <li>Buffer pool 命中率低如何处理？</li>
 </ul>
-<p><strong>回答要点：</strong></p>
+<p><strong>分析：</strong></p>
 <ul>
 <li>给出详细排查步骤（OS 层（iostat&#x2F;top）、MySQL 层（SHOW PROCESSLIST、SHOW ENGINE INNODB STATUS、慢查询日志、performance_schema）、EXPLAIN）。</li>
 <li>Buffer pool 命中率低：增大 buffer pool、检查大表扫描、索引缺失导致大量全表扫描。</li>
 </ul>
 <hr>
-<h2 id="十三、B-树、B树、哈希（理论与应用）"><a href="#十三、B-树、B树、哈希（理论与应用）" class="headerlink" title="十三、B+树、B树、哈希（理论与应用）"></a>十三、B+树、B树、哈希（理论与应用）</h2><p><strong>B+树 vs B树</strong></p>
+<h2 id="十三、B-树、B树、哈希"><a href="#十三、B-树、B树、哈希" class="headerlink" title="十三、B+树、B树、哈希"></a>十三、B+树、B树、哈希</h2><p><strong>B+树 vs B树</strong></p>
 <ul>
 <li><strong>B-tree</strong>：每节点存键值和数据。查找时数据可能位于内、叶节点。</li>
 <li><strong>B+树</strong>：非叶子节点仅存键和指向子节点的指针，所有数据都在叶子节点。叶子节点通过链表连接，便于范围扫描。</li>
@@ -632,18 +633,18 @@
 </li>
 <li><strong>哈希索引</strong>：适合等值查找，不能范围查找，碰撞处理，Memory 引擎用到。</li>
 </ul>
-<p><strong>面试问法：</strong></p>
+<p><strong>问题：</strong></p>
 <ul>
 <li>B+树的插入&#x2F;删除对页分裂&#x2F;合并的影响？</li>
 <li>B+树为什么适合磁盘存储（IO 层考虑）？</li>
 </ul>
-<p><strong>回答要点：</strong></p>
+<p><strong>分析：</strong></p>
 <ul>
 <li>插入：找到叶子插入；若溢出分裂并向上调整；删除可能导致合并或借位。页分裂导致写放大和更多 IO。</li>
 <li>B+树减少磁盘读：内节点驻留内存可快速导航到叶子；一次页读获取多个键&#x2F;值数据。</li>
 </ul>
 <hr>
-<h2 id="十四、进程-线程管理（mysqld-模型）"><a href="#十四、进程-线程管理（mysqld-模型）" class="headerlink" title="十四、进程&#x2F;线程管理（mysqld 模型）"></a>十四、进程&#x2F;线程管理（mysqld 模型）</h2><p><strong>线程模型</strong></p>
+<h2 id="十四、进程-线程管理"><a href="#十四、进程-线程管理" class="headerlink" title="十四、进程&#x2F;线程管理"></a>十四、进程&#x2F;线程管理</h2><p><strong>线程模型</strong></p>
 <ul>
 <li>每个客户端连接默认一个线程（old model），现代可以使用线程池插件（thread_pool）处理大量连接。</li>
 <li><code>thread_cache_size</code> 缓存线程减少创建开销。</li>
@@ -655,17 +656,17 @@
 <li><code>thread_cache_size</code>：线程复用</li>
 <li><code>table_open_cache</code>、<code>open_files_limit</code></li>
 </ul>
-<p><strong>面试问法：</strong></p>
+<p><strong>问题：</strong></p>
 <ul>
 <li>MySQL 如何处理并发连接？线程池有何优点？</li>
 <li><code>max_connections</code> 过大有什么风险？</li>
 </ul>
-<p><strong>回答要点：</strong></p>
+<p><strong>分析：</strong></p>
 <ul>
 <li>线程池可以重用线程、控制并发执行线程数，避免大量线程竞争 CPU 和内存。<code>max_connections</code> 过大会导致内存和上下文切换开销。</li>
 </ul>
 <hr>
-<h2 id="十五、常见工具与命令（速查）"><a href="#十五、常见工具与命令（速查）" class="headerlink" title="十五、常见工具与命令（速查）"></a>十五、常见工具与命令（速查）</h2><p><strong>排查与监控</strong></p>
+<h2 id="十五、常见工具与命令"><a href="#十五、常见工具与命令" class="headerlink" title="十五、常见工具与命令"></a>十五、常见工具与命令</h2><p><strong>排查与监控</strong></p>
 <ul>
 <li><code>SHOW PROCESSLIST;</code></li>
 <li><code>SHOW GLOBAL STATUS;</code> &#x2F; <code>SHOW SESSION STATUS;</code></li>
@@ -684,8 +685,7 @@
 <li>查看 buffer pool info：<code>SHOW ENGINE INNODB STATUS\G</code> -&gt; Buffer pool 统计</li>
 </ul>
 <hr>
-<h2 id="十六、常见面试题（题目-要点答案）"><a href="#十六、常见面试题（题目-要点答案）" class="headerlink" title="十六、常见面试题（题目+要点答案）"></a>十六、常见面试题（题目+要点答案）</h2><p>我把最常被问的题列出来——面试中能直接背答案并扩展即可。</p>
-<ol>
+<h2 id="十六、常见问题"><a href="#十六、常见问题" class="headerlink" title="十六、常见问题"></a>十六、常见问题</h2><ol>
 <li><strong>MySQL 的事务隔离级别有哪些？分别会出现哪些并发问题？</strong><ul>
 <li>答：列出 4 个并说明脏读&#x2F;不可重复读&#x2F;幻读；解释 InnoDB 如何用 MVCC + gap lock 解决幻读。</li>
 </ul>
@@ -745,7 +745,7 @@
 </ol>
 <p>（面试题远不止这些，关键是能根据问题把实现原理、常见问题、解决办法与命令结合起来说明。）</p>
 <hr>
-<h2 id="十七、常见错误、坑与注意事项（面试喜欢挖的地方）"><a href="#十七、常见错误、坑与注意事项（面试喜欢挖的地方）" class="headerlink" title="十七、常见错误、坑与注意事项（面试喜欢挖的地方）"></a>十七、常见错误、坑与注意事项（面试喜欢挖的地方）</h2><ul>
+<h2 id="十七、常见错误、坑与注意事项"><a href="#十七、常见错误、坑与注意事项" class="headerlink" title="十七、常见错误、坑与注意事项"></a>十七、常见错误、坑与注意事项</h2><ul>
 <li><strong>误用 UUID</strong>：UUID 导致随机插入，严重碎片化，写放大。解决：使用有序 UUID 或使用前缀字段做哈希。</li>
 <li><strong>忘记索引覆盖回表成本</strong>：二级索引查出主键后回主键表查行，成本显著。</li>
 <li><strong>使用 <code>SELECT \*</code> 导致不必要 IO</strong>。</li>
@@ -755,7 +755,7 @@
 <li><strong>过度索引</strong>：写性能下降、更多维护与磁盘。</li>
 </ul>
 <hr>
-<h2 id="十八、实战命令与示例（便于面试现场写-SQL-现场排错）"><a href="#十八、实战命令与示例（便于面试现场写-SQL-现场排错）" class="headerlink" title="十八、实战命令与示例（便于面试现场写 SQL &#x2F; 现场排错）"></a>十八、实战命令与示例（便于面试现场写 SQL &#x2F; 现场排错）</h2><p>查看慢查询设置并开启：</p>
+<h2 id="十八、实战命令与示例"><a href="#十八、实战命令与示例" class="headerlink" title="十八、实战命令与示例"></a>十八、实战命令与示例</h2><p>查看慢查询设置并开启：</p>
 <figure class="highlight pgsql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs pgsql"><span class="hljs-keyword">SHOW</span> VARIABLES <span class="hljs-keyword">LIKE</span> <span class="hljs-string">&#x27;slow_query_log%&#x27;</span>;<br><span class="hljs-keyword">SET</span> <span class="hljs-keyword">GLOBAL</span> slow_query_log = <span class="hljs-keyword">ON</span>;<br><span class="hljs-keyword">SET</span> <span class="hljs-keyword">GLOBAL</span> long_query_time = <span class="hljs-number">1</span>;<br></code></pre></td></tr></table></figure>
 
 <p>查看当前连接与慢 SQL：</p>
@@ -800,16 +800,7 @@
 <li>Redis &#x2F; Memcached 做热点缓存（注意缓存失效策略和缓存击穿 &#x2F; 穿透 &#x2F; 雪崩 防护）。</li>
 </ul>
 <hr>
-<h2 id="二十、面试高分答题技巧（方法论）"><a href="#二十、面试高分答题技巧（方法论）" class="headerlink" title="二十、面试高分答题技巧（方法论）"></a>二十、面试高分答题技巧（方法论）</h2><ol>
-<li><strong>先给结论，再解释原因，再给例子&#x2F;命令</strong>（面试官喜欢结构化回答）。</li>
-<li><strong>关注权衡</strong>：每种方案都有利弊，列出代价（性能&#x2F;一致性&#x2F;复杂度&#x2F;运维）。</li>
-<li><strong>用数据说话</strong>：给出常用参数与推荐值（如 buffer pool 设置策略）。</li>
-<li><strong>能写命令就写命令</strong>：在白板或远程面试中写出 EXPLAIN &#x2F; SHOW 命令。</li>
-<li><strong>演示排错流程</strong>：现场讲一个“系统变慢”的排查流程，具体到命令与指标。</li>
-<li><strong>提到版本差异</strong>：MySQL 8 对 optimizer、hash join、窗口函数、JSON、CTE 支持等增强，说明你注意版本变化。</li>
-</ol>
-<hr>
-<h2 id="二十一、快速记忆清单（面试速查）"><a href="#二十一、快速记忆清单（面试速查）" class="headerlink" title="二十一、快速记忆清单（面试速查）"></a>二十一、快速记忆清单（面试速查）</h2><ul>
+<h2 id="二十、快速记忆清单"><a href="#二十、快速记忆清单" class="headerlink" title="二十、快速记忆清单"></a>二十、快速记忆清单</h2><ul>
 <li><strong>最重要的五个参数</strong>：<code>innodb_buffer_pool_size</code>, <code>innodb_log_file_size</code>, <code>innodb_flush_log_at_trx_commit</code>, <code>max_connections</code>, <code>innodb_io_capacity</code></li>
 <li><strong>EXPLAIN 常看字段</strong>：type、key、key_len、rows、Extra</li>
 <li><strong>InnoDB 日志</strong>：redo（重做） vs undo（回滚 + MVCC）</li>
@@ -819,14 +810,7 @@
 <li><strong>备份</strong>：逻辑（mysqldump） vs 物理（xtrabackup） + binlog for PITR</li>
 </ul>
 <hr>
-<h2 id="二十二、进一步进阶阅读建议（面试后题外延伸）"><a href="#二十二、进一步进阶阅读建议（面试后题外延伸）" class="headerlink" title="二十二、进一步进阶阅读建议（面试后题外延伸）"></a>二十二、进一步进阶阅读建议（面试后题外延伸）</h2><ul>
-<li>InnoDB internals（页格式、redo&#x2F;undo、purge、doublewrite）</li>
-<li>MySQL 性能调优实战（Percona&#x2F;官方白皮书）</li>
-<li>Group Replication &#x2F; InnoDB Cluster 实战</li>
-<li>深入理解 EXPLAIN JSON &#x2F; EXPLAIN ANALYZE</li>
-</ul>
-<hr>
-<h2 id="最后-—-面试真题演练（3-个综合题）"><a href="#最后-—-面试真题演练（3-个综合题）" class="headerlink" title="最后 — 面试真题演练（3 个综合题）"></a>最后 — 面试真题演练（3 个综合题）</h2><ol>
+<h2 id="综合问题分析"><a href="#综合问题分析" class="headerlink" title="综合问题分析"></a>综合问题分析</h2><ol>
 <li><strong>题目</strong>：系统突然出现大量 <code>LOCK WAIT</code>，影响写操作。请现场给出排查步骤与命令，并提出 3 种解决策略。<ul>
 <li><strong>答</strong>：列出：<code>SHOW ENGINE INNODB STATUS\G</code>（查看死锁&#x2F;等待），<code>SELECT * FROM INFORMATION_SCHEMA.INNODB_TRX</code>、<code>INNODB_LOCK_WAITS</code>、<code>SHOW PROCESSLIST</code>、定位长事务&#x2F;慢 SQL；解决：短事务&#x2F;添加索引避免 full scan&#x2F;杀掉阻塞事务并优化事务逻辑&#x2F;使用更低隔离（READ COMMITTED）或改写 SQL。</li>
 </ul>
@@ -930,9 +914,9 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/Microservices/RPC/" title="post">
+                      <a href="/Messaging/Kafka%E5%9F%BA%E7%A1%80/" title="Kafka — 基础知识与核心原理">
                         <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">post</span>
+                        <span class="hidden-mobile">Kafka — 基础知识与核心原理</span>
                         <span class="visible-mobile">上一篇</span>
                       </a>
                     
@@ -940,8 +924,8 @@
                   <article class="post-next col-6">
                     
                     
-                      <a href="/Messaging/Kafka%E5%9F%BA%E7%A1%80/" title="Kafka — 基础知识与核心原理">
-                        <span class="hidden-mobile">Kafka — 基础知识与核心原理</span>
+                      <a href="/Caching/Redis%E5%9F%BA%E7%A1%80/" title="Redis — 基础知识">
+                        <span class="hidden-mobile">Redis — 基础知识</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
