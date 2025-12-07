@@ -1,0 +1,1031 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="刘笑笑">
+  <meta name="keywords" content="java、go、操作系统、网络">
+  
+    <meta name="description" content="[TOC] 一、MySQL 底层架构总览MySQL 可分为 Server 层（通用层） 和 存储引擎层（InnoDB）。 1234567Client  ↓Server 层：连接管理 &#x2F; SQL 解析 &#x2F; 优化器 &#x2F; 执行器 &#x2F; Query Cache(已废弃)  ↓Engine 层：InnoDB（Buffer Pool &#x2F; Redo &#x2F; Undo &#x2F; Doublewrite &#x2F; Backgroun">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MySQL底层架构">
+<meta property="og:url" content="http://by.ecel.top/Database/MySQL%E5%BA%95%E5%B1%82%E6%9E%B6%E6%9E%84/index.html">
+<meta property="og:site_name" content="title">
+<meta property="og:description" content="[TOC] 一、MySQL 底层架构总览MySQL 可分为 Server 层（通用层） 和 存储引擎层（InnoDB）。 1234567Client  ↓Server 层：连接管理 &#x2F; SQL 解析 &#x2F; 优化器 &#x2F; 执行器 &#x2F; Query Cache(已废弃)  ↓Engine 层：InnoDB（Buffer Pool &#x2F; Redo &#x2F; Undo &#x2F; Doublewrite &#x2F; Backgroun">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://by.ecel.top/Database/MySQL%E5%BA%95%E5%B1%82%E6%9E%B6%E6%9E%84/MySQL%E5%BA%95%E5%B1%82%E6%9E%B6%E6%9E%84/image-20251207161539798.png">
+<meta property="og:image" content="http://by.ecel.top/Database/MySQL%E5%BA%95%E5%B1%82%E6%9E%B6%E6%9E%84/MySQL%E5%BA%95%E5%B1%82%E6%9E%B6%E6%9E%84/image-20251207180707068.png">
+<meta property="og:image" content="http://by.ecel.top/Database/MySQL%E5%BA%95%E5%B1%82%E6%9E%B6%E6%9E%84/MySQL%E5%BA%95%E5%B1%82%E6%9E%B6%E6%9E%84/image-20251207175930551.png">
+<meta property="og:image" content="http://by.ecel.top/Database/MySQL%E5%BA%95%E5%B1%82%E6%9E%B6%E6%9E%84/MySQL%E5%BA%95%E5%B1%82%E6%9E%B6%E6%9E%84/image-20251207171418366.png">
+<meta property="og:image" content="http://by.ecel.top/Database/MySQL%E5%BA%95%E5%B1%82%E6%9E%B6%E6%9E%84/MySQL%E5%BA%95%E5%B1%82%E6%9E%B6%E6%9E%84/image-20251207165819890.png">
+<meta property="article:published_time" content="2025-12-07T08:03:13.000Z">
+<meta property="article:modified_time" content="2025-12-07T10:08:37.209Z">
+<meta property="article:author" content="刘笑笑">
+<meta property="article:tag" content="MySQL">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://by.ecel.top/Database/MySQL%E5%BA%95%E5%B1%82%E6%9E%B6%E6%9E%84/MySQL%E5%BA%95%E5%B1%82%E6%9E%B6%E6%9E%84/image-20251207161539798.png">
+  
+  
+  
+  <title>MySQL底层架构 - title</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"by.ecel.top","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Tech Notes</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="MySQL底层架构"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2025-12-07 16:03" pubdate>
+          2025年12月7日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          1.6k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          14 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">MySQL底层架构</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <p>[TOC]</p>
+<h1 id="一、MySQL-底层架构总览"><a href="#一、MySQL-底层架构总览" class="headerlink" title="一、MySQL 底层架构总览"></a>一、MySQL 底层架构总览</h1><p>MySQL 可分为 <strong>Server 层（通用层）</strong> 和 <strong>存储引擎层（InnoDB）</strong>。</p>
+<figure class="highlight nix"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs nix">Client<br>  ↓<br>Server 层：连接管理 <span class="hljs-symbol">/</span> SQL 解析 <span class="hljs-symbol">/</span> 优化器 <span class="hljs-symbol">/</span> 执行器 <span class="hljs-symbol">/</span> Query Cache(已废弃)<br>  ↓<br>Engine 层：InnoDB（Buffer Pool <span class="hljs-symbol">/</span> Redo <span class="hljs-symbol">/</span> Undo <span class="hljs-symbol">/</span> Doublewrite <span class="hljs-symbol">/</span> Background Threads）<br>  ↓<br>OS Page Cache <span class="hljs-operator">+</span> Disk<br></code></pre></td></tr></table></figure>
+
+<hr>
+<h1 id="二、核心组件说明"><a href="#二、核心组件说明" class="headerlink" title="二、核心组件说明"></a>二、核心组件说明</h1><h2 id="1-MySQL-Server层"><a href="#1-MySQL-Server层" class="headerlink" title="1. MySQL Server层"></a>1. MySQL Server层</h2><table>
+<thead>
+<tr>
+<th>模块</th>
+<th>功能</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>连接器</strong></td>
+<td>SSL、TCP、账号密码校验、线程管理</td>
+</tr>
+<tr>
+<td><strong>解析器（Parser）</strong></td>
+<td>词法分析、语法分析生成 AST</td>
+</tr>
+<tr>
+<td><strong>优化器（Optimizer）</strong></td>
+<td>选择索引、Join 顺序、执行计划</td>
+</tr>
+<tr>
+<td><strong>执行器（Executor）</strong></td>
+<td>调用 Engine API，如“取某范围记录”</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="2-InnoDB-存储引擎层"><a href="#2-InnoDB-存储引擎层" class="headerlink" title="2. InnoDB 存储引擎层"></a>2. InnoDB 存储引擎层</h2><table>
+<thead>
+<tr>
+<th>模块</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Buffer Pool</strong></td>
+<td>缓存数据页、索引页、Undo 页，多数读写在内存完成</td>
+</tr>
+<tr>
+<td><strong>Redo Log（WAL）</strong></td>
+<td>顺序写，崩溃恢复，保证事务持久性</td>
+</tr>
+<tr>
+<td><strong>Undo Log</strong></td>
+<td>MVCC、回滚</td>
+</tr>
+<tr>
+<td><strong>Doublewrite Buffer</strong></td>
+<td>解决页中写（partial page write）问题</td>
+</tr>
+<tr>
+<td><strong>Background Threads</strong></td>
+<td>刷盘、合并、页分裂、页回收</td>
+</tr>
+<tr>
+<td><strong>数据页（16KB）</strong></td>
+<td>B+Tree 节点 &#x2F; 行存储单元</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="3-MySQL-写入路径"><a href="#3-MySQL-写入路径" class="headerlink" title="3. MySQL 写入路径"></a>3. MySQL 写入路径</h2><figure class="highlight arcade"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs arcade">SQL → 执行器 → InnoDB<br>    → 修改 <span class="hljs-built_in">Buffer</span> Pool<br>    → 产生 Redo <span class="hljs-built_in">Log</span>（WAL，先写日志）<br>    → 产生 Undo <span class="hljs-built_in">Log</span>（MVCC）<br>    → 后台刷脏页到磁盘（不阻塞事务）<br></code></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="4-MySQL-读取路径"><a href="#4-MySQL-读取路径" class="headerlink" title="4. MySQL 读取路径"></a>4. MySQL 读取路径</h2><figure class="highlight arcade"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs arcade">SQL → 执行器<br>    → <span class="hljs-built_in">Buffer</span> Pool 命中 → 返回<br>    → 不命中 → 从磁盘加载页进 <span class="hljs-built_in">Buffer</span> Pool → 返回<br></code></pre></td></tr></table></figure>
+
+<hr>
+<h1 id="三、MySQL-底层架构"><a href="#三、MySQL-底层架构" class="headerlink" title="三、MySQL 底层架构"></a>三、MySQL 底层架构</h1><img src="MySQL底层架构/image-20251207161539798.png" srcset="/img/loading.gif" lazyload alt="image-20251207161539798" style="zoom:50%;" />
+
+<hr>
+<h2 id="1-Server-层"><a href="#1-Server-层" class="headerlink" title="1. Server 层"></a>1. Server 层</h2><p>连接器 → 解析器 → 优化器 → 执行器</p>
+<h2 id="2-InnoDB-内部组件"><a href="#2-InnoDB-内部组件" class="headerlink" title="2. InnoDB 内部组件"></a>2. InnoDB 内部组件</h2><ul>
+<li><strong>Buffer Pool（核心缓存）</strong></li>
+<li><strong>Redo Log（写前日志）</strong></li>
+<li><strong>Undo Log（MVCC）</strong></li>
+<li><strong>Doublewrite Buffer</strong></li>
+<li><strong>后台线程</strong></li>
+<li><strong>磁盘 Data Pages（.ibd）</strong></li>
+</ul>
+<h2 id="3-数据流向"><a href="#3-数据流向" class="headerlink" title="3. 数据流向"></a>3. 数据流向</h2><ul>
+<li>读路径：磁盘 → Buffer Pool</li>
+<li>写路径：<ul>
+<li>内存修改（Buffer Pool）</li>
+<li>记录 Redo</li>
+<li>记录 Undo</li>
+<li>后台线程刷盘</li>
+</ul>
+</li>
+</ul>
+<h2 id="4-写入流程"><a href="#4-写入流程" class="headerlink" title="4. 写入流程"></a>4. 写入流程</h2><ol>
+<li>客户端发送 SQL INSERT&#x2F;UPDATE&#x2F;DELETE</li>
+<li>Server 层：<ul>
+<li>解析 SQL → AST</li>
+<li>优化器生成执行计划</li>
+<li>Executor 调用存储引擎</li>
+</ul>
+</li>
+<li>InnoDB 层：<ul>
+<li>写入 Redo Log（顺序写，保证事务持久性）</li>
+<li>写入 Undo Log（支持回滚和 MVCC）</li>
+<li>聚簇索引（主键）叶子节点写入行数据</li>
+<li>二级索引更新：将索引值 + 主键写入二级索引页</li>
+<li>写入 Buffer Pool（页缓存）</li>
+</ul>
+</li>
+<li>事务提交：<ul>
+<li>Redo Log 刷盘</li>
+<li>Buffer Pool 数据页异步落盘（Checkpoint）</li>
+</ul>
+</li>
+</ol>
+<img src="MySQL底层架构/image-20251207180707068.png" srcset="/img/loading.gif" lazyload alt="image-20251207180707068" style="zoom:50%;" />
+
+<h2 id="5-读取流程"><a href="#5-读取流程" class="headerlink" title="5. 读取流程"></a>5. 读取流程</h2><ol>
+<li>客户端发送 SQL SELECT</li>
+<li>Server 层：<ul>
+<li>解析 SQL → AST</li>
+<li>优化器选择访问路径（全表扫描或索引扫描）</li>
+</ul>
+</li>
+<li>InnoDB 层：<ul>
+<li>如果有 WHERE 条件可以使用索引：<ul>
+<li>通过二级索引快速定位主键</li>
+<li>再通过聚簇索引根据主键读取完整行数据</li>
+</ul>
+</li>
+<li>如果没有索引 → 全表扫描（Buffer Pool → 磁盘）</li>
+</ul>
+</li>
+<li>Server 层返回结果给客户端</li>
+</ol>
+<img src="MySQL底层架构/image-20251207175930551.png" srcset="/img/loading.gif" lazyload alt="image-20251207175930551" style="zoom:50%;" />
+
+<h1 id="四、MySQL-数据底层存储（InnoDB）"><a href="#四、MySQL-数据底层存储（InnoDB）" class="headerlink" title="四、MySQL 数据底层存储（InnoDB）"></a>四、MySQL 数据底层存储（InnoDB）</h1><h2 id="0-示例表"><a href="#0-示例表" class="headerlink" title="0. 示例表"></a>0. 示例表</h2><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">CREATE TABLE</span> orders (<br>    id <span class="hljs-type">BIGINT</span> <span class="hljs-keyword">PRIMARY KEY</span>,<br>    user_id <span class="hljs-type">BIGINT</span>,<br>    amount <span class="hljs-type">DECIMAL</span>(<span class="hljs-number">10</span>,<span class="hljs-number">2</span>),<br>    status TINYINT,<br>    created_at DATETIME,<br>    INDEX idx_user_id (user_id),<br>    INDEX idx_created_at (created_at)<br>) ENGINE<span class="hljs-operator">=</span>InnoDB;<br></code></pre></td></tr></table></figure>
+
+<ul>
+<li>主键索引（Clustered Index）&#x3D; 数据存储本体</li>
+<li>二级索引（Secondary Index）&#x3D;（索引列 + 主键值）组成树</li>
+<li>二级索引查数据 → 一定要回表（因为叶子节点不存整行）</li>
+</ul>
+<hr>
+<h2 id="1-表空间（Tablespace）"><a href="#1-表空间（Tablespace）" class="headerlink" title="1. 表空间（Tablespace）"></a>1. 表空间（Tablespace）</h2><ul>
+<li>每张独立表（<code>innodb_file_per_table=1</code>）对应一个 <code>.ibd</code> 文件，例如：</li>
+</ul>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs">orders.ibd<br></code></pre></td></tr></table></figure>
+
+<ul>
+<li>文件包含：<ul>
+<li>数据页（存行记录）</li>
+<li>索引页（B+Tree）</li>
+<li>Undo 页（MVCC 回滚版本）</li>
+<li>系统页（INODE &#x2F; FSP_HDR）</li>
+<li>事务信息、段、区等元数据</li>
+</ul>
+</li>
+<li>结构示意：</li>
+</ul>
+<figure class="highlight mathematica"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><code class="hljs mathematica"><span class="hljs-variable">MySQL</span> 数据库（<span class="hljs-variable">Database</span>）<br> └── 表（<span class="hljs-built_in">Table</span>）<br>       └── 表空间 <span class="hljs-variable">Tablespace</span> <span class="hljs-punctuation">(</span><span class="hljs-operator">.</span><span class="hljs-variable">ibd</span> 文件 <span class="hljs-operator">/</span> 共享表空间<span class="hljs-punctuation">)</span><br>             ├── 段 <span class="hljs-variable">Segment</span>（<span class="hljs-variable">Index</span><span class="hljs-operator">/</span><span class="hljs-variable">Data</span><span class="hljs-operator">/</span><span class="hljs-variable">Undo</span> <span class="hljs-variable">Segment</span>）<br>             │      ├── 索引段（<span class="hljs-variable">B</span><span class="hljs-operator">+</span><span class="hljs-built_in">Tree</span> 内部节点页 <span class="hljs-operator">+</span> 叶子页）<br>             │      ├── 数据段（聚簇索引叶子页 <span class="hljs-operator">=</span> 行数据）<br>             │      └── <span class="hljs-variable">Undo</span> 段（<span class="hljs-variable">MVCC</span> 回滚链）<br>             ├── 区 <span class="hljs-variable">Extent</span>（<span class="hljs-number">1</span><span class="hljs-variable">MB</span> <span class="hljs-operator">=</span> <span class="hljs-number">64</span> 页 <span class="hljs-variable">Page</span>）<br>             ├── 页 <span class="hljs-variable">Page</span>（<span class="hljs-number">16</span><span class="hljs-variable">KB</span>）<br>             │      ├── <span class="hljs-variable">B</span><span class="hljs-operator">+</span><span class="hljs-built_in">Tree</span> 叶子页（存整行或索引键）<br>             │      ├── <span class="hljs-variable">B</span><span class="hljs-operator">+</span><span class="hljs-built_in">Tree</span> 内部页<br>             │      ├── <span class="hljs-variable">Undo</span> 页面<br>             │      ├── 系统页（<span class="hljs-variable">INODE</span> <span class="hljs-operator">/</span> <span class="hljs-type">FSP_HDR</span>）<br>             │      └── 空闲页<br>             └── 行 <span class="hljs-built_in">Row</span>（<span class="hljs-variable">Compact</span> <span class="hljs-operator">/</span> <span class="hljs-built_in">Dynamic</span>）<br>                    ├── <span class="hljs-type">trx_id</span>（事务<span class="hljs-variable">ID</span>）<br>                    ├── <span class="hljs-type">roll_ptr</span>（<span class="hljs-variable">Undo</span> 链指针）<br>                    ├── 主键<br>                    └── 各列数据（含溢出页指针）<br></code></pre></td></tr></table></figure>
+
+<ul>
+<li>每张表本质是 <strong>B+Tree Forest</strong>：<ul>
+<li>主键聚簇索引一棵树</li>
+<li>每个二级索引一棵独立树</li>
+</ul>
+</li>
+</ul>
+<img src="MySQL底层架构/image-20251207171418366.png" srcset="/img/loading.gif" lazyload alt="image-20251207171418366" style="zoom: 50%;" />
+
+<hr>
+<h2 id="2-段（Segment）"><a href="#2-段（Segment）" class="headerlink" title="2. 段（Segment）"></a>2. 段（Segment）</h2><p>段是逻辑上的「索引或数据集合」。</p>
+<p>InnoDB 一个表至少有两个段：</p>
+<ol>
+<li><strong>主键段（Clustered Index Segment）</strong></li>
+<li><strong>每个二级索引一个独立段（Secondary Index Segment）</strong></li>
+</ol>
+<p>示例表包含：</p>
+<ul>
+<li>PK 段（存储整行）</li>
+<li>idx_user_id 段</li>
+<li>idx_created_at 段</li>
+</ul>
+<p>每个段内部以 Extent 和 Page 组成树结构。</p>
+<hr>
+<h2 id="3-区（Extent）"><a href="#3-区（Extent）" class="headerlink" title="3. 区（Extent）"></a>3. 区（Extent）</h2><p>Extent &#x3D; 1MB &#x3D; 64 页（16KB × 64）</p>
+<ul>
+<li>InnoDB 以 “区” 为单位分配磁盘空间</li>
+<li>区内存各种类型的 Page（数据页、索引页、Undo 等）</li>
+</ul>
+<hr>
+<h2 id="4-页（Page）-16KB"><a href="#4-页（Page）-16KB" class="headerlink" title="4. 页（Page） 16KB"></a><strong>4. 页（Page） 16KB</strong></h2><p>页 &#x3D; InnoDB 数据存储的最小单位<br> 每张表的所有行最终都被分配到「页」里。</p>
+<p>主要页类型：</p>
+<table>
+<thead>
+<tr>
+<th>Page 类型</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>数据页（Leaf Page）</strong></td>
+<td>主键 B+Tree 的叶子，存整行</td>
+</tr>
+<tr>
+<td><strong>索引页（Internal Page或Leaf of secondary index）</strong></td>
+<td>B+Tree 中间节点或二级索引叶子</td>
+</tr>
+<tr>
+<td>Undo 页</td>
+<td>事务回滚信息</td>
+</tr>
+<tr>
+<td>系统页</td>
+<td>管理信息</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="5-行记录（Row）存储"><a href="#5-行记录（Row）存储" class="headerlink" title="5. 行记录（Row）存储"></a>5. 行记录（Row）存储</h2><p>默认行格式：<strong>Compact &#x2F; Dynamic</strong></p>
+<p>存储内容：</p>
+<ul>
+<li>主键值（必须）</li>
+<li>各列的值</li>
+<li>隐藏列：<ul>
+<li><code>trx_id</code>（最后修改本行的事务号）</li>
+<li><code>roll_pointer</code>（回滚指针，指向 Undo Log）</li>
+</ul>
+</li>
+</ul>
+<p>长字段（如 TEXT、BLOB）只在页内存 <strong>前 768 字节</strong>，剩余内容放到 Off-Page。</p>
+<hr>
+<h2 id="6-B-Tree-索引存储结构"><a href="#6-B-Tree-索引存储结构" class="headerlink" title="6. B+Tree 索引存储结构"></a>6. B+Tree 索引存储结构</h2><p>所有索引（主键、二级索引）都用 B+Tree 存储：</p>
+<ul>
+<li>根节点（1 页）</li>
+<li>中间节点（若干页）</li>
+<li>叶子节点（大量页）</li>
+</ul>
+<p><strong>主键索引存“整行”</strong></p>
+<p>示例：</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs routeros">叶子节点：<br>(<span class="hljs-attribute">id</span>=1001, <span class="hljs-attribute">user_id</span>=50, <span class="hljs-attribute">amount</span>=18.2, <span class="hljs-attribute">status</span>=1, <span class="hljs-attribute">created_at</span>=..., trx_id, roll_pointer)<br></code></pre></td></tr></table></figure>
+
+<p><strong>二级索引只存：索引列 + 主键值（用于回表）</strong></p>
+<p>例：<code>idx_user_id(user_id)</code></p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs routeros">(<span class="hljs-attribute">user_id</span>=50, <span class="hljs-attribute">PK</span>=1001)<br></code></pre></td></tr></table></figure>
+
+<p>查询时流程：</p>
+<ol>
+<li>在二级索引 B+Tree 找到 user_id&#x3D;50 → 得到主键 id&#x3D;1001</li>
+<li>再到主键 B+Tree 找 id&#x3D;1001 → 拿到整行</li>
+</ol>
+<p>每一个 <strong>索引</strong> &#x3D; 一棵 B+Tree<br> 树由 <strong>数据页（Leaf Pages）</strong> 和 <strong>非叶子页（Internal Node）</strong> 组成。</p>
+<hr>
+<h2 id="7-示例：数据库表如何落到磁盘？"><a href="#7-示例：数据库表如何落到磁盘？" class="headerlink" title="7. 示例：数据库表如何落到磁盘？"></a>7. 示例：数据库表如何落到磁盘？</h2><p>假设我们插入 200 万订单</p>
+<p>每页大概能放：</p>
+<ul>
+<li>假设一条行记录约 200 字节</li>
+<li>16KB ≈ 16000字节</li>
+<li>每页 ≈ 80 行（不算额外开销）</li>
+</ul>
+<p>200万行 &#x2F; 80 ≈ 25,000 页<br> 25,000页 &#x2F; 64（每区的页数） ≈ 390 个 Extent</p>
+<p>这些 Extent 属于：</p>
+<ul>
+<li>主键段（Clustered）</li>
+<li>用户ID二级索引段</li>
+<li>created_at二级索引段</li>
+</ul>
+<p>每个段都是自己独立的一棵 B+Tree。</p>
+<img src="MySQL底层架构/image-20251207165819890.png" srcset="/img/loading.gif" lazyload alt="image-20251207165819890" style="zoom:50%;" />
+
+<hr>
+<h1 id="五、MySQL-数据类型及底层存储大小"><a href="#五、MySQL-数据类型及底层存储大小" class="headerlink" title="五、MySQL 数据类型及底层存储大小"></a><strong>五、MySQL 数据类型及底层存储大小</strong></h1><hr>
+<h2 id="1-数值类型及存储大小"><a href="#1-数值类型及存储大小" class="headerlink" title="1. 数值类型及存储大小"></a>1. 数值类型及存储大小</h2><table>
+<thead>
+<tr>
+<th>类型</th>
+<th>存储大小</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>TINYINT</td>
+<td>1B</td>
+<td>范围 -128~127</td>
+</tr>
+<tr>
+<td>SMALLINT</td>
+<td>2B</td>
+<td>-32768~32767</td>
+</tr>
+<tr>
+<td>MEDIUMINT</td>
+<td>3B</td>
+<td>常用于节省空间</td>
+</tr>
+<tr>
+<td>INT</td>
+<td>4B</td>
+<td>常用</td>
+</tr>
+<tr>
+<td>BIGINT</td>
+<td>8B</td>
+<td>金融、ID</td>
+</tr>
+<tr>
+<td>FLOAT</td>
+<td>4B</td>
+<td>单精度</td>
+</tr>
+<tr>
+<td>DOUBLE</td>
+<td>8B</td>
+<td>双精度</td>
+</tr>
+<tr>
+<td>DECIMAL(M,D)</td>
+<td>按存储位数</td>
+<td>精确表示（用于金额）</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="2-字符类型"><a href="#2-字符类型" class="headerlink" title="2.  字符类型"></a>2.  字符类型</h2><table>
+<thead>
+<tr>
+<th>类型</th>
+<th>存储</th>
+<th>特点</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>CHAR(n)</td>
+<td>固定 n 字节（按编码）</td>
+<td>适合同大小字段，如性别、状态码</td>
+</tr>
+<tr>
+<td>VARCHAR(n)</td>
+<td>实际长度 + 1&#x2F;2 字节</td>
+<td>节省空间</td>
+</tr>
+<tr>
+<td>TEXT</td>
+<td>2+ 实际内容</td>
+<td>存放在 Overflow page（长字段）</td>
+</tr>
+</tbody></table>
+<p>UTF8MB4 每字符最多 <strong>4 字节</strong>。</p>
+<hr>
+<h2 id="3-日期时间"><a href="#3-日期时间" class="headerlink" title="3. 日期时间"></a>3. 日期时间</h2><table>
+<thead>
+<tr>
+<th>类型</th>
+<th>存储</th>
+<th>范围</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>DATE</td>
+<td>3B</td>
+<td>年-月-日</td>
+</tr>
+<tr>
+<td>TIME</td>
+<td>3B</td>
+<td>时分秒</td>
+</tr>
+<tr>
+<td>DATETIME</td>
+<td>5B（compact）</td>
+<td>推荐</td>
+</tr>
+<tr>
+<td>TIMESTAMP</td>
+<td>4B</td>
+<td>受时区影响</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="4-行溢出（Overflow）"><a href="#4-行溢出（Overflow）" class="headerlink" title="4. 行溢出（Overflow）"></a>4. 行溢出（Overflow）</h2><p>当：</p>
+<ul>
+<li>VARCHAR 非常大</li>
+<li>TEXT &#x2F; BLOB</li>
+<li>数据页放不下 16KB</li>
+</ul>
+<p>则会存入 <strong>Overflow Pages（溢出页）</strong>，主行存一个 20 字节指针。</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Database/" class="category-chain-item">Database</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/MySQL/" class="print-no-link">#MySQL</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>MySQL底层架构</div>
+      <div>http://by.ecel.top/Database/MySQL底层架构/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>刘笑笑</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2025年12月7日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/Database/Elasticsearch%E8%AF%A6%E8%A7%A3/" title="Elasticsearch详解">
+                        <span class="hidden-mobile">Elasticsearch详解</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
