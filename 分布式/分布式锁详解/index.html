@@ -1,0 +1,745 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="刘笑笑">
+  <meta name="keywords" content="java、go、操作系统、网络">
+  
+    <meta name="description" content="一、为什么需要分布式锁？ 在单机应用中我们可以用 synchronized 或 ReentrantLock 做并发控制，但在分布式系统下，多台机器、多进程会同时操作同一份资源，这时候就必须用 分布式锁 来保证 互斥、可重入、安全释放。  常见使用场景：  防止超卖（多个节点同时扣库存） 防止重复下单、重复支付 定时任务集群只让一台跑 幂等控制：同一业务不能同时重复执行 接口限流的临界区保护   二">
+<meta property="og:type" content="article">
+<meta property="og:title" content="分布式锁详解">
+<meta property="og:url" content="http://by.ecel.top/%E5%88%86%E5%B8%83%E5%BC%8F/%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81%E8%AF%A6%E8%A7%A3/index.html">
+<meta property="og:site_name" content="title">
+<meta property="og:description" content="一、为什么需要分布式锁？ 在单机应用中我们可以用 synchronized 或 ReentrantLock 做并发控制，但在分布式系统下，多台机器、多进程会同时操作同一份资源，这时候就必须用 分布式锁 来保证 互斥、可重入、安全释放。  常见使用场景：  防止超卖（多个节点同时扣库存） 防止重复下单、重复支付 定时任务集群只让一台跑 幂等控制：同一业务不能同时重复执行 接口限流的临界区保护   二">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2025-12-11T04:12:56.000Z">
+<meta property="article:modified_time" content="2025-12-11T07:52:56.039Z">
+<meta property="article:author" content="刘笑笑">
+<meta property="article:tag" content="分布式锁">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>分布式锁详解 - title</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"by.ecel.top","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Tech Notes</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="分布式锁详解"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2025-12-11 12:12" pubdate>
+          2025年12月11日 中午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          850 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          8 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">分布式锁详解</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="一、为什么需要分布式锁？"><a href="#一、为什么需要分布式锁？" class="headerlink" title="一、为什么需要分布式锁？"></a>一、为什么需要分布式锁？</h1><blockquote>
+<p>在单机应用中我们可以用 <code>synchronized</code> 或 <code>ReentrantLock</code> 做并发控制，但在分布式系统下，多台机器、多进程会同时操作同一份资源，这时候就必须用 <em>分布式锁</em> 来保证 <strong>互斥、可重入、安全释放</strong>。</p>
+</blockquote>
+<p>常见使用场景：</p>
+<ol>
+<li><strong>防止超卖</strong>（多个节点同时扣库存）</li>
+<li><strong>防止重复下单、重复支付</strong></li>
+<li><strong>定时任务集群只让一台跑</strong></li>
+<li><strong>幂等控制：同一业务不能同时重复执行</strong></li>
+<li><strong>接口限流的临界区保护</strong></li>
+</ol>
+<hr>
+<h1 id="二、分布式锁核心要解决哪些问题？"><a href="#二、分布式锁核心要解决哪些问题？" class="headerlink" title="二、分布式锁核心要解决哪些问题？"></a>二、分布式锁核心要解决哪些问题？</h1><p><strong>核心诉求有 6 个：</strong></p>
+<ol>
+<li><strong>互斥性</strong>：同一时刻只有一个客户端持有锁</li>
+<li><strong>可重入性</strong>（可选）</li>
+<li><strong>死锁问题</strong>：持有锁的机器宕机必须正确释放</li>
+<li><strong>锁必须只能被持有者释放</strong></li>
+<li><strong>高可用、高性能</strong></li>
+<li><strong>容错：网络超时 &#x2F; 分区情况下的一致性</strong></li>
+</ol>
+<hr>
+<h1 id="三、-案例：电商系统扣库存"><a href="#三、-案例：电商系统扣库存" class="headerlink" title="三、 案例：电商系统扣库存"></a>三、 案例：电商系统扣库存</h1><p><strong>需求：</strong> 秒杀时 10 万请求并发扣同一商品库存。<br><strong>问题：</strong> 多机房、多实例部署，每个服务实例都可能同时减少库存 → 需要全局互斥。</p>
+<hr>
+<h1 id="四、主流分布式锁方案"><a href="#四、主流分布式锁方案" class="headerlink" title="四、主流分布式锁方案"></a>四、主流分布式锁方案</h1><p>方案 1：Redis 分布式锁</p>
+<p>方案 2：RedLock</p>
+<p>方案 3：Zookeeper 临时顺序锁</p>
+<p>方案 4：数据库悲观锁&#x2F;乐观锁</p>
+<hr>
+<h1 id="五、分别讲每种方案的实现细节"><a href="#五、分别讲每种方案的实现细节" class="headerlink" title="五、分别讲每种方案的实现细节"></a>五、分别讲每种方案的实现细节</h1><hr>
+<h2 id="方案-1：Redis-分布式锁"><a href="#方案-1：Redis-分布式锁" class="headerlink" title="方案 1：Redis 分布式锁"></a>方案 1：Redis 分布式锁</h2><h2 id="（1）获取锁"><a href="#（1）获取锁" class="headerlink" title="（1）获取锁"></a>（1）获取锁</h2><p>用单条原子命令：</p>
+<figure class="highlight gams"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs gams"><span class="hljs-keyword">SET</span> key <span class="hljs-comment">value NX PX 10000</span><br></code></pre></td></tr></table></figure>
+
+<p>解释：</p>
+<ul>
+<li><code>NX</code> 加锁互斥</li>
+<li><code>PX 10000</code> &#x3D; 10 秒超时，避免死锁</li>
+<li><code>value</code> &#x3D; UUID（保证只有持有者能释放）</li>
+</ul>
+<hr>
+<h2 id="（2）释放锁（必须-Lua-脚本原子校验）"><a href="#（2）释放锁（必须-Lua-脚本原子校验）" class="headerlink" title="（2）释放锁（必须 Lua 脚本原子校验）"></a>（2）释放锁（必须 Lua 脚本原子校验）</h2><p>避免误删别人加的锁：</p>
+<figure class="highlight pgsql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs pgsql"><span class="hljs-keyword">if</span> redis.<span class="hljs-keyword">call</span>(&quot;GET&quot;, KEYS[<span class="hljs-number">1</span>]) == ARGV[<span class="hljs-number">1</span>] <span class="hljs-keyword">then</span><br>    <span class="hljs-keyword">return</span> redis.<span class="hljs-keyword">call</span>(&quot;DEL&quot;, KEYS[<span class="hljs-number">1</span>])<br><span class="hljs-keyword">else</span><br>    <span class="hljs-keyword">return</span> <span class="hljs-number">0</span><br><span class="hljs-keyword">end</span><br></code></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="（3）问题：Redis-锁可能失效吗？"><a href="#（3）问题：Redis-锁可能失效吗？" class="headerlink" title="（3）问题：Redis 锁可能失效吗？"></a>（3）问题：Redis 锁可能失效吗？</h2><p>你回答：</p>
+<ol>
+<li><strong>锁过期导致业务还在执行</strong>（GC &#x2F; 网络卡顿）</li>
+<li><strong>Redis 宕机导致锁丢失</strong></li>
+<li><strong>客户端阻塞导致续期失败</strong></li>
+<li><strong>SET NX PX 不支持可重入</strong></li>
+</ol>
+<p>你继续说：</p>
+<blockquote>
+<p>“这些问题在高并发场景下确实会导致安全性不足，所以出现了 Redisson 提供的多功能锁。”</p>
+</blockquote>
+<hr>
+<h2 id="（4）Redis-的可重入-WatchDog"><a href="#（4）Redis-的可重入-WatchDog" class="headerlink" title="（4）Redis 的可重入 &#x2F; WatchDog"></a>（4）Redis 的可重入 &#x2F; WatchDog</h2><p>Redisson 实现的：</p>
+<ul>
+<li>可重入计数（value：线程唯一标识 + count）</li>
+<li>看门狗自动续期（每 10 秒续一次）</li>
+</ul>
+<hr>
+<h2 id="方案-2：RedLock（多主节点）"><a href="#方案-2：RedLock（多主节点）" class="headerlink" title="方案 2：RedLock（多主节点）"></a>方案 2：RedLock（多主节点）</h2><blockquote>
+<p>“RedLock 是 Redis 作者提出的多主互斥算法，通过在 5 个 Redis 节点上获取多数派（3 个以上）Lock 才算成功。”</p>
+</blockquote>
+<p>然后继续讲：</p>
+<h3 id="优点："><a href="#优点：" class="headerlink" title="优点："></a>优点：</h3><ul>
+<li>抗 Redis 单点故障</li>
+<li>理论上容忍任意一个 Redis 节点宕机</li>
+</ul>
+<h3 id="缺点："><a href="#缺点：" class="headerlink" title="缺点："></a>缺点：</h3><ul>
+<li>工程上效果有限，网络分区导致算法不总是安全</li>
+<li>在社区内有争议（Martin Kleppmann 的一致性论文）</li>
+<li>需要多个独立 Redis 实例（成本高）</li>
+</ul>
+<hr>
+<h2 id="方案-3：Zookeeper-分布式锁（最安全）"><a href="#方案-3：Zookeeper-分布式锁（最安全）" class="headerlink" title="方案 3：Zookeeper 分布式锁（最安全）"></a>方案 3：Zookeeper 分布式锁（最安全）</h2><h2 id="实现原理：临时顺序节点-Watcher"><a href="#实现原理：临时顺序节点-Watcher" class="headerlink" title="实现原理：临时顺序节点 + Watcher"></a>实现原理：临时顺序节点 + Watcher</h2><p>创建节点：</p>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs awk"><span class="hljs-regexp">/locks/</span>lock-<span class="hljs-number">0000000001</span> (临时顺序)<br></code></pre></td></tr></table></figure>
+
+<p>流程：</p>
+<ol>
+<li>每个客户端创建一个 <code>EPHEMERAL_SEQUENTIAL</code> 节点</li>
+<li>谁的序号最小谁获得锁</li>
+<li>其他客户端监听前驱节点</li>
+<li>前驱节点被删除（释放锁 &#x2F; 会话断开）后，触发 watch → 当前客户端获得锁</li>
+</ol>
+<h3 id="优点：-1"><a href="#优点：-1" class="headerlink" title="优点："></a>优点：</h3><ul>
+<li>强一致（ZAB 协议）</li>
+<li>天然不会死锁（临时节点）</li>
+<li>公平锁（排队顺序）</li>
+<li>可靠性最高</li>
+</ul>
+<h3 id="缺点：-1"><a href="#缺点：-1" class="headerlink" title="缺点："></a>缺点：</h3><ul>
+<li>性能比 Redis 较差</li>
+<li>ZK 不适合做超高 QPS 的锁（更适合任务调度、全局抢占）</li>
+</ul>
+<hr>
+<p>方案 4：数据库悲观锁&#x2F;乐观锁</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E5%88%86%E5%B8%83%E5%BC%8F/" class="category-chain-item">分布式</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81/" class="print-no-link">#分布式锁</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>分布式锁详解</div>
+      <div>http://by.ecel.top/分布式/分布式锁详解/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>刘笑笑</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2025年12月11日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/%E5%88%86%E5%B8%83%E5%BC%8F/%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1%E8%AF%A6%E8%A7%A3/" title="分布式事务详解">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">分布式事务详解</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/Spring/SpringBoot%E6%A0%B8%E5%BF%83%E6%A8%A1%E5%9D%97/" title="SpringBoot核心模块">
+                        <span class="hidden-mobile">SpringBoot核心模块</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

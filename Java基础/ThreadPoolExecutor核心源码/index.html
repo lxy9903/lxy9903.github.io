@@ -1,0 +1,776 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="刘笑笑">
+  <meta name="keywords" content="java、go、操作系统、网络">
+  
+    <meta name="description" content="一、ThreadPoolExecutor 核心结构1234567891011121314public class ThreadPoolExecutor extends AbstractExecutorService &#123;    private final AtomicInteger ctl &#x3D; new AtomicInteger(ctlOf(RUNNING, 0));    private">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ThreadPoolExecutor核心源码">
+<meta property="og:url" content="http://by.ecel.top/Java%E5%9F%BA%E7%A1%80/ThreadPoolExecutor%E6%A0%B8%E5%BF%83%E6%BA%90%E7%A0%81/index.html">
+<meta property="og:site_name" content="title">
+<meta property="og:description" content="一、ThreadPoolExecutor 核心结构1234567891011121314public class ThreadPoolExecutor extends AbstractExecutorService &#123;    private final AtomicInteger ctl &#x3D; new AtomicInteger(ctlOf(RUNNING, 0));    private">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2024-10-15T12:42:00.000Z">
+<meta property="article:modified_time" content="2025-12-15T12:46:38.566Z">
+<meta property="article:author" content="刘笑笑">
+<meta property="article:tag" content="多线程">
+<meta property="article:tag" content="线程池">
+<meta property="article:tag" content="源码">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>ThreadPoolExecutor核心源码 - title</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"by.ecel.top","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Tech Notes</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="ThreadPoolExecutor核心源码"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2024-10-15 20:42" pubdate>
+          2024年10月15日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          832 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          7 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">ThreadPoolExecutor核心源码</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="一、ThreadPoolExecutor-核心结构"><a href="#一、ThreadPoolExecutor-核心结构" class="headerlink" title="一、ThreadPoolExecutor 核心结构"></a>一、ThreadPoolExecutor 核心结构</h1><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">ThreadPoolExecutor</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_">AbstractExecutorService</span> &#123;<br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> <span class="hljs-type">AtomicInteger</span> <span class="hljs-variable">ctl</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">AtomicInteger</span>(ctlOf(RUNNING, <span class="hljs-number">0</span>));<br><br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">volatile</span> <span class="hljs-type">int</span> corePoolSize;<br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">volatile</span> <span class="hljs-type">int</span> maximumPoolSize;<br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">volatile</span> <span class="hljs-type">long</span> keepAliveTime;<br><br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> BlockingQueue&lt;Runnable&gt; workQueue;<br><br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> <span class="hljs-type">ReentrantLock</span> <span class="hljs-variable">mainLock</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">ReentrantLock</span>();<br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> HashSet&lt;Worker&gt; workers = <span class="hljs-keyword">new</span> <span class="hljs-title class_">HashSet</span>&lt;&gt;();<br><br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">volatile</span> RejectedExecutionHandler handler;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>一句话：</p>
+<blockquote>
+<p><strong>ThreadPoolExecutor &#x3D; 状态机（ctl）+ 任务调度（execute）+ 线程管理（Worker）</strong></p>
+</blockquote>
+<hr>
+<h1 id="二、execute-——-线程池真正入口"><a href="#二、execute-——-线程池真正入口" class="headerlink" title="二、execute() —— 线程池真正入口"></a>二、execute() —— 线程池真正入口</h1><h2 id="1️⃣-execute-源码"><a href="#1️⃣-execute-源码" class="headerlink" title="1️⃣ execute() 源码"></a>1️⃣ execute() 源码</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">execute</span><span class="hljs-params">(Runnable command)</span> &#123;<br>    <span class="hljs-keyword">if</span> (command == <span class="hljs-literal">null</span>)<br>        <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">NullPointerException</span>();<br><br>    <span class="hljs-type">int</span> <span class="hljs-variable">c</span> <span class="hljs-operator">=</span> ctl.get();<br><br>    <span class="hljs-comment">// 1. 核心线程未满，直接创建</span><br>    <span class="hljs-keyword">if</span> (workerCountOf(c) &lt; corePoolSize) &#123;<br>        <span class="hljs-keyword">if</span> (addWorker(command, <span class="hljs-literal">true</span>))<br>            <span class="hljs-keyword">return</span>;<br>        c = ctl.get();<br>    &#125;<br><br>    <span class="hljs-comment">// 2. 核心满了，尝试入队</span><br>    <span class="hljs-keyword">if</span> (isRunning(c) &amp;&amp; workQueue.offer(command)) &#123;<br>        <span class="hljs-type">int</span> <span class="hljs-variable">recheck</span> <span class="hljs-operator">=</span> ctl.get();<br>        <span class="hljs-comment">// 防止入队成功但线程池已 shutdown</span><br>        <span class="hljs-keyword">if</span> (!isRunning(recheck) &amp;&amp; remove(command))<br>            reject(command);<br>        <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (workerCountOf(recheck) == <span class="hljs-number">0</span>)<br>            addWorker(<span class="hljs-literal">null</span>, <span class="hljs-literal">false</span>);<br>    &#125;<br>    <span class="hljs-comment">// 3. 队列满了，尝试扩容到 max</span><br>    <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (!addWorker(command, <span class="hljs-literal">false</span>)) &#123;<br>        <span class="hljs-comment">// 4. 扩容失败，拒绝</span><br>        reject(command);<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="2️⃣-execute-行为流程图（✅可解析）"><a href="#2️⃣-execute-行为流程图（✅可解析）" class="headerlink" title="2️⃣ execute() 行为流程图（✅可解析）"></a>2️⃣ execute() 行为流程图（✅可解析）</h2><figure class="highlight coq"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs coq">flowchart TD<br>    A[execute task] --&gt; B&#123;workerCount less than corePoolSize&#125;<br>    B --&gt;|<span class="hljs-type">yes</span>| <span class="hljs-type">C</span>[addWorker <span class="hljs-built_in">with</span> task]<br>    B --&gt;|<span class="hljs-type">no</span>| <span class="hljs-type">D</span>&#123;offer task to queue&#125;<br>    D --&gt;|<span class="hljs-type">success</span>| <span class="hljs-type">E</span>[task enqueued]<br>    D --&gt;|<span class="hljs-type">fail</span>| <span class="hljs-type">F</span>&#123;workerCount less than maxPoolSize&#125;<br>    F --&gt;|<span class="hljs-type">yes</span>| <span class="hljs-type">G</span>[addWorker <span class="hljs-built_in">with</span> task]<br>    F --&gt;|<span class="hljs-type">no</span>| <span class="hljs-type">H</span>[reject task]<br></code></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="3️⃣-execute-设计思想（面试重点）"><a href="#3️⃣-execute-设计思想（面试重点）" class="headerlink" title="3️⃣ execute() 设计思想（面试重点）"></a>3️⃣ execute() 设计思想（面试重点）</h2><table>
+<thead>
+<tr>
+<th>阶段</th>
+<th>目的</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>先扩 core</td>
+<td>保证最低并发能力</td>
+</tr>
+<tr>
+<td>再入队</td>
+<td>平滑流量，削峰</td>
+</tr>
+<tr>
+<td>再扩 max</td>
+<td>应对短期高峰</td>
+</tr>
+<tr>
+<td>最后拒绝</td>
+<td>系统自我保护</td>
+</tr>
+</tbody></table>
+<hr>
+<h1 id="三、addWorker-——-创建线程的核心方法"><a href="#三、addWorker-——-创建线程的核心方法" class="headerlink" title="三、addWorker() —— 创建线程的核心方法"></a>三、addWorker() —— 创建线程的核心方法</h1><h2 id="1️⃣-addWorker-源码（关键逻辑版）"><a href="#1️⃣-addWorker-源码（关键逻辑版）" class="headerlink" title="1️⃣ addWorker() 源码（关键逻辑版）"></a>1️⃣ addWorker() 源码（关键逻辑版）</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">private</span> <span class="hljs-type">boolean</span> <span class="hljs-title function_">addWorker</span><span class="hljs-params">(Runnable firstTask, <span class="hljs-type">boolean</span> core)</span> &#123;<br>    retry:<br>    <span class="hljs-keyword">for</span> (;;) &#123;<br>        <span class="hljs-type">int</span> <span class="hljs-variable">c</span> <span class="hljs-operator">=</span> ctl.get();<br>        <span class="hljs-type">int</span> <span class="hljs-variable">rs</span> <span class="hljs-operator">=</span> runStateOf(c);<br><br>        <span class="hljs-comment">// 状态检查</span><br>        <span class="hljs-keyword">if</span> (rs &gt;= SHUTDOWN &amp;&amp;<br>            !(rs == SHUTDOWN &amp;&amp; firstTask == <span class="hljs-literal">null</span> &amp;&amp; !workQueue.isEmpty()))<br>            <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;<br><br>        <span class="hljs-keyword">for</span> (;;) &#123;<br>            <span class="hljs-type">int</span> <span class="hljs-variable">wc</span> <span class="hljs-operator">=</span> workerCountOf(c);<br>            <span class="hljs-type">int</span> <span class="hljs-variable">limit</span> <span class="hljs-operator">=</span> core ? corePoolSize : maximumPoolSize;<br>            <span class="hljs-keyword">if</span> (wc &gt;= limit)<br>                <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;<br><br>            <span class="hljs-keyword">if</span> (compareAndIncrementWorkerCount(c))<br>                <span class="hljs-keyword">break</span> retry;<br><br>            c = ctl.get();<br>        &#125;<br>    &#125;<br><br>    <span class="hljs-type">boolean</span> <span class="hljs-variable">workerStarted</span> <span class="hljs-operator">=</span> <span class="hljs-literal">false</span>;<br>    <span class="hljs-type">Worker</span> <span class="hljs-variable">w</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Worker</span>(firstTask);<br>    <span class="hljs-type">Thread</span> <span class="hljs-variable">t</span> <span class="hljs-operator">=</span> w.thread;<br><br>    <span class="hljs-keyword">if</span> (t != <span class="hljs-literal">null</span>) &#123;<br>        <span class="hljs-keyword">final</span> <span class="hljs-type">ReentrantLock</span> <span class="hljs-variable">lock</span> <span class="hljs-operator">=</span> mainLock;<br>        lock.lock();<br>        <span class="hljs-keyword">try</span> &#123;<br>            workers.add(w);<br>        &#125; <span class="hljs-keyword">finally</span> &#123;<br>            lock.unlock();<br>        &#125;<br>        t.start();<br>        workerStarted = <span class="hljs-literal">true</span>;<br>    &#125;<br><br>    <span class="hljs-keyword">return</span> workerStarted;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="2️⃣-addWorker-做了什么？"><a href="#2️⃣-addWorker-做了什么？" class="headerlink" title="2️⃣ addWorker() 做了什么？"></a>2️⃣ addWorker() 做了什么？</h2><p><strong>拆解为 4 步：</strong></p>
+<ol>
+<li><strong>检查线程池状态</strong></li>
+<li><strong>CAS 增加 workerCount</strong></li>
+<li><strong>创建 Worker</strong></li>
+<li><strong>启动 Thread</strong></li>
+</ol>
+<hr>
+<h2 id="3️⃣-addWorker-流程图"><a href="#3️⃣-addWorker-流程图" class="headerlink" title="3️⃣ addWorker() 流程图"></a>3️⃣ addWorker() 流程图</h2><figure class="highlight coq"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs coq">flowchart TD<br>    A[addWorker called] --&gt; B&#123;pool state valid&#125;<br>    B --&gt;|<span class="hljs-type">no</span>| <span class="hljs-type">C</span>[<span class="hljs-keyword">return</span> false]<br>    B --&gt;|<span class="hljs-type">yes</span>| <span class="hljs-type">D</span>&#123;workerCount &lt; limit&#125;<br>    D --&gt;|<span class="hljs-type">no</span>| <span class="hljs-type">C</span><br>    D --&gt;|<span class="hljs-type">yes</span>| <span class="hljs-type">E</span>[CAS increment workerCount]<br>    E --&gt; F[create Worker]<br>    F --&gt; G[add to workers <span class="hljs-built_in">set</span>]<br>    G --&gt; H[start thread]<br></code></pre></td></tr></table></figure>
+
+<hr>
+<h1 id="四、Worker-——-线程池中的“执行单元”"><a href="#四、Worker-——-线程池中的“执行单元”" class="headerlink" title="四、Worker —— 线程池中的“执行单元”"></a>四、Worker —— 线程池中的“执行单元”</h1><h2 id="1️⃣-Worker-定义"><a href="#1️⃣-Worker-定义" class="headerlink" title="1️⃣ Worker 定义"></a>1️⃣ Worker 定义</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">Worker</span><br>    <span class="hljs-keyword">extends</span> <span class="hljs-title class_">AbstractQueuedSynchronizer</span><br>    <span class="hljs-keyword">implements</span> <span class="hljs-title class_">Runnable</span> &#123;<br><br>    <span class="hljs-keyword">final</span> Thread thread;<br>    Runnable firstTask;<br><br>    Worker(Runnable firstTask) &#123;<br>        <span class="hljs-built_in">this</span>.firstTask = firstTask;<br>        <span class="hljs-built_in">this</span>.thread = getThreadFactory().newThread(<span class="hljs-built_in">this</span>);<br>    &#125;<br><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">run</span><span class="hljs-params">()</span> &#123;<br>        runWorker(<span class="hljs-built_in">this</span>);<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>👉 <strong>Worker &#x3D; Thread + 任务 + 独占锁</strong></p>
+<hr>
+<h2 id="2️⃣-runWorker-执行模型"><a href="#2️⃣-runWorker-执行模型" class="headerlink" title="2️⃣ runWorker() 执行模型"></a>2️⃣ runWorker() 执行模型</h2><figure class="highlight gradle"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs gradle"><span class="hljs-keyword">final</span> <span class="hljs-keyword">void</span> runWorker(Worker w) &#123;<br>    Runnable <span class="hljs-keyword">task</span> = w.firstTask;<br>    w.firstTask = <span class="hljs-keyword">null</span>;<br><br>    <span class="hljs-keyword">while</span> (<span class="hljs-keyword">task</span> != <span class="hljs-keyword">null</span> || (<span class="hljs-keyword">task</span> = getTask()) != <span class="hljs-keyword">null</span>) &#123;<br>        <span class="hljs-keyword">try</span> &#123;<br>            <span class="hljs-keyword">task</span>.run();<br>        &#125; <span class="hljs-keyword">finally</span> &#123;<br>            <span class="hljs-keyword">task</span> = <span class="hljs-keyword">null</span>;<br>        &#125;<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="3️⃣-Worker-执行流程图"><a href="#3️⃣-Worker-执行流程图" class="headerlink" title="3️⃣ Worker 执行流程图"></a>3️⃣ Worker 执行流程图</h2><figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs awk">flowchart TD<br>    A[Worker.run] --&gt; B[runWorker]<br>    B --&gt; C&#123;has task&#125;<br>    C --&gt;|yes| D[task.run]<br>    D --&gt; C<br>    C --&gt;|no| E[<span class="hljs-keyword">exit</span> thread]<br></code></pre></td></tr></table></figure>
+
+<hr>
+<h1 id="五、submit-——-为什么能返回-Future？"><a href="#五、submit-——-为什么能返回-Future？" class="headerlink" title="五、submit() —— 为什么能返回 Future？"></a>五、submit() —— 为什么能返回 Future？</h1><h2 id="1️⃣-submit-源码"><a href="#1️⃣-submit-源码" class="headerlink" title="1️⃣ submit() 源码"></a>1️⃣ submit() 源码</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> Future&lt;?&gt; submit(Runnable task) &#123;<br>    RunnableFuture&lt;Void&gt; ftask = newTaskFor(task, <span class="hljs-literal">null</span>);<br>    execute(ftask);<br>    <span class="hljs-keyword">return</span> ftask;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="2️⃣-newTaskFor"><a href="#2️⃣-newTaskFor" class="headerlink" title="2️⃣ newTaskFor()"></a>2️⃣ newTaskFor()</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">protected</span> &lt;T&gt; RunnableFuture&lt;T&gt; <span class="hljs-title function_">newTaskFor</span><span class="hljs-params">(Runnable r, T value)</span> &#123;<br>    <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">FutureTask</span>&lt;&gt;(r, value);<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>👉 <strong>submit &#x3D; Runnable → FutureTask → execute</strong></p>
+<hr>
+<h2 id="3️⃣-FutureTask-作用"><a href="#3️⃣-FutureTask-作用" class="headerlink" title="3️⃣ FutureTask 作用"></a>3️⃣ FutureTask 作用</h2><ul>
+<li>包装 Runnable &#x2F; Callable</li>
+<li>保存执行结果 &#x2F; 异常</li>
+<li>支持阻塞 get()</li>
+</ul>
+<hr>
+<h2 id="4️⃣-submit-执行关系图"><a href="#4️⃣-submit-执行关系图" class="headerlink" title="4️⃣ submit 执行关系图"></a>4️⃣ submit 执行关系图</h2><figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs css">flowchart <span class="hljs-selector-tag">TD</span><br>    <span class="hljs-selector-tag">A</span><span class="hljs-selector-attr">[submit task]</span> --&gt; <span class="hljs-selector-tag">B</span><span class="hljs-selector-attr">[wrap as FutureTask]</span><br>    <span class="hljs-selector-tag">B</span> --&gt; C<span class="hljs-selector-attr">[execute FutureTask]</span><br>    C --&gt; D<span class="hljs-selector-attr">[Worker executes run]</span><br>    D --&gt; E<span class="hljs-selector-attr">[result stored]</span><br>    E --&gt; F<span class="hljs-selector-attr">[Future.get returns]</span><br></code></pre></td></tr></table></figure>
+
+<hr>
+<h1 id="六、shutdown-shutdownNow（源码-行为）"><a href="#六、shutdown-shutdownNow（源码-行为）" class="headerlink" title="六、shutdown &#x2F; shutdownNow（源码 + 行为）"></a>六、shutdown &#x2F; shutdownNow（源码 + 行为）</h1><h2 id="1️⃣-shutdown"><a href="#1️⃣-shutdown" class="headerlink" title="1️⃣ shutdown()"></a>1️⃣ shutdown()</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">shutdown</span><span class="hljs-params">()</span> &#123;<br>    <span class="hljs-keyword">final</span> <span class="hljs-type">ReentrantLock</span> <span class="hljs-variable">lock</span> <span class="hljs-operator">=</span> mainLock;<br>    lock.lock();<br>    <span class="hljs-keyword">try</span> &#123;<br>        advanceRunState(SHUTDOWN);<br>    &#125; <span class="hljs-keyword">finally</span> &#123;<br>        lock.unlock();<br>    &#125;<br>    tryTerminate();<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<ul>
+<li>不接新任务</li>
+<li>执行完队列任务</li>
+</ul>
+<hr>
+<h2 id="2️⃣-shutdownNow"><a href="#2️⃣-shutdownNow" class="headerlink" title="2️⃣ shutdownNow()"></a>2️⃣ shutdownNow()</h2><figure class="highlight scss"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs scss">public List&lt;Runnable&gt; <span class="hljs-built_in">shutdownNow</span>() &#123;<br>    <span class="hljs-built_in">advanceRunState</span>(STOP);<br>    <span class="hljs-built_in">interruptWorkers</span>();<br>    return <span class="hljs-built_in">drainQueue</span>();<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<ul>
+<li>中断线程</li>
+<li>返回未执行任务</li>
+</ul>
+<hr>
+<h2 id="3️⃣-状态流转图"><a href="#3️⃣-状态流转图" class="headerlink" title="3️⃣ 状态流转图"></a>3️⃣ 状态流转图</h2><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs sql">stateDiagram<span class="hljs-operator">-</span>v2<br>    <span class="hljs-keyword">RUNNING</span> <span class="hljs-comment">--&gt; SHUTDOWN : shutdown</span><br>    <span class="hljs-keyword">RUNNING</span> <span class="hljs-comment">--&gt; STOP : shutdownNow</span><br>    SHUTDOWN <span class="hljs-comment">--&gt; TIDYING</span><br>    STOP <span class="hljs-comment">--&gt; TIDYING</span><br>    TIDYING <span class="hljs-comment">--&gt; TERMINATED</span><br></code></pre></td></tr></table></figure>
+
+<hr>
+<h1 id="七、拒绝策略（RejectedExecutionHandler）"><a href="#七、拒绝策略（RejectedExecutionHandler）" class="headerlink" title="七、拒绝策略（RejectedExecutionHandler）"></a>七、拒绝策略（RejectedExecutionHandler）</h1><h2 id="1️⃣-触发条件"><a href="#1️⃣-触发条件" class="headerlink" title="1️⃣ 触发条件"></a>1️⃣ 触发条件</h2><figure class="highlight abnf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs abnf">线程池非 RUNNING<br>workerCount &gt;<span class="hljs-operator">=</span> max<br>队列已满<br></code></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="2️⃣-四种策略"><a href="#2️⃣-四种策略" class="headerlink" title="2️⃣ 四种策略"></a>2️⃣ 四种策略</h2><table>
+<thead>
+<tr>
+<th>策略</th>
+<th>行为</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>AbortPolicy</td>
+<td>抛异常（默认）</td>
+</tr>
+<tr>
+<td>CallerRunsPolicy</td>
+<td>调用者线程执行</td>
+</tr>
+<tr>
+<td>DiscardPolicy</td>
+<td>丢弃</td>
+</tr>
+<tr>
+<td>DiscardOldestPolicy</td>
+<td>丢最老任务</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="3️⃣-拒绝流程图"><a href="#3️⃣-拒绝流程图" class="headerlink" title="3️⃣ 拒绝流程图"></a>3️⃣ 拒绝流程图</h2><figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs css">flowchart <span class="hljs-selector-tag">TD</span><br>    <span class="hljs-selector-tag">A</span><span class="hljs-selector-attr">[task rejected]</span><br>    <span class="hljs-selector-tag">A</span> --&gt; <span class="hljs-selector-tag">B</span><span class="hljs-selector-attr">[AbortPolicy]</span><br>    <span class="hljs-selector-tag">A</span> --&gt; C<span class="hljs-selector-attr">[CallerRunsPolicy]</span><br>    <span class="hljs-selector-tag">A</span> --&gt; D<span class="hljs-selector-attr">[DiscardPolicy]</span><br>    <span class="hljs-selector-tag">A</span> --&gt; E<span class="hljs-selector-attr">[DiscardOldestPolicy]</span><br></code></pre></td></tr></table></figure>
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Java%E5%9F%BA%E7%A1%80/" class="category-chain-item">Java基础</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E5%A4%9A%E7%BA%BF%E7%A8%8B/" class="print-no-link">#多线程</a>
+      
+        <a href="/tags/%E7%BA%BF%E7%A8%8B%E6%B1%A0/" class="print-no-link">#线程池</a>
+      
+        <a href="/tags/%E6%BA%90%E7%A0%81/" class="print-no-link">#源码</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>ThreadPoolExecutor核心源码</div>
+      <div>http://by.ecel.top/Java基础/ThreadPoolExecutor核心源码/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>刘笑笑</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2024年10月15日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/Database/MySQL%E5%BA%95%E5%B1%82%E6%9E%B6%E6%9E%84/" title="MySQL底层架构">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">MySQL底层架构</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/Java%E5%9F%BA%E7%A1%80/%E7%BA%BF%E7%A8%8B%E6%B1%A0%E8%AF%A6%E8%A7%A3/" title="线程池详解">
+                        <span class="hidden-mobile">线程池详解</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

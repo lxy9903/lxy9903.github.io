@@ -230,6 +230,311 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h2 class="index-header">
         
+        <a href="/%E5%88%86%E5%B8%83%E5%BC%8F/%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1%E8%AF%A6%E8%A7%A3/" target="_self">
+          分布式事务详解
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/%E5%88%86%E5%B8%83%E5%BC%8F/%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1%E8%AF%A6%E8%A7%A3/" target="_self">
+        <div>
+          1️⃣ 为什么需要分布式事务？在单体系统中，一次业务基本只涉及一个数据库，用本地事务就能保证原子性、隔离性、一致性、持久性（ACID）。 但在微服务架构中，一次业务往往跨：  多个服务 多个数据库 甚至多个外部系统（支付、库存、消息中间件）  例如：下订单（Order） → 扣库存（Inventory） → 扣余额（Account） 三个步骤都不在同一个数据库，因此本地事务无法覆盖。 于是我们需要
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2025-12-11 16:03" pubdate>
+              2025-12-11
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E5%88%86%E5%B8%83%E5%BC%8F/" class="category-chain-item">分布式</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1/">#分布式事务</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
+        <a href="/%E5%88%86%E5%B8%83%E5%BC%8F/%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81%E8%AF%A6%E8%A7%A3/" target="_self">
+          分布式锁详解
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/%E5%88%86%E5%B8%83%E5%BC%8F/%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81%E8%AF%A6%E8%A7%A3/" target="_self">
+        <div>
+          一、为什么需要分布式锁？ 在单机应用中我们可以用 synchronized 或 ReentrantLock 做并发控制，但在分布式系统下，多台机器、多进程会同时操作同一份资源，这时候就必须用 分布式锁 来保证 互斥、可重入、安全释放。  常见使用场景：  防止超卖（多个节点同时扣库存） 防止重复下单、重复支付 定时任务集群只让一台跑 幂等控制：同一业务不能同时重复执行 接口限流的临界区保护   二
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2025-12-11 12:12" pubdate>
+              2025-12-11
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E5%88%86%E5%B8%83%E5%BC%8F/" class="category-chain-item">分布式</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81/">#分布式锁</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
+        <a href="/Spring/SpringBoot%E6%A0%B8%E5%BF%83%E6%A8%A1%E5%9D%97/" target="_self">
+          SpringBoot核心模块
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/Spring/SpringBoot%E6%A0%B8%E5%BF%83%E6%A8%A1%E5%9D%97/" target="_self">
+        <div>
+          [TOC] Spring Boot 核心模块1. SpringApplication 启动模块 功能： 应用入口，负责启动 Spring 容器 初始化 Environment（配置）、ApplicationContext（IOC 容器） 加载自动装配类、注册监听器、启动内嵌容器（Web 应用）   核心类： SpringApplication SpringApplicationRunListene
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2025-12-09 17:21" pubdate>
+              2025-12-09
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Spring/" class="category-chain-item">Spring</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/SpringBoot/">#SpringBoot</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
+        <a href="/Database/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%AF%B9%E6%AF%94/" target="_self">
+          数据库对比
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/Database/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%AF%B9%E6%AF%94/" target="_self">
+        <div>
+          常见数据库访问框架 &#x2F; 技术   框架 &#x2F; 技术 类型 数据库类型 SQL 控制 ORM 支持 开发效率 灵活性 事务管理 使用场景    JDBC &#x2F; Spring JDBC 底层 &#x2F; 封装 关系型 高（手写 SQL） ❌ 中 高 支持声明式事务 精细控制 SQL、轻量 CRUD   JPA（Hibernate &#x2F; Spring Data JPA
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2025-12-09 17:17" pubdate>
+              2025-12-09
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Database/" class="category-chain-item">Database</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/Database/">#Database</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
+        <a href="/Database/%E6%95%B0%E6%8D%AE%E5%BA%93%E9%9A%94%E7%A6%BB%E7%BA%A7%E5%88%AB/" target="_self">
+          数据库隔离级别详解
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/Database/%E6%95%B0%E6%8D%AE%E5%BA%93%E9%9A%94%E7%A6%BB%E7%BA%A7%E5%88%AB/" target="_self">
+        <div>
+          [TOC] 一、什么是数据库隔离级别？隔离级别的核心目标：  并发性能（吞吐） 和 数据一致性（正确性） 的权衡 防止多事务并发访问同一数据时产生异常 不同数据库采用不同的实现机制（锁、MVCC、版本链、快照等）  典型并发异常：    异常 含义    脏读 Dirty Read 读到别人未提交的数据   不可重复读 Non-repeatable Read 同事务两次读同一行，结果不同   幻读
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2025-12-09 13:39" pubdate>
+              2025-12-09
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Database/" class="category-chain-item">Database</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/Isolation/">#Isolation</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
         <a href="/Database/PostgreSQL%E5%85%A8%E9%9D%A2%E7%AE%80%E8%BF%B0/" target="_self">
           PostgreSQL全面简述
         </a>
@@ -280,67 +585,6 @@
               <a href="/tags/PostgreSQL/">#PostgreSQL</a>
             
               <a href="/tags/AI/">#AI</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/Database/MySQL%E5%BA%95%E5%B1%82%E6%9E%B6%E6%9E%84/" target="_self">
-          MySQL底层架构
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/Database/MySQL%E5%BA%95%E5%B1%82%E6%9E%B6%E6%9E%84/" target="_self">
-        <div>
-          [TOC] 一、MySQL 底层架构总览MySQL 可分为 Server 层（通用层） 和 存储引擎层（InnoDB）。 1234567Client  ↓Server 层：连接管理 / SQL 解析 / 优化器 / 执行器 / Query Cache(已废弃)  ↓Engine 层：InnoDB（Buffer Pool / Redo / Undo / Doublewrite / Backgroun
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2025-12-07 16:03" pubdate>
-              2025-12-07
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/Database/" class="category-chain-item">Database</a>
-  
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/MySQL/">#MySQL</a>
             
           </div>
         
@@ -594,257 +838,11 @@
     </article>
   </div>
 
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/Others/%E7%9F%A5%E8%AF%86%E7%82%B9%E6%80%BB%E7%BB%93/" target="_self">
-          知识点总结
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/Others/%E7%9F%A5%E8%AF%86%E7%82%B9%E6%80%BB%E7%BB%93/" target="_self">
-        <div>
-          [TOC]  一、知识点总结1. Java &#x2F; 运行时与框架1.1 反射（Reflection） 是什么：Java 运行时检查&#x2F;操作类的方法、字段、构造器、注解的能力（Class, Method, Field, Constructor）。 原理：编译期产生 .class（字节码） -&gt; JVM 装载类 -&gt; Class 对象代表类元数据。反射 API 操作 Clas
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2025-11-26 17:28" pubdate>
-              2025-11-26
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/Others/" class="category-chain-item">Others</a>
-  
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/%E7%9F%A5%E8%AF%86%E7%82%B9%E6%80%BB%E7%BB%93/">#知识点总结</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/Database/Oracle%E4%B8%BB%E4%BB%8E%E5%A4%87%E4%BB%BD/" target="_self">
-          Oracle主从备份
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/Database/Oracle%E4%B8%BB%E4%BB%8E%E5%A4%87%E4%BB%BD/" target="_self">
-        <div>
-          Oracle Data Guard（物理备库） + 最大可用模式 + Fast-Start Failover（FSFO） 一、Data Guard 是什么？Data Guard 用于：  实时传输主库 redo log 到备库 备库将 redo 实时 apply 保持两个数据库一致  重点：备库不能自主写数据，只能回放主库的 redo。 ✔ 主库：能读能写 ✔ 备库：只写（redo apply），
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2025-11-26 16:44" pubdate>
-              2025-11-26
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/Database/" class="category-chain-item">Database</a>
-  
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/Oracle/">#Oracle</a>
-            
-              <a href="/tags/%E5%A4%87%E4%BB%BD/">#备份</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/Caching/Redis%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%E4%B8%8E%E5%BA%95%E5%B1%82%E7%BB%93%E6%9E%84/" target="_self">
-          Redis数据类型与底层结构
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/Caching/Redis%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%E4%B8%8E%E5%BA%95%E5%B1%82%E7%BB%93%E6%9E%84/" target="_self">
-        <div>
-          数据类型与底层结构 — 详解  1) String（底层：SDS — Simple Dynamic String）内部实现（SDS）  SDS 不是 C 的 char*，它在内存前方保存长度&#x2F;分配容量信息（避免 strlen），并允许二进制数据（包含 \0）。 变种：embstr（短字符串优化）和 raw（标准分配）。 embstr：当字符串很短时，键和值会一起做一次小内存分配（节省指针
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2025-11-24 11:22" pubdate>
-              2025-11-24
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/Caching-NoSQL/" class="category-chain-item">Caching &amp; NoSQL</a>
-  
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/Redis/">#Redis</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/Caching/Redis-%E9%AB%98%E6%80%A7%E8%83%BD/" target="_self">
-          Redis的高性能
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/Caching/Redis-%E9%AB%98%E6%80%A7%E8%83%BD/" target="_self">
-        <div>
-          一、Redis 为什么单线程却这么快？Redis 的高性能并不是因为“单线程快”，而是因为： 1. 所有操作都在内存中完成（In-Memory） 无磁盘随机 I&#x2F;O  内存访问延迟只有 100ns 级别 远比磁盘快 数万倍  内存速度本身就快到爆。  2. 单线程模型避免了线程切换开销其他数据库（如 MySQL）使用多线程，每次处理都要：  上下文切换 线程竞争资源 CPU 缓存失效
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2025-11-23 21:57" pubdate>
-              2025-11-23
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/Caching-NoSQL/" class="category-chain-item">Caching &amp; NoSQL</a>
-  
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/Redis/">#Redis</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
 
 
   <nav aria-label="navigation">
     <span class="pagination" id="pagination">
-      <span class="page-number current">1</span><a class="page-number" href="/page/2/#board">2</a><a class="page-number" href="/page/3/#board">3</a><a class="extend next" rel="next" href="/page/2/#board"><i class="iconfont icon-arrowright"></i></a>
+      <span class="page-number current">1</span><a class="page-number" href="/page/2/#board">2</a><a class="page-number" href="/page/3/#board">3</a><a class="page-number" href="/page/4/#board">4</a><a class="extend next" rel="next" href="/page/2/#board"><i class="iconfont icon-arrowright"></i></a>
     </span>
   </nav>
 

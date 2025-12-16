@@ -1,0 +1,942 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="刘笑笑">
+  <meta name="keywords" content="java、go、操作系统、网络">
+  
+    <meta name="description" content="[TOC] 一、什么是数据库隔离级别？隔离级别的核心目标：  并发性能（吞吐） 和 数据一致性（正确性） 的权衡 防止多事务并发访问同一数据时产生异常 不同数据库采用不同的实现机制（锁、MVCC、版本链、快照等）  典型并发异常：    异常 含义    脏读 Dirty Read 读到别人未提交的数据   不可重复读 Non-repeatable Read 同事务两次读同一行，结果不同   幻读">
+<meta property="og:type" content="article">
+<meta property="og:title" content="数据库隔离级别详解">
+<meta property="og:url" content="http://by.ecel.top/Database/%E6%95%B0%E6%8D%AE%E5%BA%93%E9%9A%94%E7%A6%BB%E7%BA%A7%E5%88%AB/index.html">
+<meta property="og:site_name" content="title">
+<meta property="og:description" content="[TOC] 一、什么是数据库隔离级别？隔离级别的核心目标：  并发性能（吞吐） 和 数据一致性（正确性） 的权衡 防止多事务并发访问同一数据时产生异常 不同数据库采用不同的实现机制（锁、MVCC、版本链、快照等）  典型并发异常：    异常 含义    脏读 Dirty Read 读到别人未提交的数据   不可重复读 Non-repeatable Read 同事务两次读同一行，结果不同   幻读">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2025-12-09T05:39:36.000Z">
+<meta property="article:modified_time" content="2025-12-09T06:59:51.116Z">
+<meta property="article:author" content="刘笑笑">
+<meta property="article:tag" content="Isolation">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>数据库隔离级别详解 - title</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"by.ecel.top","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Tech Notes</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="数据库隔离级别详解"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2025-12-09 13:39" pubdate>
+          2025年12月9日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          1.6k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          14 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">数据库隔离级别详解</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <p>[TOC]</p>
+<h1 id="一、什么是数据库隔离级别？"><a href="#一、什么是数据库隔离级别？" class="headerlink" title="一、什么是数据库隔离级别？"></a>一、什么是数据库隔离级别？</h1><p>隔离级别的核心目标：</p>
+<ul>
+<li><strong>并发性能（吞吐）</strong> 和 <strong>数据一致性（正确性）</strong> 的权衡</li>
+<li>防止多事务并发访问同一数据时产生异常</li>
+<li>不同数据库采用不同的实现机制（锁、MVCC、版本链、快照等）</li>
+</ul>
+<p>典型并发异常：</p>
+<table>
+<thead>
+<tr>
+<th>异常</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>脏读 Dirty Read</strong></td>
+<td>读到别人未提交的数据</td>
+</tr>
+<tr>
+<td><strong>不可重复读 Non-repeatable Read</strong></td>
+<td>同事务两次读同一行，结果不同</td>
+</tr>
+<tr>
+<td><strong>幻读 Phantom Read</strong></td>
+<td>同事务两次查询相同条件，返回的结果行数不同</td>
+</tr>
+</tbody></table>
+<hr>
+<h1 id="二、四种隔离级别详解"><a href="#二、四种隔离级别详解" class="headerlink" title="二、四种隔离级别详解"></a>二、四种隔离级别详解</h1><h2 id="1️⃣-Read-Uncommitted（读未提交）"><a href="#1️⃣-Read-Uncommitted（读未提交）" class="headerlink" title="1️⃣ Read Uncommitted（读未提交）"></a>1️⃣ Read Uncommitted（读未提交）</h2><ul>
+<li>可能出现 <strong>脏读 &#x2F; 不可重复读 &#x2F; 幻读</strong></li>
+<li>几乎不会用于正式环境</li>
+</ul>
+<h2 id="2️⃣-Read-Committed（读已提交）"><a href="#2️⃣-Read-Committed（读已提交）" class="headerlink" title="2️⃣ Read Committed（读已提交）"></a>2️⃣ Read Committed（读已提交）</h2><ul>
+<li>不会脏读</li>
+<li>可能出现不可重复读、幻读</li>
+<li>每次读都获取当下最新快照（Oracle、PG 等采用）</li>
+</ul>
+<h2 id="3️⃣-Repeatable-Read（可重复读）"><a href="#3️⃣-Repeatable-Read（可重复读）" class="headerlink" title="3️⃣ Repeatable Read（可重复读）"></a>3️⃣ Repeatable Read（可重复读）</h2><ul>
+<li>同一事务多次读结果一致</li>
+<li>防止不可重复读</li>
+<li>MySQL 采用 MVCC + 间隙锁 防止幻读</li>
+</ul>
+<p>Oracle 的 RC ≈ MySQL 的 RR（因为一致性读更强）</p>
+<h2 id="4️⃣-Serializable（串行化）"><a href="#4️⃣-Serializable（串行化）" class="headerlink" title="4️⃣ Serializable（串行化）"></a>4️⃣ Serializable（串行化）</h2><ul>
+<li>完全串行执行</li>
+<li>最安全，但性能最低</li>
+<li>业务很少使用</li>
+</ul>
+<h1 id="三、不同数据库的默认隔离级别"><a href="#三、不同数据库的默认隔离级别" class="headerlink" title="三、不同数据库的默认隔离级别"></a>三、不同数据库的默认隔离级别</h1><table>
+<thead>
+<tr>
+<th>数据库</th>
+<th>默认隔离级别</th>
+<th>是否支持 MVCC</th>
+<th>特点</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>MySQL（InnoDB）</strong></td>
+<td>Repeatable Read</td>
+<td>✔</td>
+<td>幻读通过间隙锁解决</td>
+</tr>
+<tr>
+<td><strong>Oracle</strong></td>
+<td>Read Committed</td>
+<td>✔</td>
+<td>强大的 UNDO + 一致性读，没有锁读</td>
+</tr>
+<tr>
+<td><strong>PostgreSQL</strong></td>
+<td>Read Committed</td>
+<td>✔</td>
+<td>强 MVCC，无间隙锁</td>
+</tr>
+<tr>
+<td><strong>MongoDB</strong></td>
+<td>Read Committed（本质文档级锁 + WiredTiger MVCC）</td>
+<td>✔</td>
+<td>单文档级事务天然一致</td>
+</tr>
+<tr>
+<td><strong>Elasticsearch</strong></td>
+<td>无事务隔离级别</td>
+<td>✘</td>
+<td>近实时搜索，最终一致性</td>
+</tr>
+</tbody></table>
+<hr>
+<h1 id="四、MySQL、Oracle、PG、MongoDB、ES-隔离级别与实现机制对比"><a href="#四、MySQL、Oracle、PG、MongoDB、ES-隔离级别与实现机制对比" class="headerlink" title="四、MySQL、Oracle、PG、MongoDB、ES 隔离级别与实现机制对比"></a>四、MySQL、Oracle、PG、MongoDB、ES 隔离级别与实现机制对比</h1><h2 id="1-MySQL（InnoDB）"><a href="#1-MySQL（InnoDB）" class="headerlink" title="1. MySQL（InnoDB）"></a>1. MySQL（InnoDB）</h2><p><strong>默认：Repeatable Read</strong></p>
+<ul>
+<li><strong>MVCC 一致性视图 + undo log</strong></li>
+<li>为防止幻读 → <strong>间隙锁（Gap Lock）、Next-Key Lock</strong> → 会锁住某区间，导致写冲突增加，性能降低</li>
+</ul>
+<p>优点：幻读被彻底解决</p>
+<p> 缺点：锁冲突较多，写性能较弱</p>
+<hr>
+<h2 id="2-Oracle"><a href="#2-Oracle" class="headerlink" title="2. Oracle"></a>2. Oracle</h2><p><strong>默认：Read Committed（读一致性非常强）</strong></p>
+<p>Oracle 的一致性读（Consistent Read）原则：</p>
+<ul>
+<li>读数据时不加锁</li>
+<li>始终通过 UNDO 构建“读时间点快照”</li>
+<li>即使是 Read Committed，也不会产生不可重复读对业务的危险版本</li>
+</ul>
+<h3 id="❓为什么-Oracle-的-RC-比-MySQL-的-RR-更强？"><a href="#❓为什么-Oracle-的-RC-比-MySQL-的-RR-更强？" class="headerlink" title="❓为什么 Oracle 的 RC 比 MySQL 的 RR 更强？"></a>❓为什么 Oracle 的 RC 比 MySQL 的 RR 更强？</h3><p>因为 Oracle RC 是：<strong>视图级一致性（Statement-level Consistent Read）</strong></p>
+<p>而 MySQL RR 是：<strong>事务级一致性（但依赖 MVCC + Gap Lock）</strong></p>
+<p>Oracle 的 RC：</p>
+<ol>
+<li>读时不锁住行（高并发）</li>
+<li>自动从 UNDO 构造历史版本（稳定一致）</li>
+<li>写之间采用行锁，不产生 gap lock（写性能更强）</li>
+</ol>
+<p><strong>企业金融行业大量使用 Oracle，是它 RC 的强一致性 + 高写性能带来的优势</strong></p>
+<hr>
+<h2 id="3-PostgreSQL"><a href="#3-PostgreSQL" class="headerlink" title="3. PostgreSQL"></a>3. PostgreSQL</h2><p><strong>默认：Read Committed</strong></p>
+<p>采用 MVCC，无间隙锁：</p>
+<ul>
+<li>每行记录包含 xmin、xmax 版本号</li>
+<li>不阻塞读</li>
+<li>写写冲突会由 MVCC 自动处理</li>
+</ul>
+<p>比 MySQL 更自然、简单，性能更好。</p>
+<hr>
+<h2 id="4-MongoDB"><a href="#4-MongoDB" class="headerlink" title="4. MongoDB"></a>4. MongoDB</h2><p><strong>默认类似 Read Committed</strong></p>
+<p>机制：</p>
+<ul>
+<li>文档级锁</li>
+<li>WiredTiger MVCC（读旧版本视图）</li>
+<li>多文档事务支持 Snapshot isolation</li>
+</ul>
+<p>但使用场景更偏向 NoSQL，高并发写性能好。</p>
+<hr>
+<h2 id="5-Elasticsearch"><a href="#5-Elasticsearch" class="headerlink" title="5. Elasticsearch"></a>5. Elasticsearch</h2><p><strong>无事务隔离级别</strong></p>
+<ul>
+<li>近实时搜索（NRT）</li>
+<li>数据写入后 1 秒左右可见</li>
+<li>底层采用 Lucene 段文件 + refresh 机制</li>
+<li>一致性模型：最终一致性（Eventual Consistency）</li>
+</ul>
+<hr>
+<h1 id="五、MVCC-多版本并发控制"><a href="#五、MVCC-多版本并发控制" class="headerlink" title="五、MVCC - 多版本并发控制"></a>五、MVCC - 多版本并发控制</h1><p><strong>原理：</strong></p>
+<ol>
+<li><strong>版本号 &#x2F; 时间戳</strong>：每个事务有一个唯一的时间戳（或事务 ID），每行数据记录它的创建时间&#x2F;修改时间。</li>
+<li><strong>读操作</strong><ul>
+<li>读取符合自己事务时间点的数据版本 → <strong>一致性读（Consistent Read）</strong></li>
+</ul>
+</li>
+<li><strong>写操作</strong><ul>
+<li>创建新版本</li>
+<li>并不会覆盖旧版本，直到事务提交才更新可见性</li>
+</ul>
+</li>
+<li><strong>清理旧版本</strong>：通过后台线程或自动清理（VACUUM &#x2F; Undo &#x2F; Purge）</li>
+</ol>
+<p><strong>优点</strong>：</p>
+<ul>
+<li>高并发场景下，读写不阻塞</li>
+<li>保证事务隔离性（如 Snapshot Isolation）</li>
+</ul>
+<p><strong>缺点</strong>：</p>
+<ul>
+<li>占用存储空间（多版本）</li>
+<li>需要清理旧版本，否则膨胀</li>
+<li>实现复杂</li>
+</ul>
+<p><strong>不同数据库MVCC：</strong></p>
+<table>
+<thead>
+<tr>
+<th>数据库</th>
+<th>MVCC 实现方式</th>
+<th>特点</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>MySQL（InnoDB）</strong></td>
+<td><strong>隐藏列 + Undo Log</strong></td>
+<td>- 每行记录两个隐藏字段：<code>trx_id</code>、<code>roll_pointer</code> - 一致性读直接读取 Undo 版本 - 更新不阻塞读 - 读写不阻塞，写写可能冲突</td>
+</tr>
+<tr>
+<td><strong>PostgreSQL</strong></td>
+<td><strong>真正的多版本存储 MVCC</strong></td>
+<td>- 每行存储 <code>xmin</code>（创建事务）、<code>xmax</code>（删除事务） - 读操作通过事务 ID 选择可见版本 - 更新生成新行版本，旧版本由 VACUUM 清理 - 写操作不阻塞读</td>
+</tr>
+<tr>
+<td><strong>Oracle</strong></td>
+<td><strong>Undo + MVCC</strong></td>
+<td>- 每次读创建快照（Read Consistency） - 读操作使用 Undo 数据回溯 - 写操作产生新版本 - 默认 Read Committed 隔离级别</td>
+</tr>
+<tr>
+<td><strong>MongoDB</strong></td>
+<td><strong>文档级 MVCC</strong></td>
+<td>- WiredTiger 引擎支持 Snapshot Read - 单文档事务支持 ACID - 并发读不阻塞写，文档级别隔离</td>
+</tr>
+<tr>
+<td><strong>ES（Elasticsearch）</strong></td>
+<td><strong>Lucene Segment + SeqNo</strong></td>
+<td>- 每次写入创建新段（Segment） - 读操作基于段快照 - 类似 MVCC，但主要为搜索，不适合事务场景</td>
+</tr>
+</tbody></table>
+<h1 id="五、为什么-Oracle-默认-Read-Committed-比-MySQL-默认-Repeatable-Read-还强？"><a href="#五、为什么-Oracle-默认-Read-Committed-比-MySQL-默认-Repeatable-Read-还强？" class="headerlink" title="五、为什么 Oracle 默认 Read Committed 比 MySQL 默认 Repeatable Read 还强？"></a>五、为什么 Oracle 默认 Read Committed 比 MySQL 默认 Repeatable Read 还强？</h1><table>
+<thead>
+<tr>
+<th>维度</th>
+<th>MySQL RR</th>
+<th>Oracle RC</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>幻读</td>
+<td>通过 gap lock 解决</td>
+<td>通过 UNDO 构造历史快照解决，不靠锁</td>
+</tr>
+<tr>
+<td>并发写性能</td>
+<td>较低（gap lock 多）</td>
+<td>高（无 gap lock）</td>
+</tr>
+<tr>
+<td>一致性读强度</td>
+<td>事务级一致视图</td>
+<td>语句级一致视图（更自然，稳定）</td>
+</tr>
+<tr>
+<td>加锁策略</td>
+<td>行锁 + 间隙锁</td>
+<td>行级锁（无间隙锁）</td>
+</tr>
+</tbody></table>
+<p><strong>Oracle RC 实际上是一种更先进的隔离机制： 不通过加锁，而是用 UNDO 构造历史快照 → 实现更高并发 + 强一致性。</strong></p>
+<hr>
+<h1 id="六、Oracle-RC-会不会在银行扣款类业务出问题？"><a href="#六、Oracle-RC-会不会在银行扣款类业务出问题？" class="headerlink" title="六、Oracle RC 会不会在银行扣款类业务出问题？"></a>六、Oracle RC 会不会在银行扣款类业务出问题？</h1><p><strong>不会。</strong></p>
+<p>因为银行核心业务会加：</p>
+<ul>
+<li>明确锁（SELECT … FOR UPDATE）</li>
+<li>乐观锁版本号</li>
+<li>去重表、流水号机制</li>
+<li>业务 idempotent 设计</li>
+<li>分布式锁</li>
+</ul>
+<p>Oracle RC 的 MVCC 只影响读，不影响写的锁机制：</p>
+<ul>
+<li>更新记录时，Oracle 使用 <strong>行级锁（Row Lock）</strong></li>
+<li>不允许两个事务同时修改同一行</li>
+<li>银行扣款是强写操作 → 不受 RC 的一致性读影响</li>
+</ul>
+<p>因此： <strong>Oracle RC 完全能保证银行类敏感数据安全。</strong></p>
+<hr>
+<h1 id="七、什么时候-Read-Committed-不适合？"><a href="#七、什么时候-Read-Committed-不适合？" class="headerlink" title="七、什么时候 Read Committed 不适合？"></a>七、什么时候 Read Committed 不适合？</h1><ul>
+<li>需要“全事务一致视图”的长事务</li>
+<li>大范围范围查询 + 写并发（可能看到新行）</li>
+<li>复杂审计、取证场景（需要时间点一致性）</li>
+</ul>
+<p>此时应使用：</p>
+<ul>
+<li>Oracle：Serializable</li>
+<li>MySQL：Repeatable Read 或加锁读</li>
+</ul>
+<hr>
+<h1 id="八、一句话总结"><a href="#八、一句话总结" class="headerlink" title="八、一句话总结"></a>八、一句话总结</h1><table>
+<thead>
+<tr>
+<th>数据库</th>
+<th>默认级别</th>
+<th>优势</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Oracle：RC</strong></td>
+<td>强一致性读 + 性能最强 + 无 gap lock &#x3D; 金融行业王者</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>MySQL：RR</strong></td>
+<td>普适，但依赖 gap lock，写性能差</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>PG：RC</strong></td>
+<td>MVCC 实现纯粹清晰，性能优雅</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>MongoDB：RC</strong></td>
+<td>文档级强事务，对整体隔离要求低</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>ES：无隔离</strong></td>
+<td>适合搜索，不适合强事务</td>
+<td></td>
+</tr>
+</tbody></table>
+<hr>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Database/" class="category-chain-item">Database</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/Isolation/" class="print-no-link">#Isolation</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>数据库隔离级别详解</div>
+      <div>http://by.ecel.top/Database/数据库隔离级别/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>刘笑笑</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2025年12月9日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/Database/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%AF%B9%E6%AF%94/" title="数据库对比">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">数据库对比</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/Database/PostgreSQL%E5%85%A8%E9%9D%A2%E7%AE%80%E8%BF%B0/" title="PostgreSQL全面简述">
+                        <span class="hidden-mobile">PostgreSQL全面简述</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

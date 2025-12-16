@@ -1,0 +1,814 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="刘笑笑">
+  <meta name="keywords" content="java、go、操作系统、网络">
+  
+    <meta name="description" content="[TOC] Spring Boot 核心模块1. SpringApplication 启动模块 功能： 应用入口，负责启动 Spring 容器 初始化 Environment（配置）、ApplicationContext（IOC 容器） 加载自动装配类、注册监听器、启动内嵌容器（Web 应用）   核心类： SpringApplication SpringApplicationRunListene">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SpringBoot核心模块">
+<meta property="og:url" content="http://by.ecel.top/Spring/SpringBoot%E6%A0%B8%E5%BF%83%E6%A8%A1%E5%9D%97/index.html">
+<meta property="og:site_name" content="title">
+<meta property="og:description" content="[TOC] Spring Boot 核心模块1. SpringApplication 启动模块 功能： 应用入口，负责启动 Spring 容器 初始化 Environment（配置）、ApplicationContext（IOC 容器） 加载自动装配类、注册监听器、启动内嵌容器（Web 应用）   核心类： SpringApplication SpringApplicationRunListene">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://by.ecel.top/SpringBoot%E6%A0%B8%E5%BF%83%E6%A8%A1%E5%9D%97/image-20251209174037256.png">
+<meta property="og:image" content="http://by.ecel.top/Spring/SpringBoot%E6%A0%B8%E5%BF%83%E6%A8%A1%E5%9D%97/SpringBoot%E6%A0%B8%E5%BF%83%E6%A8%A1%E5%9D%97/image-20251210170850672.png">
+<meta property="og:image" content="http://by.ecel.top/Spring/SpringBoot%E6%A0%B8%E5%BF%83%E6%A8%A1%E5%9D%97/SpringBoot%E6%A0%B8%E5%BF%83%E6%A8%A1%E5%9D%97/image-20251210170942750.png">
+<meta property="og:image" content="http://by.ecel.top/Spring/SpringBoot%E6%A0%B8%E5%BF%83%E6%A8%A1%E5%9D%97/SpringBoot%E6%A0%B8%E5%BF%83%E6%A8%A1%E5%9D%97/image-20251210171018575.png">
+<meta property="og:image" content="http://by.ecel.top/Spring/SpringBoot%E6%A0%B8%E5%BF%83%E6%A8%A1%E5%9D%97/SpringBoot%E6%A0%B8%E5%BF%83%E6%A8%A1%E5%9D%97/image-20251210171105769.png">
+<meta property="og:image" content="http://by.ecel.top/Spring/SpringBoot%E6%A0%B8%E5%BF%83%E6%A8%A1%E5%9D%97/SpringBoot%E6%A0%B8%E5%BF%83%E6%A8%A1%E5%9D%97/image-20251210171151642.png">
+<meta property="og:image" content="http://by.ecel.top/Spring/SpringBoot%E6%A0%B8%E5%BF%83%E6%A8%A1%E5%9D%97/SpringBoot%E6%A0%B8%E5%BF%83%E6%A8%A1%E5%9D%97/image-20251210171232759.png">
+<meta property="og:image" content="http://by.ecel.top/Spring/SpringBoot%E6%A0%B8%E5%BF%83%E6%A8%A1%E5%9D%97/SpringBoot%E6%A0%B8%E5%BF%83%E6%A8%A1%E5%9D%97/image-20251210171322751.png">
+<meta property="article:published_time" content="2025-12-09T09:21:45.000Z">
+<meta property="article:modified_time" content="2025-12-10T09:23:35.086Z">
+<meta property="article:author" content="刘笑笑">
+<meta property="article:tag" content="SpringBoot">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://by.ecel.top/SpringBoot%E6%A0%B8%E5%BF%83%E6%A8%A1%E5%9D%97/image-20251209174037256.png">
+  
+  
+  
+  <title>SpringBoot核心模块 - title</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"by.ecel.top","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Tech Notes</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="SpringBoot核心模块"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2025-12-09 17:21" pubdate>
+          2025年12月9日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          470 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          4 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">SpringBoot核心模块</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <p>[TOC]</p>
+<h1 id="Spring-Boot-核心模块"><a href="#Spring-Boot-核心模块" class="headerlink" title="Spring Boot 核心模块"></a>Spring Boot 核心模块</h1><h2 id="1-SpringApplication-启动模块"><a href="#1-SpringApplication-启动模块" class="headerlink" title="1. SpringApplication 启动模块"></a>1. SpringApplication 启动模块</h2><ul>
+<li>功能：<ul>
+<li>应用入口，负责启动 Spring 容器</li>
+<li>初始化 <code>Environment</code>（配置）、<code>ApplicationContext</code>（IOC 容器）</li>
+<li>加载自动装配类、注册监听器、启动内嵌容器（Web 应用）</li>
+</ul>
+</li>
+<li>核心类：<ul>
+<li><code>SpringApplication</code></li>
+<li><code>SpringApplicationRunListeners</code></li>
+<li><code>ApplicationContextInitializer</code></li>
+</ul>
+</li>
+<li>图示：</li>
+</ul>
+<p><img src="/SpringBoot%E6%A0%B8%E5%BF%83%E6%A8%A1%E5%9D%97/image-20251209174037256.png" srcset="/img/loading.gif" lazyload alt="image-20251209174037256"></p>
+<hr>
+<h2 id="2-自动配置（Auto-Configuration）模块"><a href="#2-自动配置（Auto-Configuration）模块" class="headerlink" title="2. 自动配置（Auto-Configuration）模块"></a>2. 自动配置（Auto-Configuration）模块</h2><ul>
+<li>功能：<ul>
+<li>根据类路径、Bean 定义、配置文件自动注册 Bean</li>
+<li>避免手动配置，快速接入模块</li>
+</ul>
+</li>
+<li>核心原理：<ol>
+<li><code>@EnableAutoConfiguration</code> 注解</li>
+<li><code>SpringFactoriesLoader</code> 加载 <code>META-INF/spring.factories</code> 配置的自动配置类</li>
+<li><code>@ConditionalOnClass</code>, <code>@ConditionalOnMissingBean</code> 判断条件</li>
+</ol>
+</li>
+<li>核心类：<ul>
+<li><code>EnableAutoConfigurationImportSelector</code></li>
+</ul>
+</li>
+<li>图示：</li>
+</ul>
+<img src="SpringBoot核心模块/image-20251210170850672.png" srcset="/img/loading.gif" lazyload alt="image-20251210170850672" style="zoom:50%;" />
+
+<hr>
+<h2 id="3-IOC-DI-模块"><a href="#3-IOC-DI-模块" class="headerlink" title="3. IOC &#x2F; DI 模块"></a>3. IOC &#x2F; DI 模块</h2><ul>
+<li>功能：<ul>
+<li>控制反转（Inversion of Control）+ 依赖注入（Dependency Injection）</li>
+<li>管理 Bean 生命周期</li>
+</ul>
+</li>
+<li>核心注解：<ul>
+<li><code>@Component</code>, <code>@Service</code>, <code>@Repository</code>, <code>@Controller</code></li>
+<li><code>@Autowired</code>, <code>@Qualifier</code>, <code>@Resource</code></li>
+</ul>
+</li>
+<li>Bean 生命周期：<ol>
+<li>扫描 BeanDefinition</li>
+<li>注册到 BeanFactory</li>
+<li>实例化 Bean</li>
+<li>注入依赖</li>
+<li>初始化及后置处理</li>
+</ol>
+</li>
+<li>图示：</li>
+</ul>
+<img src="SpringBoot核心模块/image-20251210170942750.png" srcset="/img/loading.gif" lazyload alt="image-20251210170942750" style="zoom:50%;" />
+
+<hr>
+<h2 id="4-AOP-模块"><a href="#4-AOP-模块" class="headerlink" title="4. AOP 模块"></a>4. AOP 模块</h2><ul>
+<li>功能：<ul>
+<li>解耦横切关注点（日志、事务、权限）</li>
+</ul>
+</li>
+<li>核心注解：<ul>
+<li><code>@Aspect</code>, <code>@Before</code>, <code>@After</code>, <code>@Around</code></li>
+<li><code>@EnableAspectJAutoProxy</code></li>
+</ul>
+</li>
+<li>实现方式：<ul>
+<li>JDK 动态代理（接口代理）</li>
+<li>CGLIB 动态代理（类代理）</li>
+</ul>
+</li>
+<li>图示：</li>
+</ul>
+<img src="SpringBoot核心模块/image-20251210171018575.png" srcset="/img/loading.gif" lazyload alt="image-20251210171018575" style="zoom:50%;" />
+
+<hr>
+<h2 id="5-Web-模块"><a href="#5-Web-模块" class="headerlink" title="5. Web 模块"></a>5. Web 模块</h2><ul>
+<li>功能：<ul>
+<li>内嵌 Web 容器（Tomcat &#x2F; Jetty &#x2F; Undertow）</li>
+<li>请求处理流程（DispatcherServlet → HandlerMapping → Controller → View）</li>
+</ul>
+</li>
+<li>核心类：<ul>
+<li><code>DispatcherServlet</code></li>
+<li><code>WebMvcAutoConfiguration</code></li>
+<li><code>ServletWebServerFactoryAutoConfiguration</code></li>
+</ul>
+</li>
+<li>请求拦截：<ul>
+<li><strong>Filter</strong>：Servlet 层统一拦截</li>
+<li><strong>Interceptor</strong>：Spring MVC 层 Controller 前后逻辑处理</li>
+</ul>
+</li>
+<li>图示：</li>
+</ul>
+<img src="SpringBoot核心模块/image-20251210171105769.png" srcset="/img/loading.gif" lazyload alt="image-20251210171105769" style="zoom:50%;" />
+
+<hr>
+<h2 id="6-Starter-系列模块"><a href="#6-Starter-系列模块" class="headerlink" title="6. Starter 系列模块"></a>6. Starter 系列模块</h2><ul>
+<li>功能：<ul>
+<li>统一依赖管理，快速引入各种功能模块</li>
+<li>自动加载相关配置（Auto-Configuration）</li>
+</ul>
+</li>
+<li>常用 Starter：<ul>
+<li>核心：<code>spring-boot-starter</code></li>
+<li>Web：<code>spring-boot-starter-web</code></li>
+<li>数据访问：<code>spring-boot-starter-data-jpa</code>, <code>spring-boot-starter-jdbc</code></li>
+<li>安全：<code>spring-boot-starter-security</code></li>
+<li>测试：<code>spring-boot-starter-test</code></li>
+<li>监控：<code>spring-boot-starter-actuator</code></li>
+</ul>
+</li>
+<li>图示：</li>
+</ul>
+<img src="SpringBoot核心模块/image-20251210171151642.png" srcset="/img/loading.gif" lazyload alt="image-20251210171151642" style="zoom:50%;" />
+
+<hr>
+<h2 id="7-外部配置模块"><a href="#7-外部配置模块" class="headerlink" title="7. 外部配置模块"></a>7. 外部配置模块</h2><ul>
+<li>功能：<ul>
+<li>配置文件管理（<code>application.properties</code> &#x2F; <code>application.yml</code>）</li>
+<li>支持多环境配置、配置优先级、类型绑定</li>
+</ul>
+</li>
+<li>核心注解：<ul>
+<li><code>@ConfigurationProperties</code>, <code>@Value</code></li>
+</ul>
+</li>
+<li>核心类：<ul>
+<li><code>Environment</code>, <code>PropertySourcesPropertyResolver</code></li>
+</ul>
+</li>
+</ul>
+<img src="SpringBoot核心模块/image-20251210171232759.png" srcset="/img/loading.gif" lazyload alt="image-20251210171232759" style="zoom:50%;" />
+
+<hr>
+<h2 id="8-Actuator-模块"><a href="#8-Actuator-模块" class="headerlink" title="8. Actuator 模块"></a>8. Actuator 模块</h2><ul>
+<li>功能：<ul>
+<li>提供生产级监控接口</li>
+<li>健康检查、指标收集、日志管理、端点信息</li>
+</ul>
+</li>
+<li>核心类：<ul>
+<li><code>HealthEndpoint</code>, <code>MetricsEndpoint</code>, <code>InfoEndpoint</code></li>
+</ul>
+</li>
+<li>核心特性：<ul>
+<li><code>/actuator/health</code>, <code>/actuator/metrics</code> 等 REST 接口</li>
+</ul>
+</li>
+</ul>
+<img src="SpringBoot核心模块/image-20251210171322751.png" srcset="/img/loading.gif" lazyload alt="image-20251210171322751" style="zoom:50%;" />
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Spring/" class="category-chain-item">Spring</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/SpringBoot/" class="print-no-link">#SpringBoot</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>SpringBoot核心模块</div>
+      <div>http://by.ecel.top/Spring/SpringBoot核心模块/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>刘笑笑</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2025年12月9日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/%E5%88%86%E5%B8%83%E5%BC%8F/%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81%E8%AF%A6%E8%A7%A3/" title="分布式锁详解">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">分布式锁详解</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/Database/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%AF%B9%E6%AF%94/" title="数据库对比">
+                        <span class="hidden-mobile">数据库对比</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

@@ -1,0 +1,828 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="刘笑笑">
+  <meta name="keywords" content="java、go、操作系统、网络">
+  
+    <meta name="description" content="1️⃣ 为什么需要分布式事务？在单体系统中，一次业务基本只涉及一个数据库，用本地事务就能保证原子性、隔离性、一致性、持久性（ACID）。 但在微服务架构中，一次业务往往跨：  多个服务 多个数据库 甚至多个外部系统（支付、库存、消息中间件）  例如：下订单（Order） → 扣库存（Inventory） → 扣余额（Account） 三个步骤都不在同一个数据库，因此本地事务无法覆盖。 于是我们需要">
+<meta property="og:type" content="article">
+<meta property="og:title" content="分布式事务详解">
+<meta property="og:url" content="http://by.ecel.top/%E5%88%86%E5%B8%83%E5%BC%8F/%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1%E8%AF%A6%E8%A7%A3/index.html">
+<meta property="og:site_name" content="title">
+<meta property="og:description" content="1️⃣ 为什么需要分布式事务？在单体系统中，一次业务基本只涉及一个数据库，用本地事务就能保证原子性、隔离性、一致性、持久性（ACID）。 但在微服务架构中，一次业务往往跨：  多个服务 多个数据库 甚至多个外部系统（支付、库存、消息中间件）  例如：下订单（Order） → 扣库存（Inventory） → 扣余额（Account） 三个步骤都不在同一个数据库，因此本地事务无法覆盖。 于是我们需要">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2025-12-11T08:03:29.000Z">
+<meta property="article:modified_time" content="2025-12-16T12:54:04.356Z">
+<meta property="article:author" content="刘笑笑">
+<meta property="article:tag" content="分布式事务">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>分布式事务详解 - title</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"by.ecel.top","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Tech Notes</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="分布式事务详解"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2025-12-11 16:03" pubdate>
+          2025年12月11日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          1.1k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          10 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">分布式事务详解</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="1️⃣-为什么需要分布式事务？"><a href="#1️⃣-为什么需要分布式事务？" class="headerlink" title="1️⃣ 为什么需要分布式事务？"></a>1️⃣ 为什么需要分布式事务？</h1><p>在单体系统中，一次业务基本只涉及一个数据库，用本地事务就能保证<strong>原子性、隔离性、一致性、持久性（ACID）</strong>。</p>
+<p>但在微服务架构中，一次业务往往跨：</p>
+<ul>
+<li>多个服务</li>
+<li>多个数据库</li>
+<li>甚至多个外部系统（支付、库存、消息中间件）</li>
+</ul>
+<p>例如：<strong>下订单（Order） → 扣库存（Inventory） → 扣余额（Account）</strong><br> 三个步骤都不在同一个数据库，因此本地事务无法覆盖。</p>
+<p>于是我们需要 <strong>分布式事务</strong> 来保证最终一致性。</p>
+<hr>
+<h1 id="2️⃣-主流分布式事务方案详解"><a href="#2️⃣-主流分布式事务方案详解" class="headerlink" title="2️⃣ 主流分布式事务方案详解"></a>2️⃣ 主流分布式事务方案详解</h1><p>按强一致性 → 最终一致性排序：</p>
+<hr>
+<h1 id="⭐️-方案一：2PC-XA（强一致性-同步阻塞）"><a href="#⭐️-方案一：2PC-XA（强一致性-同步阻塞）" class="headerlink" title="⭐️ 方案一：2PC &#x2F; XA（强一致性 &#x2F; 同步阻塞）"></a>⭐️ <strong>方案一：2PC &#x2F; XA（强一致性 &#x2F; 同步阻塞）</strong></h1><h3 id="✔-原理（两阶段提交）"><a href="#✔-原理（两阶段提交）" class="headerlink" title="✔ 原理（两阶段提交）"></a>✔ 原理（两阶段提交）</h3><p><strong>协调者（TM）</strong> 和 <strong>参与者（RM）</strong></p>
+<p><strong>第一阶段：Prepare</strong><br>各参与者执行操作，但不提交，写日志，锁资源。</p>
+<p><strong>第二阶段：Commit</strong><br>协调者通知各参与者提交或回滚。</p>
+<hr>
+<h3 id="✔-优点"><a href="#✔-优点" class="headerlink" title="✔ 优点"></a>✔ 优点</h3><ul>
+<li>理论上满足 ACID</li>
+<li>强一致性（银行、交易类场景可能使用）</li>
+</ul>
+<hr>
+<h3 id="✖-缺点（致命）"><a href="#✖-缺点（致命）" class="headerlink" title="✖ 缺点（致命）"></a>✖ 缺点（致命）</h3><ul>
+<li><strong>同步阻塞</strong>：所有资源在 Prepare 阶段锁定</li>
+<li><strong>单点风险</strong>：协调者挂了事务不确定</li>
+<li><strong>性能差，不适合高并发</strong></li>
+</ul>
+<hr>
+<h3 id="✔-使用场景"><a href="#✔-使用场景" class="headerlink" title="✔ 使用场景"></a>✔ 使用场景</h3><ul>
+<li>银行类、强一致性系统（但现代银行不直接使用 XA，通常是 Saga&#x2F;补偿）</li>
+</ul>
+<hr>
+<hr>
+<h1 id="⭐️-方案二：TCC（Try-Confirm-Cancel）"><a href="#⭐️-方案二：TCC（Try-Confirm-Cancel）" class="headerlink" title="⭐️ 方案二：TCC（Try &#x2F; Confirm &#x2F; Cancel）"></a>⭐️ <strong>方案二：TCC（Try &#x2F; Confirm &#x2F; Cancel）</strong></h1><blockquote>
+<p><strong>业务侵入式最高，但一致性更可控</strong>。</p>
+</blockquote>
+<h3 id="✔-原理"><a href="#✔-原理" class="headerlink" title="✔ 原理"></a>✔ 原理</h3><p>每个服务要实现 3 个接口：</p>
+<table>
+<thead>
+<tr>
+<th>阶段</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Try</strong></td>
+<td>检查资源并“预留”资源</td>
+</tr>
+<tr>
+<td><strong>Confirm</strong></td>
+<td>真正执行</td>
+</tr>
+<tr>
+<td><strong>Cancel</strong></td>
+<td>回滚预留资源</td>
+</tr>
+</tbody></table>
+<hr>
+<h3 id="✔-优点-1"><a href="#✔-优点-1" class="headerlink" title="✔ 优点"></a>✔ 优点</h3><ul>
+<li>粒度最细、一致性高</li>
+<li>可重试，性能比 XA 高很多</li>
+</ul>
+<hr>
+<h3 id="✖-缺点"><a href="#✖-缺点" class="headerlink" title="✖ 缺点"></a>✖ 缺点</h3><ul>
+<li>强业务侵入：每个服务要写 try&#x2F;confirm&#x2F;cancel</li>
+<li>接口复杂</li>
+<li>开发成本大</li>
+</ul>
+<hr>
+<h3 id="✔-使用场景-1"><a href="#✔-使用场景-1" class="headerlink" title="✔ 使用场景"></a>✔ 使用场景</h3><ul>
+<li><strong>强一致性</strong> 且 <strong>业务可拆 try&#x2F;confirm&#x2F;cancel</strong><br> 例如：支付、机票预定、库存预留</li>
+</ul>
+<hr>
+<hr>
+<h1 id="⭐️-方案三：Saga（补偿事务-长事务）"><a href="#⭐️-方案三：Saga（补偿事务-长事务）" class="headerlink" title="⭐️ 方案三：Saga（补偿事务 &#x2F; 长事务）"></a>⭐️ <strong>方案三：Saga（补偿事务 &#x2F; 长事务）</strong></h1><blockquote>
+<p><strong>适用于长链路、跨多服务的大事务（旅游、订单、机票预订）</strong></p>
+</blockquote>
+<h3 id="✔-原理-1"><a href="#✔-原理-1" class="headerlink" title="✔ 原理"></a>✔ 原理</h3><p>Saga 是一个<strong>有序的本地事务链</strong>：</p>
+<p>S1 → S2 → S3 …</p>
+<p>如果有一个出错，例如 S3，执行补偿事务：</p>
+<p>CS2 → CS1</p>
+<p>补偿事务必须保证逆向回滚逻辑。</p>
+<hr>
+<h3 id="✔-优点-2"><a href="#✔-优点-2" class="headerlink" title="✔ 优点"></a>✔ 优点</h3><ul>
+<li>异步执行、性能高</li>
+<li>适用于长事务、跨多服务</li>
+<li>不阻塞资源</li>
+</ul>
+<hr>
+<h3 id="✖-缺点-1"><a href="#✖-缺点-1" class="headerlink" title="✖ 缺点"></a>✖ 缺点</h3><ul>
+<li>最终一致性（不是强一致性）</li>
+<li>补偿逻辑复杂</li>
+<li>并不保证整体严格回滚（可能失败 &amp; 重试）</li>
+</ul>
+<hr>
+<h3 id="✔-使用场景-2"><a href="#✔-使用场景-2" class="headerlink" title="✔ 使用场景"></a>✔ 使用场景</h3><ul>
+<li>酒店预订</li>
+<li>分布式订单（确认&#x2F;取消链路）</li>
+<li>长时间操作（支付轮询、物流）</li>
+</ul>
+<hr>
+<hr>
+<h1 id="⭐️-方案四：Outbox-本地消息表（最常用-简洁）"><a href="#⭐️-方案四：Outbox-本地消息表（最常用-简洁）" class="headerlink" title="⭐️ 方案四：Outbox &#x2F; 本地消息表（最常用 &amp; 简洁）"></a>⭐️ <strong>方案四：Outbox &#x2F; 本地消息表（最常用 &amp; 简洁）</strong></h1><blockquote>
+<p><strong>本地事务 + 异步消息最终一致性</strong><br> 解决 “我操作数据库成功了，但给 MQ 发消息失败了” 的经典问题。</p>
+</blockquote>
+<hr>
+<h3 id="✔-原理（两步）"><a href="#✔-原理（两步）" class="headerlink" title="✔ 原理（两步）"></a>✔ 原理（两步）</h3><ol>
+<li><strong>本地事务：写业务数据 + 记录待发送消息（outbox 表）</strong></li>
+<li><strong>后台任务或 CDC 解析 Outbox 表 → 发送到 MQ → 标记成功</strong></li>
+</ol>
+<p>关键：DB 操作 &amp; 消息记录在同一个事务里，保证一致性。</p>
+<hr>
+<h3 id="✔-优点-3"><a href="#✔-优点-3" class="headerlink" title="✔ 优点"></a>✔ 优点</h3><ul>
+<li>实现简单</li>
+<li>高性能</li>
+<li>一致性强（最终一致）</li>
+<li>无业务侵入，几乎适合所有系统</li>
+</ul>
+<hr>
+<h3 id="✖-缺点-2"><a href="#✖-缺点-2" class="headerlink" title="✖ 缺点"></a>✖ 缺点</h3><ul>
+<li>最终一致性，需要后台任务或 Debezium&#x2F;CDC</li>
+<li>Outbox 表可能变大要归档</li>
+</ul>
+<hr>
+<h3 id="✔-使用场景（最普遍）"><a href="#✔-使用场景（最普遍）" class="headerlink" title="✔ 使用场景（最普遍）"></a>✔ 使用场景（最普遍）</h3><ul>
+<li>电商订单 → 通知库存</li>
+<li>订单支付成功 → 发送到 Kafka</li>
+<li>用户注册 → 发送欢迎邮件</li>
+</ul>
+<hr>
+<hr>
+<h1 id="⭐️-方案五：Kafka-幂等消息（保证消息不丢、不重、不乱）"><a href="#⭐️-方案五：Kafka-幂等消息（保证消息不丢、不重、不乱）" class="headerlink" title="⭐️ 方案五：Kafka 幂等消息（保证消息不丢、不重、不乱）"></a>⭐️ <strong>方案五：Kafka 幂等消息（保证消息不丢、不重、不乱）</strong></h1><p>核心两套能力：</p>
+<h3 id="✔-①-幂等生产（Idempotent-Producer）"><a href="#✔-①-幂等生产（Idempotent-Producer）" class="headerlink" title="✔ ① 幂等生产（Idempotent Producer）"></a>✔ ① 幂等生产（Idempotent Producer）</h3><p>Kafka Producer 设置 <code>enable.idempotence=true</code></p>
+<p>确保生产同一消息多次，只会写入一次。</p>
+<hr>
+<h3 id="✔-②-Exactly-Once-语义（EOS）"><a href="#✔-②-Exactly-Once-语义（EOS）" class="headerlink" title="✔ ② Exactly Once 语义（EOS）"></a>✔ ② Exactly Once 语义（EOS）</h3><p>Kafka + 消费端 + DB 事务保证如下逻辑：</p>
+<ul>
+<li>事务性 Producer（把写消息 + 提交偏移绑定在一起）</li>
+<li>Consumer 端用幂等 Key 保证重复消息不会影响下游</li>
+</ul>
+<hr>
+<h3 id="✔-优点-4"><a href="#✔-优点-4" class="headerlink" title="✔ 优点"></a>✔ 优点</h3><ul>
+<li>性能非常高</li>
+<li>支持 exactly-once（在 Kafka 内部链路）</li>
+</ul>
+<hr>
+<h3 id="✖-缺点-3"><a href="#✖-缺点-3" class="headerlink" title="✖ 缺点"></a>✖ 缺点</h3><ul>
+<li>只能保证 “Kafka 内部” 的 exactly-once</li>
+<li>落地 MySQL&#x2F;Redis 等需要<strong>额外幂等设计</strong></li>
+</ul>
+<hr>
+<h3 id="✔-使用场景-3"><a href="#✔-使用场景-3" class="headerlink" title="✔ 使用场景"></a>✔ 使用场景</h3><ul>
+<li>实时账单 pipeline</li>
+<li>用户行为日志</li>
+<li>订单状态变更事件流</li>
+<li>交易流水流转</li>
+</ul>
+<hr>
+<hr>
+<h1 id="3️⃣-如何选择分布式事务方案？"><a href="#3️⃣-如何选择分布式事务方案？" class="headerlink" title="3️⃣ 如何选择分布式事务方案？"></a>3️⃣ 如何选择分布式事务方案？</h1><table>
+<thead>
+<tr>
+<th>场景</th>
+<th>适合方案</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>强一致性必须保证（例如银行账户）</td>
+<td>TCC &#x2F; 协议化事务</td>
+</tr>
+<tr>
+<td>超长链路（酒店、订单、机票）</td>
+<td>Saga</td>
+</tr>
+<tr>
+<td>最普遍的电商、订单、库存、支付</td>
+<td>Outbox + MQ</td>
+</tr>
+<tr>
+<td>高并发事件流</td>
+<td>Kafka 幂等消息</td>
+</tr>
+<tr>
+<td>老系统、少变化、要求 ACID</td>
+<td>XA（一般不推荐）</td>
+</tr>
+</tbody></table>
+<hr>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E5%88%86%E5%B8%83%E5%BC%8F/" class="category-chain-item">分布式</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1/" class="print-no-link">#分布式事务</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>分布式事务详解</div>
+      <div>http://by.ecel.top/分布式/分布式事务详解/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>刘笑笑</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2025年12月11日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/%E5%88%86%E5%B8%83%E5%BC%8F/%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81%E8%AF%A6%E8%A7%A3/" title="分布式锁详解">
+                        <span class="hidden-mobile">分布式锁详解</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
